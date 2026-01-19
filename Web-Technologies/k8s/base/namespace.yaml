@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fhdw-wta
+  labels:
+    course: web-technologies
+    institution: fhdw

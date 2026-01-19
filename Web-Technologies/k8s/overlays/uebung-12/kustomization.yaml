@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: fhdw-wta
+
+resources:
+  - ../../base
+  # Storage
+  - couchdb-pvc.yaml
+  # Secrets and ConfigMaps
+  - couchdb-secret.yaml
+  - flask-configmap.yaml
+  # Deployments
+  - couchdb-deployment.yaml
+  - flask-deployment.yaml
+  # Services
+  - couchdb-service.yaml
+  - flask-service.yaml
+  # Autoscaling
+  - flask-hpa.yaml
+  # Network Policies (security)
+  - network-policy.yaml
+  # Optional: Ingress (requires ingress controller)
+  # - ingress.yaml
+
+commonLabels:
+  exercise: uebung-12
+  app: meta-playlist

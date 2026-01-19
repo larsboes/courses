@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kustomize - K8s Lernpfad</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+  <!-- Custom CSS -->
+  <link href="../assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <i class="bi bi-list"></i>
+    </button>
+    <h1 class="page-title">Kustomize</h1>
+  </header>
+
+  <div class="layout-container">
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-content">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="../index.html">Start</a></li>
+          <li class="breadcrumb-item"><a href="../index.html#config">Configuration</a></li>
+          <li class="breadcrumb-item active">Kustomize</li>
+        </ol>
+      </nav>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Kustomize</h1>
+        <p class="lead"><span class="k8s-term" data-term="Kustomize">Kustomize</span> = Kubernetes + Customize. Es ermoeglicht umgebungsspezifische Konfiguration ohne Duplikation.</p>
+      </div>
+
+      <!-- Accordion Sections -->
+      <div class="accordion" id="contentAccordion">
+
+        <!-- Section 1: Das Pattern -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-target="#pattern">
+              <i class="bi bi-layers me-2"></i>
+              Das Pattern: Base + Overlays
+            </button>
+          </h2>
+          <div id="pattern" class="accordion-collapse show">
+            <div class="accordion-body">
+              <div class="ascii-diagram">
+<pre class="ascii-art">
+┌─────────────────────────────────────────────────────────────────┐
+│  KUSTOMIZE STRUKTUR                                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────────────────────────────────────────────┐       │
+│  │                      base/                            │       │
+│  │              (gemeinsame Ressourcen)                  │       │
+│  └────────────────────────┬─────────────────────────────┘       │
+│                           │                                      │
+│          ┌────────────────┼────────────────┐                    │
+│          ▼                ▼                ▼                    │
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐            │
+│  │ overlays/    │ │ overlays/    │ │ overlays/    │            │
+│  │ uebung-11/   │ │ uebung-12/   │ │ production/  │            │
+│  │              │ │              │ │              │            │
+│  │ + nginx      │ │ + flask      │ │ + replicas:5 │            │
+│  │              │ │ + couchdb    │ │ + secrets    │            │
+│  └──────────────┘ └──────────────┘ └──────────────┘            │
+│                                                                  │
+│  Befehl: kubectl apply -k overlays/uebung-12/                   │
+│          └─ -k = Kustomize mode                                 │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Verzeichnisstruktur -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#struktur">
+              <i class="bi bi-folder me-2"></i>
+              Verzeichnisstruktur
+            </button>
+          </h2>
+          <div id="struktur" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Text</span>
+                  <span class="code-block__filename">Projektstruktur</span>
+                </div>
+                <pre><code>k8s/
+├── base/                           # Gemeinsame Basis
+│   ├── kustomization.yaml
+│   └── namespace.yaml
+│
+└── overlays/
+    ├── uebung-11/                  # Uebung 11 spezifisch
+    │   ├── kustomization.yaml
+    │   ├── deployment.yaml
+    │   └── service.yaml
+    │
+    └── uebung-12/                  # Uebung 12 spezifisch
+        ├── kustomization.yaml
+        ├── flask-deployment.yaml
+        ├── couchdb-deployment.yaml
+        └── ...</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: kustomization.yaml -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#yaml">
+              <i class="bi bi-file-code me-2"></i>
+              kustomization.yaml
+            </button>
+          </h2>
+          <div id="yaml" class="accordion-collapse">
+            <div class="accordion-body">
+              <h4>Base</h4>
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">base/kustomization.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: fhdw-wta              # ◄── Default Namespace
+
+resources:                       # ◄── Welche Dateien
+  - namespace.yaml
+
+commonLabels:                    # ◄── Labels fuer ALLE Ressourcen
+  course: web-technologies
+  institution: fhdw</code></pre>
+              </div>
+
+              <h4>Overlay</h4>
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">overlays/uebung-12/kustomization.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: fhdw-wta
+
+resources:                       # ◄── Erbt von base + eigene Dateien
+  - ../../base
+  - couchdb-pvc.yaml
+  - couchdb-secret.yaml
+  - couchdb-deployment.yaml
+  - couchdb-service.yaml
+  - flask-configmap.yaml
+  - flask-deployment.yaml
+  - flask-service.yaml
+
+commonLabels:                    # ◄── Zusaetzliche Labels
+  exercise: uebung-12
+  app: meta-playlist</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Features -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#features">
+              <i class="bi bi-gear me-2"></i>
+              Was Kustomize kann
+            </button>
+          </h2>
+          <div id="features" class="accordion-collapse">
+            <div class="accordion-body">
+              <h4>1. Namespace setzen</h4>
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                </div>
+                <pre><code class="language-yaml">namespace: fhdw-wta    # Alle Ressourcen bekommen diesen Namespace</code></pre>
+              </div>
+
+              <h4>2. Labels hinzufuegen</h4>
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                </div>
+                <pre><code class="language-yaml">commonLabels:
+  app: meta-playlist   # Wird zu allen Ressourcen hinzugefuegt</code></pre>
+              </div>
+
+              <h4>3. Prefixes/Suffixes</h4>
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                </div>
+                <pre><code class="language-yaml">namePrefix: prod-     # Alle Namen werden: prod-flask-webserver
+nameSuffix: -v2       # Alle Namen werden: flask-webserver-v2</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Befehle -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#befehle">
+              <i class="bi bi-terminal me-2"></i>
+              kubectl Befehle
+            </button>
+          </h2>
+          <div id="befehle" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Bash</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-bash"># Kustomize Ergebnis anzeigen (ohne anzuwenden)
+kubectl kustomize overlays/uebung-12/
+
+# Mit Kustomize deployen
+kubectl apply -k overlays/uebung-12/
+
+# Mit Kustomize loeschen
+kubectl delete -k overlays/uebung-12/</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6: Vorteile -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#vorteile">
+              <i class="bi bi-check-circle me-2"></i>
+              Vorteile
+            </button>
+          </h2>
+          <div id="vorteile" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr><th>Ohne Kustomize</th><th>Mit Kustomize</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Copy-Paste von YAML</td>
+                      <td>Gemeinsame Base</td>
+                    </tr>
+                    <tr>
+                      <td>Aenderung in jedem File</td>
+                      <td>Aenderung an einer Stelle</td>
+                    </tr>
+                    <tr>
+                      <td>Umgebungs-Branches</td>
+                      <td>Umgebungs-Overlays</td>
+                    </tr>
+                    <tr>
+                      <td>Fehleranfaellig</td>
+                      <td>Konsistent</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-container" data-quiz-id="kustomize" data-questions='[
+        {
+          "question": "Was ist das Hauptkonzept von Kustomize?",
+          "options": ["Templates mit Variablen", "Base + Overlays fuer umgebungsspezifische Konfiguration", "Automatische YAML-Generierung", "Container-Optimierung"],
+          "correct": 1,
+          "explanation": "Kustomize verwendet das Base + Overlays Pattern: Eine gemeinsame Basis und umgebungsspezifische Overlays die die Basis anpassen."
+        },
+        {
+          "question": "Wie deployt man mit Kustomize?",
+          "options": ["kubectl apply -f", "kubectl apply -k", "kubectl kustomize apply", "kubectl deploy -k"],
+          "correct": 1,
+          "explanation": "kubectl apply -k verwendet den Kustomize-Modus und wendet alle in der kustomization.yaml referenzierten Ressourcen an."
+        },
+        {
+          "question": "Was macht commonLabels in Kustomize?",
+          "options": ["Erstellt neue Ressourcen", "Fuegt Labels zu ALLEN Ressourcen hinzu", "Filtert Ressourcen", "Benennt Ressourcen um"],
+          "correct": 1,
+          "explanation": "commonLabels fuegt die angegebenen Labels automatisch zu allen Ressourcen hinzu, die von Kustomize verwaltet werden."
+        }
+      ]'>
+        <div class="quiz-header">
+          <i class="bi bi-patch-question"></i>
+          <h4>Wissens-Check</h4>
+          <span class="quiz-progress">Frage 1 von 3</span>
+        </div>
+        <div class="quiz-question active">
+          <p class="question-text"></p>
+          <div class="options"></div>
+        </div>
+        <div class="question-feedback hidden">
+          <p class="feedback-text"></p>
+        </div>
+        <div class="quiz-actions">
+          <button class="btn btn-primary" id="check-answer" disabled>Antwort pruefen</button>
+          <button class="btn btn-outline-secondary" id="next-question" disabled>Naechste Frage <i class="bi bi-arrow-right"></i></button>
+        </div>
+        <div class="quiz-results hidden">
+          <div class="results-score"><span class="score-number">0</span> / <span class="score-total">3</span></div>
+          <p class="results-message"></p>
+          <button class="btn btn-outline-primary" id="retry-quiz"><i class="bi bi-arrow-repeat"></i> Nochmal versuchen</button>
+        </div>
+      </div>
+
+      <!-- Page Navigation -->
+      <nav class="page-navigation">
+        <a href="secrets.html" class="nav-prev">
+          <i class="bi bi-arrow-left"></i>
+          <div class="nav-content">
+            <span class="nav-label">Zurueck</span>
+            <span class="nav-title">Secrets</span>
+          </div>
+        </a>
+        <a href="../meta-playlist/architecture.html" class="nav-next">
+          <div class="nav-content">
+            <span class="nav-label">Naechste</span>
+            <span class="nav-title">Architektur</span>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </nav>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

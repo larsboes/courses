@@ -1,0 +1,22 @@
+# Ingress: Alternative to NodePort for production-like setup
+# Requires an Ingress Controller (e.g., nginx-ingress)
+# To enable on minikube: minikube addons enable ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: meta-playlist-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: meta-playlist.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: flask-webserver
+                port:
+                  number: 8001

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Was ist Kubernetes? - K8s Lernpfad</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+  <!-- Custom CSS -->
+  <link href="../assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <i class="bi bi-list"></i>
+    </button>
+    <h1 class="page-title">Was ist Kubernetes?</h1>
+  </header>
+
+  <div class="layout-container">
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-content">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="../index.html">Start</a></li>
+          <li class="breadcrumb-item"><a href="../index.html#basics">Basics</a></li>
+          <li class="breadcrumb-item active">Was ist Kubernetes?</li>
+        </ol>
+      </nav>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Was ist Kubernetes?</h1>
+        <p class="lead">Kubernetes (K8s) ist ein "Betriebssystem fuer die Cloud". Es verwaltet Container so wie ein OS Prozesse verwaltet.</p>
+      </div>
+
+      <!-- Accordion Sections -->
+      <div class="accordion" id="contentAccordion">
+
+        <!-- Section 1: Analogie -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-target="#analogie">
+              <i class="bi bi-arrows-angle-expand me-2"></i>
+              Analogie: OS vs. Kubernetes
+            </button>
+          </h2>
+          <div id="analogie" class="accordion-collapse show">
+            <div class="accordion-body">
+              <div class="ascii-diagram">
+<pre class="ascii-art">
+┌────────────────────────────────────────────────────────────────────┐
+│                    ANALOGIE: OS vs. Kubernetes                      │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   Traditionelles OS              Kubernetes                         │
+│   ─────────────────              ──────────────                     │
+│   Prozesse                  ───► Pods (Container)                   │
+│   Dateisystem               ───► Persistent Volumes                 │
+│   Netzwerk-Sockets          ───► Services                           │
+│   Process Scheduler         ───► kube-scheduler                     │
+│   Init System (systemd)     ───► Deployments                        │
+│   Hostname/DNS              ───► Service Discovery                  │
+│                                                                     │
+└────────────────────────────────────────────────────────────────────┘
+</pre>
+                <figcaption class="diagram-caption">Kubernetes funktioniert wie ein Betriebssystem fuer verteilte Anwendungen</figcaption>
+              </div>
+
+              <p>Diese Analogie hilft dir zu verstehen, warum Kubernetes als "Cloud OS" bezeichnet wird. Genau wie ein Betriebssystem auf deinem Computer Ressourcen verwaltet, macht Kubernetes das Gleiche fuer Container in einem Cluster.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Deklarativ vs Imperativ -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#deklarativ">
+              <i class="bi bi-file-earmark-text me-2"></i>
+              Deklarative Spezifikation
+            </button>
+          </h2>
+          <div id="deklarativ" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="info-box info">
+                <strong>Kernidee:</strong> Du beschreibst den <em>gewuenschten Zustand</em> (deklarativ), K8s sorgt dafuer, dass dieser Zustand erreicht und gehalten wird.
+              </div>
+
+              <div class="ascii-diagram">
+<pre class="ascii-art">
+┌─────────────────────────────────────────────────────────────────┐
+│  IMPERATIV vs. DEKLARATIV                                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Imperativ (Docker):           Deklarativ (K8s):                │
+│  ──────────────────            ─────────────────                │
+│                                                                  │
+│  "Starte Container A"          "Ich will 3 Instanzen            │
+│  "Starte Container B"           von Container A"                │
+│  "Starte Container C"                                           │
+│                                                                  │
+│  Du sagst WIE                  Du sagst WAS                      │
+│  Du bist verantwortlich        K8s ist verantwortlich           │
+│                                                                  │
+│  Container stirbt?             Container stirbt?                 │
+│  → Du musst neu starten        → K8s startet automatisch neu    │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</pre>
+              </div>
+
+              <h4>Vorteile des deklarativen Ansatzes</h4>
+              <ul>
+                <li><strong>Self-Healing:</strong> Kubernetes repariert automatisch</li>
+                <li><strong>Idempotenz:</strong> Mehrfaches Anwenden der gleichen Konfiguration hat den gleichen Effekt</li>
+                <li><strong>Versionierbar:</strong> YAML-Dateien koennen in Git verwaltet werden</li>
+                <li><strong>Reproduzierbar:</strong> Gleiche Config = Gleiches Ergebnis</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Warum Cloud OS -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#cloudos">
+              <i class="bi bi-cloud me-2"></i>
+              Warum "Cloud OS"?
+            </button>
+          </h2>
+          <div id="cloudos" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Feature</th>
+                      <th>Linux OS</th>
+                      <th>Kubernetes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Prozesse starten</td>
+                      <td><code>systemctl start nginx</code></td>
+                      <td><code>kubectl apply -f deployment.yaml</code></td>
+                    </tr>
+                    <tr>
+                      <td>Prozesse ueberwachen</td>
+                      <td><code>systemctl status</code></td>
+                      <td><code>kubectl get pods</code></td>
+                    </tr>
+                    <tr>
+                      <td>Auto-Restart</td>
+                      <td>systemd unit restart</td>
+                      <td>Deployment replicas</td>
+                    </tr>
+                    <tr>
+                      <td>Netzwerk</td>
+                      <td>IP, Ports, DNS</td>
+                      <td>Services, Ingress</td>
+                    </tr>
+                    <tr>
+                      <td>Storage</td>
+                      <td>Dateisystem, Mounts</td>
+                      <td>PV, PVC</td>
+                    </tr>
+                    <tr>
+                      <td>Konfiguration</td>
+                      <td>/etc/, ENV</td>
+                      <td>ConfigMaps, Secrets</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-container" data-quiz-id="what-is-k8s" data-questions='[
+        {
+          "question": "Was ist der Hauptunterschied zwischen imperativem und deklarativem Ansatz?",
+          "options": ["Imperativ ist schneller", "Deklarativ beschreibt den gewuenschten Zustand, imperativ beschreibt die Schritte", "Es gibt keinen Unterschied", "Deklarativ funktioniert nur in der Cloud"],
+          "correct": 1,
+          "explanation": "Beim deklarativen Ansatz beschreibst du WAS du willst (z.B. 3 Pods), beim imperativen sagst du WIE es gemacht werden soll (starte Pod 1, starte Pod 2...)."
+        },
+        {
+          "question": "Was entspricht in Kubernetes einem Prozess im traditionellen OS?",
+          "options": ["Service", "Deployment", "Pod", "ConfigMap"],
+          "correct": 2,
+          "explanation": "Pods sind die kleinste deploybare Einheit in Kubernetes, aehnlich wie Prozesse im Betriebssystem."
+        },
+        {
+          "question": "Was passiert, wenn ein Container in Kubernetes stirbt?",
+          "options": ["Nichts, er bleibt tot", "Du musst ihn manuell neustarten", "Kubernetes startet ihn automatisch neu", "Der ganze Cluster stoppt"],
+          "correct": 2,
+          "explanation": "Durch Self-Healing startet Kubernetes automatisch neue Container, um den gewuenschten Zustand wiederherzustellen."
+        }
+      ]'>
+        <div class="quiz-header">
+          <i class="bi bi-patch-question"></i>
+          <h4>Wissens-Check</h4>
+          <span class="quiz-progress">Frage 1 von 3</span>
+        </div>
+        <div class="quiz-question active">
+          <p class="question-text"></p>
+          <div class="options"></div>
+        </div>
+        <div class="question-feedback hidden">
+          <p class="feedback-text"></p>
+        </div>
+        <div class="quiz-actions">
+          <button class="btn btn-primary" id="check-answer" disabled>Antwort pruefen</button>
+          <button class="btn btn-outline-secondary" id="next-question" disabled>Naechste Frage <i class="bi bi-arrow-right"></i></button>
+        </div>
+        <div class="quiz-results hidden">
+          <div class="results-score"><span class="score-number">0</span> / <span class="score-total">3</span></div>
+          <p class="results-message"></p>
+          <button class="btn btn-outline-primary" id="retry-quiz"><i class="bi bi-arrow-repeat"></i> Nochmal versuchen</button>
+        </div>
+      </div>
+
+      <!-- Page Navigation -->
+      <nav class="page-navigation">
+        <a href="../index.html" class="nav-prev">
+          <i class="bi bi-arrow-left"></i>
+          <div class="nav-content">
+            <span class="nav-label">Zurueck</span>
+            <span class="nav-title">Lernpfad</span>
+          </div>
+        </a>
+        <a href="pods.html" class="nav-next">
+          <div class="nav-content">
+            <span class="nav-label">Naechste</span>
+            <span class="nav-title">Pods</span>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </nav>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

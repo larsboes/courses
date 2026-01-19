@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kubernetes Lernpfad - FHDW Web Technologies</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+  <!-- Custom CSS -->
+  <link href="assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <i class="bi bi-list"></i>
+    </button>
+    <h1 class="page-title">Kubernetes Lernpfad</h1>
+    <div class="header-actions">
+      <span class="badge bg-primary">FHDW WTA 2025</span>
+    </div>
+  </header>
+
+  <div class="layout-container">
+    <!-- Sidebar placeholder -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Willkommen zum Kubernetes Lernpfad</h1>
+        <p class="lead">Strukturierte Dokumentation zum Erlernen von Kubernetes fuer die FHDW Web Technologies Uebungen.</p>
+      </div>
+
+      <!-- Learning Path Diagram -->
+      <div class="mermaid-container">
+        <div class="mermaid">
+flowchart TB
+    subgraph L1["1. Basics"]
+        A1[Was ist K8s?]
+        A2[Pods]
+        A3[Deployments]
+    end
+
+    subgraph L2["2. Networking"]
+        B1[Services]
+        B2[Ports]
+        B3[DNS]
+    end
+
+    subgraph L3["3. Storage"]
+        C1[Volumes/PVC]
+    end
+
+    subgraph L4["4. Configuration"]
+        D1[ConfigMaps]
+        D2[Secrets]
+        D3[Kustomize]
+    end
+
+    subgraph L5["5. Meta Playlist"]
+        E1[Architektur]
+        E2[Manifests]
+    end
+
+    L1 --> L2
+    L2 --> L3
+    L3 --> L4
+    L4 --> L5
+        </div>
+      </div>
+
+      <!-- Learning Path Cards -->
+      <h2 style="margin-top: 2rem;">Dein Lernpfad</h2>
+
+      <div class="learning-path">
+        <!-- 1. Basics -->
+        <a href="basics/what-is-kubernetes.html" class="path-card" style="text-decoration: none;">
+          <div class="path-number">1</div>
+          <div class="path-content">
+            <h3>Basics</h3>
+            <p>Grundlegende Kubernetes-Konzepte: Was ist K8s? Pods und Deployments verstehen.</p>
+          </div>
+        </a>
+
+        <!-- 2. Networking -->
+        <a href="networking/services.html" class="path-card" style="text-decoration: none;">
+          <div class="path-number">2</div>
+          <div class="path-content">
+            <h3>Networking</h3>
+            <p>Wie Netzwerk in Kubernetes funktioniert: Services, Ports und DNS.</p>
+          </div>
+        </a>
+
+        <!-- 3. Storage -->
+        <a href="storage/volumes.html" class="path-card" style="text-decoration: none;">
+          <div class="path-number">3</div>
+          <div class="path-content">
+            <h3>Storage</h3>
+            <p>Persistente Datenhaltung: Volumes, PersistentVolumeClaims und Access Modes.</p>
+          </div>
+        </a>
+
+        <!-- 4. Configuration -->
+        <a href="config/configmaps.html" class="path-card" style="text-decoration: none;">
+          <div class="path-number">4</div>
+          <div class="path-content">
+            <h3>Configuration</h3>
+            <p>Anwendungen konfigurieren: ConfigMaps, Secrets und Kustomize.</p>
+          </div>
+        </a>
+
+        <!-- 5. Meta Playlist -->
+        <a href="meta-playlist/architecture.html" class="path-card" style="text-decoration: none;">
+          <div class="path-number">5</div>
+          <div class="path-content">
+            <h3>Meta Playlist App</h3>
+            <p>Unsere komplette Anwendung auf Kubernetes: Architektur und alle Manifests.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Quick Reference -->
+      <h2 style="margin-top: 2rem;">Quick Reference</h2>
+
+      <div class="accordion" id="quickRefAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-target="#deployCommands">
+              <i class="bi bi-terminal me-2"></i>
+              Deployment Befehle
+            </button>
+          </h2>
+          <div id="deployCommands" class="accordion-collapse show">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Bash</span>
+                  <span class="code-block__filename">kubectl commands</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-bash"># Deployen
+kubectl apply -k overlays/uebung-12/
+
+# Status
+kubectl -n fhdw-wta get all
+
+# Logs
+kubectl -n fhdw-wta logs -l component=webserver
+
+# Loeschen
+kubectl delete -k overlays/uebung-12/</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#debugCommands">
+              <i class="bi bi-bug me-2"></i>
+              Debug Befehle
+            </button>
+          </h2>
+          <div id="debugCommands" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Bash</span>
+                  <span class="code-block__filename">debug commands</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-bash"># Pod Details
+kubectl -n fhdw-wta describe pod &lt;pod-name&gt;
+
+# In Container einloggen
+kubectl -n fhdw-wta exec -it &lt;pod-name&gt; -- /bin/sh
+
+# Events anzeigen
+kubectl -n fhdw-wta get events --sort-by=.lastTimestamp
+
+# Service Endpoints
+kubectl -n fhdw-wta get endpoints</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Navigation -->
+      <nav class="page-navigation">
+        <div></div>
+        <a href="basics/what-is-kubernetes.html" class="nav-next">
+          <div class="nav-content">
+            <span class="nav-label">Los geht's</span>
+            <span class="nav-title">Was ist Kubernetes?</span>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </nav>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.0/dist/mermaid.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

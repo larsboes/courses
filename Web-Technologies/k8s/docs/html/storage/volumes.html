@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volumes - K8s Lernpfad</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+  <!-- Custom CSS -->
+  <link href="../assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <i class="bi bi-list"></i>
+    </button>
+    <h1 class="page-title">Volumes</h1>
+  </header>
+
+  <div class="layout-container">
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-content">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="../index.html">Start</a></li>
+          <li class="breadcrumb-item"><a href="../index.html#storage">Storage</a></li>
+          <li class="breadcrumb-item active">Volumes</li>
+        </ol>
+      </nav>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Volumes & Persistent Storage</h1>
+        <p class="lead">Pods sind kurzlebig - ihre Daten gehen verloren wenn sie neu starten. <span class="k8s-term" data-term="PVC">PersistentVolumes</span> loesen dieses Problem.</p>
+      </div>
+
+      <!-- Accordion Sections -->
+      <div class="accordion" id="contentAccordion">
+
+        <!-- Section 1: Das Problem -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-target="#problem">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              Das Problem
+            </button>
+          </h2>
+          <div id="problem" class="accordion-collapse show">
+            <div class="accordion-body">
+              <div class="ascii-diagram">
+<pre class="ascii-art">
+┌─────────────────────────────────────────────────────────────────┐
+│                    DAS SPEICHER-PROBLEM                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  Ohne Volumes:                                                   │
+│  ─────────────                                                   │
+│                                                                  │
+│   ┌──────────────┐      Pod stirbt      ┌──────────────┐        │
+│   │   CouchDB    │                      │   CouchDB    │        │
+│   │              │    ───────────►      │   (NEU)      │        │
+│   │  Daten       │                      │              │        │
+│   │  (im Pod)    │                      │  LEER!       │        │
+│   └──────────────┘                      └──────────────┘        │
+│                                                                  │
+│   Alle Daten verloren!                                          │
+│                                                                  │
+│                                                                  │
+│  Mit PersistentVolume:                                           │
+│  ─────────────────────                                           │
+│                                                                  │
+│   ┌──────────────┐      Pod stirbt      ┌──────────────┐        │
+│   │   CouchDB    │                      │   CouchDB    │        │
+│   │      │       │    ───────────►      │   (NEU)      │        │
+│   │      │       │                      │      │       │        │
+│   └──────┼───────┘                      └──────┼───────┘        │
+│          │                                     │                 │
+│          ▼                                     ▼                 │
+│   ┌──────────────────────────────────────────────────┐          │
+│   │            PERSISTENT VOLUME                      │          │
+│   │            Daten bleiben erhalten!               │          │
+│   └──────────────────────────────────────────────────┘          │
+│                                                                  │
+│   Daten ueberleben Pod-Neustarts!                                │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: PVC = Speicher-Anfrage -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#pvc">
+              <i class="bi bi-hdd me-2"></i>
+              PVC = Speicher-Anfrage
+            </button>
+          </h2>
+          <div id="pvc" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="ascii-diagram">
+<pre class="ascii-art">
+┌─────────────────────────────────────────────────────────────────┐
+│              PERSISTENT VOLUME CLAIM (PVC)                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  PVC = "Ich brauche Speicher mit diesen Eigenschaften"          │
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  PVC: couchdb-pvc                                        │    │
+│  │                                                          │    │
+│  │  "Ich brauche:                                           │    │
+│  │   - 1 GB Speicher                                        │    │
+│  │   - ReadWriteOnce Zugriff"                              │    │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                             │                                    │
+│                             │ K8s findet/erstellt                │
+│                             │ passendes PV                       │
+│                             ▼                                    │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  PV (PersistentVolume) - automatisch erstellt           │    │
+│  │                                                          │    │
+│  │  Tatsaechlicher Speicherplatz auf dem Host               │    │
+│  │  (bei kind: im Docker Volume)                            │    │
+│  │                                                          │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Access Modes -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#accessmodes">
+              <i class="bi bi-unlock me-2"></i>
+              Access Modes
+            </button>
+          </h2>
+          <div id="accessmodes" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr><th>Mode</th><th>Abkuerzung</th><th>Beschreibung</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>ReadWriteOnce</strong></td>
+                      <td>RWO</td>
+                      <td>Ein Pod, lesen+schreiben</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ReadOnlyMany</strong></td>
+                      <td>ROX</td>
+                      <td>Viele Pods, nur lesen</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ReadWriteMany</strong></td>
+                      <td>RWX</td>
+                      <td>Viele Pods, lesen+schreiben</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="info-box tip">
+                <strong>Fuer Datenbanken: Immer ReadWriteOnce!</strong> Eine Datenbank sollte nur von einem Pod gleichzeitig beschrieben werden.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: PVC YAML -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#yaml">
+              <i class="bi bi-file-code me-2"></i>
+              PVC YAML
+            </button>
+          </h2>
+          <div id="yaml" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">pvc.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: couchdb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce           # ◄── Ein Pod kann lesen/schreiben
+  resources:
+    requests:
+      storage: 1Gi            # ◄── 1 Gigabyte Speicher</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Volume im Pod mounten -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#mounten">
+              <i class="bi bi-link me-2"></i>
+              Volume im Pod mounten
+            </button>
+          </h2>
+          <div id="mounten" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">deployment.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">spec:
+  containers:
+    - name: couchdb
+      image: couchdb:3
+      volumeMounts:                     # ◄── WO im Container
+        - name: couchdb-storage
+          mountPath: /opt/couchdb/data  # ◄── Pfad IM Container
+
+  volumes:                              # ◄── WAS gemountet wird
+    - name: couchdb-storage
+      persistentVolumeClaim:
+        claimName: couchdb-pvc          # ◄── Verweis auf PVC</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6: Befehle -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#befehle">
+              <i class="bi bi-terminal me-2"></i>
+              kubectl Befehle
+            </button>
+          </h2>
+          <div id="befehle" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Bash</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-bash"># PVCs anzeigen
+kubectl -n fhdw-wta get pvc
+
+# PVC Details
+kubectl -n fhdw-wta describe pvc couchdb-pvc
+
+# PVs anzeigen (cluster-weit)
+kubectl get pv</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-container" data-quiz-id="volumes" data-questions='[
+        {
+          "question": "Was passiert mit Daten im Pod wenn er ohne PVC neu startet?",
+          "options": ["Sie bleiben erhalten", "Sie werden automatisch gesichert", "Sie gehen verloren", "Sie werden komprimiert"],
+          "correct": 2,
+          "explanation": "Ohne PersistentVolume gehen alle Daten im Pod verloren wenn er neu startet. Pods sind ephemeral (kurzlebig)."
+        },
+        {
+          "question": "Welcher Access Mode ist fuer Datenbanken empfohlen?",
+          "options": ["ReadOnlyMany (ROX)", "ReadWriteMany (RWX)", "ReadWriteOnce (RWO)", "WriteOnly"],
+          "correct": 2,
+          "explanation": "ReadWriteOnce (RWO) ist fuer Datenbanken empfohlen, da nur ein Pod gleichzeitig schreiben sollte um Datenkonsistenz zu gewaehrleisten."
+        },
+        {
+          "question": "Was ist der Unterschied zwischen PV und PVC?",
+          "options": ["Kein Unterschied", "PVC ist die Anfrage, PV ist der tatsaechliche Speicher", "PV ist fuer Pods, PVC fuer Container", "PVC ist schneller"],
+          "correct": 1,
+          "explanation": "PVC (PersistentVolumeClaim) ist eine Anfrage nach Speicher mit bestimmten Eigenschaften. PV (PersistentVolume) ist der tatsaechlich bereitgestellte Speicher."
+        }
+      ]'>
+        <div class="quiz-header">
+          <i class="bi bi-patch-question"></i>
+          <h4>Wissens-Check</h4>
+          <span class="quiz-progress">Frage 1 von 3</span>
+        </div>
+        <div class="quiz-question active">
+          <p class="question-text"></p>
+          <div class="options"></div>
+        </div>
+        <div class="question-feedback hidden">
+          <p class="feedback-text"></p>
+        </div>
+        <div class="quiz-actions">
+          <button class="btn btn-primary" id="check-answer" disabled>Antwort pruefen</button>
+          <button class="btn btn-outline-secondary" id="next-question" disabled>Naechste Frage <i class="bi bi-arrow-right"></i></button>
+        </div>
+        <div class="quiz-results hidden">
+          <div class="results-score"><span class="score-number">0</span> / <span class="score-total">3</span></div>
+          <p class="results-message"></p>
+          <button class="btn btn-outline-primary" id="retry-quiz"><i class="bi bi-arrow-repeat"></i> Nochmal versuchen</button>
+        </div>
+      </div>
+
+      <!-- Page Navigation -->
+      <nav class="page-navigation">
+        <a href="../networking/dns.html" class="nav-prev">
+          <i class="bi bi-arrow-left"></i>
+          <div class="nav-content">
+            <span class="nav-label">Zurueck</span>
+            <span class="nav-title">DNS</span>
+          </div>
+        </a>
+        <a href="../config/configmaps.html" class="nav-next">
+          <div class="nav-content">
+            <span class="nav-label">Naechste</span>
+            <span class="nav-title">ConfigMaps</span>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </nav>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

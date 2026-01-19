@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flask-config
+data:
+  COUCHDB_HOST: "couchdb"
+  COUCHDB_PORT: "5984"
