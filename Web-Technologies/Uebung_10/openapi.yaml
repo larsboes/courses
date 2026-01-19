@@ -1,0 +1,117 @@
+openapi: 3.0.0
+info:
+  title: Meta Playlists API
+  description: API for managing playlists from various streaming services.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api
+    description: Local development server
+
+paths:
+  /playlists:
+    get:
+      summary: Get all playlists
+      description: Returns a dictionary of all playlists and their tracks.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Track'
+    post:
+      summary: Create a new playlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Playlist created
+        '400':
+          description: Invalid input
+        '409':
+          description: Playlist already exists
+
+  /playlists/{name}:
+    get:
+      summary: Get a specific playlist
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Track'
+        '404':
+          description: Playlist not found
+    put:
+      summary: Update a playlist (replace tracks)
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Track'
+      responses:
+        '200':
+          description: Playlist updated
+        '404':
+          description: Playlist not found
+    delete:
+      summary: Delete a playlist
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Playlist deleted
+        '404':
+          description: Playlist not found
+
+components:
+  schemas:
+    Track:
+      type: object
+      required:
+        - title
+        - link
+        - duration
+      properties:
+        title:
+          type: string
+        link:
+          type: string
+        duration:
+          type: string
+          pattern: '^\d{1,2}:\d{2}$'

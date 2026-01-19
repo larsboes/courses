@@ -1,0 +1,147 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Playlist API",
+    "version": "1.0.0",
+    "description": "API for managing playlists"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8001",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/playlists": {
+      "get": {
+        "summary": "Retrieve all playlists",
+        "responses": {
+          "200": {
+            "description": "A list of playlists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Playlist"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add or update a playlist",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Playlist"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Playlist added or updated"
+          }
+        }
+      }
+    },
+    "/playlists/{playlist_name}": {
+      "get": {
+        "summary": "Retrieve a specific playlist",
+        "parameters": [
+          {
+            "name": "playlist_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the playlist to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A specific playlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Playlist"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Playlist not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a specific playlist",
+        "parameters": [
+          {
+            "name": "playlist_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the playlist to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Playlist deleted"
+          },
+          "404": {
+            "description": "Playlist not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Playlist": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the playlist"
+          },
+          "tracks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Track"
+            },
+            "description": "List of tracks in the playlist"
+          }
+        },
+        "required": ["name", "tracks"]
+      },
+      "Track": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the track"
+          },
+          "link": {
+            "type": "string",
+            "format": "uri",
+            "description": "Link to the track"
+          },
+          "duration": {
+            "type": "string",
+            "description": "Duration of the track in mm:ss format"
+          }
+        },
+        "required": ["title", "link", "duration"]
+      }
+    }
+  }
+}

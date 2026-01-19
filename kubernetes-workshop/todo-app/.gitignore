@@ -1,0 +1,4 @@
+.vscode
+**/.DS_Store
+.dockerconfigjson
+registry-credentials.yaml

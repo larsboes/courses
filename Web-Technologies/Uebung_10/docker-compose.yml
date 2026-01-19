@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  flask-webserver:
+    build: .
+    ports:
+      - "8001:8001"
+    depends_on:
+      couchdb:
+        condition: service_healthy
+    environment:
+      - COUCHDB_URL=http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@couchdb:5984
+    env_file:
+      - .env
+
+  couchdb:
+    image: couchdb:latest
+    restart: always
+    ports:
+      - "5984:5984"
+    environment:
+      - COUCHDB_USER=${COUCHDB_USER}
+      - COUCHDB_PASSWORD=${COUCHDB_PASSWORD}
+    volumes:
+      - ./dbdata:/opt/couchdb/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5984"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
