@@ -1,0 +1,35 @@
+# Uebung 4: Simple Flask Webserver
+# Minimal "Hello World" Flask application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: webserver
+  template:
+    metadata:
+      labels:
+        component: webserver
+    spec:
+      containers:
+        - name: flask
+          image: simple-webserver:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 5

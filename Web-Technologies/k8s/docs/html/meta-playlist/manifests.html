@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manifests - K8s Lernpfad</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+  <!-- Custom CSS -->
+  <link href="../assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <i class="bi bi-list"></i>
+    </button>
+    <h1 class="page-title">Manifests</h1>
+  </header>
+
+  <div class="layout-container">
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-content">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="../index.html">Start</a></li>
+          <li class="breadcrumb-item"><a href="../index.html#meta-playlist">Meta Playlist</a></li>
+          <li class="breadcrumb-item active">Manifests</li>
+        </ol>
+      </nav>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Meta Playlist Manifests</h1>
+        <p class="lead">Alle Kubernetes <span class="k8s-term" data-term="Manifest">Manifest</span>-Dateien fuer die Meta Playlist Anwendung, annotiert und erklaert.</p>
+      </div>
+
+      <!-- Accordion Sections -->
+      <div class="accordion" id="contentAccordion">
+
+        <!-- Section 1: Kustomization -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-target="#kustomization">
+              <i class="bi bi-layers me-2"></i>
+              1. Kustomization
+            </button>
+          </h2>
+          <div id="kustomization" class="accordion-collapse show">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">overlays/uebung-12/kustomization.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: fhdw-wta           # ◄── Namespace fuer alle Ressourcen
+
+resources:                    # ◄── Was deployt wird
+  - ../../base                # ◄── Erbt namespace.yaml
+  - couchdb-pvc.yaml
+  - couchdb-secret.yaml
+  - couchdb-deployment.yaml
+  - couchdb-service.yaml
+  - flask-configmap.yaml
+  - flask-deployment.yaml
+  - flask-service.yaml
+
+commonLabels:                 # ◄── Labels fuer ALLE Ressourcen
+  exercise: uebung-12
+  app: meta-playlist</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: ConfigMap -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#configmap">
+              <i class="bi bi-gear me-2"></i>
+              2. ConfigMap
+            </button>
+          </h2>
+          <div id="configmap" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">flask-configmap.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flask-config
+data:
+  COUCHDB_HOST: couchdb       # ◄── Service-Name (DNS)
+  COUCHDB_PORT: "5984"        # ◄── Als String</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Secret -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#secret">
+              <i class="bi bi-shield-lock me-2"></i>
+              3. Secret
+            </button>
+          </h2>
+          <div id="secret" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">couchdb-secret.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: couchdb-secret
+type: Opaque
+stringData:                   # ◄── Klartext, wird base64 kodiert
+  COUCHDB_USER: admin
+  COUCHDB_PASSWORD: password</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Flask Deployment -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#flask-deployment">
+              <i class="bi bi-box me-2"></i>
+              4. Flask Deployment
+            </button>
+          </h2>
+          <div id="flask-deployment" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">flask-deployment.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-webserver
+spec:
+  replicas: 2                           # ◄── 2 Instanzen
+
+  selector:
+    matchLabels:
+      component: webserver              # ◄── Findet Pods
+
+  template:
+    metadata:
+      labels:
+        component: webserver            # ◄── Muss matchen!
+    spec:
+      containers:
+        - name: flask
+          image: meta-playlist:latest
+          imagePullPolicy: IfNotPresent # ◄── Lokales Image
+
+          ports:
+            - containerPort: 8001       # ◄── App Port
+
+          env:                          # ◄── Environment Variables
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-secret
+                  key: COUCHDB_USER
+
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-secret
+                  key: COUCHDB_PASSWORD
+
+            - name: COUCHDB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: flask-config
+                  key: COUCHDB_HOST
+
+            - name: COUCHDB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: flask-config
+                  key: COUCHDB_PORT
+
+            - name: COUCHDB_URL         # ◄── Zusammengesetzt
+              value: "http://$(COUCHDB_USER):$(COUCHDB_PASSWORD)@$(COUCHDB_HOST):$(COUCHDB_PORT)"
+
+          readinessProbe:               # ◄── Bereit fuer Traffic?
+            httpGet:
+              path: /
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 5</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Flask Service -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#flask-service">
+              <i class="bi bi-hdd-network me-2"></i>
+              5. Flask Service
+            </button>
+          </h2>
+          <div id="flask-service" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">flask-service.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: flask-webserver
+spec:
+  type: NodePort                        # ◄── Extern erreichbar!
+
+  selector:
+    component: webserver                # ◄── Findet Pods
+
+  ports:
+    - protocol: TCP
+      port: 8001                        # ◄── Cluster-intern
+      targetPort: 8001                  # ◄── Container-Port
+      nodePort: 30001                   # ◄── localhost:30001</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 6: CouchDB Deployment -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#couchdb-deployment">
+              <i class="bi bi-database me-2"></i>
+              6. CouchDB Deployment
+            </button>
+          </h2>
+          <div id="couchdb-deployment" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">couchdb-deployment.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: couchdb
+spec:
+  replicas: 1                           # ◄── Eine DB-Instanz
+
+  selector:
+    matchLabels:
+      component: database
+
+  template:
+    metadata:
+      labels:
+        component: database
+    spec:
+      containers:
+        - name: couchdb
+          image: couchdb:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 5984       # ◄── CouchDB API
+
+          env:
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-secret
+                  key: COUCHDB_USER
+
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-secret
+                  key: COUCHDB_PASSWORD
+
+          volumeMounts:                 # ◄── Daten persistent
+            - name: couchdb-data
+              mountPath: /opt/couchdb/data
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5984
+            initialDelaySeconds: 10
+            periodSeconds: 5
+
+          livenessProbe:                # ◄── Noch am leben?
+            httpGet:
+              path: /
+              port: 5984
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+      volumes:                          # ◄── PVC referenzieren
+        - name: couchdb-data
+          persistentVolumeClaim:
+            claimName: couchdb-pvc</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 7: PVC -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#pvc">
+              <i class="bi bi-hdd me-2"></i>
+              7. PersistentVolumeClaim
+            </button>
+          </h2>
+          <div id="pvc" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">couchdb-pvc.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: couchdb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce                     # ◄── Ein Pod lesen/schreiben
+  resources:
+    requests:
+      storage: 1Gi                      # ◄── 1 GB Speicher</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 8: Deployment-Befehle -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#befehle">
+              <i class="bi bi-terminal me-2"></i>
+              Deployment-Befehle
+            </button>
+          </h2>
+          <div id="befehle" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Bash</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-bash"># Image bauen
+docker build -t meta-playlist:latest ../Uebung_10
+
+# Image in kind laden
+docker save meta-playlist:latest | docker exec -i desktop-control-plane ctr --namespace k8s.io images import -
+
+# Deployen
+kubectl apply -k overlays/uebung-12/
+
+# Status
+kubectl -n fhdw-wta get all
+
+# Logs
+kubectl -n fhdw-wta logs -l component=webserver
+kubectl -n fhdw-wta logs -l component=database
+
+# In Pod einloggen
+kubectl -n fhdw-wta exec -it deployment/flask-webserver -- /bin/sh
+
+# Loeschen
+kubectl delete -k overlays/uebung-12/</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Navigation -->
+      <nav class="page-navigation">
+        <a href="architecture.html" class="nav-prev">
+          <i class="bi bi-arrow-left"></i>
+          <div class="nav-content">
+            <span class="nav-label">Zurueck</span>
+            <span class="nav-title">Architektur</span>
+          </div>
+        </a>
+        <a href="../tasks.html" class="nav-next">
+          <div class="nav-content">
+            <span class="nav-label">Naechste</span>
+            <span class="nav-title">Aufgaben</span>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </nav>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

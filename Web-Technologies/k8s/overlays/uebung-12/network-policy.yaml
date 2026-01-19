@@ -1,0 +1,36 @@
+# NetworkPolicy: Restrict traffic to CouchDB
+# Only Flask pods can access CouchDB - defense in depth
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: couchdb-access-policy
+spec:
+  podSelector:
+    matchLabels:
+      component: database
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              component: webserver
+      ports:
+        - protocol: TCP
+          port: 5984
+---
+# NetworkPolicy: Allow external traffic to Flask
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: flask-ingress-policy
+spec:
+  podSelector:
+    matchLabels:
+      component: webserver
+  policyTypes:
+    - Ingress
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 8001

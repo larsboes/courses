@@ -1,0 +1,148 @@
+# ConfigMap containing the Meta Playlist UI files
+# Served by nginx as static content
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: meta-playlist-ui-files
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Responsive Playlist Manager</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Meta Playlist Manager</h1>
+            <div class="playlist-controls">
+                <input type="text" id="playlist-name" placeholder="New Playlist Name" required>
+                <button id="create-playlist">Create Playlist</button>
+                <select id="playlist-select">
+                    <option value="" disabled selected>Select a Playlist</option>
+                </select>
+                <button id="delete-playlist">Delete Playlist</button>
+            </div>
+            <form id="track-form">
+                <input type="text" id="title" placeholder="Track Title" required>
+                <input type="url" id="link" placeholder="Track URL (Streaming Service Link)" required>
+                <input type="text" id="duration" placeholder="Duration (mm:ss)">
+                <button type="submit">Add Track</button>
+            </form>
+            <div class="playlist">
+                <h2>Playlist Details</h2>
+                <ul id="playlist"></ul>
+                <div id="total-duration">Total Duration: 0:00</div>
+                <button id="save-playlist">Save Playlist</button>
+            </div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+    </html>
+  style.css: |
+    * { box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; }
+    .container { max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+    h1, h2 { text-align: center; }
+    .playlist-controls { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+    #playlist-select, #playlist-name, #create-playlist, #delete-playlist { padding: 10px; border-radius: 4px; font-size: 16px; }
+    form { display: flex; flex-direction: column; gap: 10px; }
+    input[type="text"], input[type="url"], input#duration { padding: 10px; border-radius: 4px; border: 1px solid #ccc; font-size: 16px; margin-bottom: 10px; }
+    button { padding: 10px; background-color: #007BFF; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    .playlist { margin-top: 20px; }
+    ul { list-style-type: none; padding: 0; }
+    li { display: flex; justify-content: space-between; background-color: #f9f9f9; padding: 10px; margin: 5px 0; border-radius: 4px; }
+    li a { text-decoration: none; color: #007BFF; }
+    li button { background-color: red; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+    li button:hover { background-color: darkred; }
+    #total-duration { font-weight: bold; text-align: center; margin: 10px 0; }
+    @media (max-width: 600px) { .container { padding: 10px; } .playlist-controls { flex-direction: column; } form { flex-direction: column; } li { flex-direction: column; } }
+  script.js: |
+    const playlistNameInput = document.getElementById('playlist-name');
+    const playlistSelect = document.getElementById('playlist-select');
+    const createPlaylistButton = document.getElementById('create-playlist');
+    const deletePlaylistButton = document.getElementById('delete-playlist');
+    const trackForm = document.getElementById('track-form');
+    const titleInput = document.getElementById('title');
+    const linkInput = document.getElementById('link');
+    const durationInput = document.getElementById('duration');
+    const playlistContainer = document.getElementById('playlist');
+    const savePlaylistButton = document.getElementById('save-playlist');
+    const totalDurationDisplay = document.getElementById('total-duration');
+    let playlists = {};
+    let currentPlaylist = null;
+    window.onload = function() {
+        const savedPlaylists = localStorage.getItem('playlists');
+        if (savedPlaylists) { playlists = JSON.parse(savedPlaylists); updatePlaylistSelect(); }
+    };
+    createPlaylistButton.addEventListener('click', function() {
+        const playlistName = playlistNameInput.value.trim();
+        if (playlistName && !playlists[playlistName]) {
+            playlists[playlistName] = []; currentPlaylist = playlistName;
+            updatePlaylistSelect(); renderPlaylist(); playlistNameInput.value = '';
+            alert(`Playlist "${playlistName}" created!`);
+        } else { alert('Playlist name is required or already exists.'); }
+    });
+    deletePlaylistButton.addEventListener('click', function() {
+        if (currentPlaylist && playlists[currentPlaylist]) {
+            delete playlists[currentPlaylist]; currentPlaylist = null;
+            updatePlaylistSelect(); renderPlaylist(); alert('Playlist deleted.');
+        }
+    });
+    function updatePlaylistSelect() {
+        playlistSelect.innerHTML = '<option value="" disabled selected>Select a Playlist</option>';
+        Object.keys(playlists).forEach(name => {
+            const option = document.createElement('option');
+            option.value = name; option.textContent = name;
+            playlistSelect.appendChild(option);
+        });
+    }
+    playlistSelect.addEventListener('change', function() { currentPlaylist = playlistSelect.value; renderPlaylist(); });
+    trackForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (currentPlaylist) {
+            const title = titleInput.value.trim();
+            const link = linkInput.value.trim();
+            const duration = durationInput.value.trim();
+            if (title && link && duration.match(/^\d{1,2}:\d{2}$/)) {
+                playlists[currentPlaylist].push({ title, link, duration });
+                renderPlaylist();
+                titleInput.value = ''; linkInput.value = ''; durationInput.value = '';
+            }
+        } else { alert('Please select or create a playlist first.'); }
+    });
+    function renderPlaylist() {
+        playlistContainer.innerHTML = '';
+        if (currentPlaylist && playlists[currentPlaylist]) {
+            playlists[currentPlaylist].forEach((track, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="${track.link}" target="_blank">${track.title} (${track.duration})</a><button onclick="removeTrack(${index})">Remove</button>`;
+                playlistContainer.appendChild(li);
+            });
+            updateTotalDuration();
+        } else { totalDurationDisplay.textContent = 'Total Duration: 0:00'; }
+    }
+    function updateTotalDuration() {
+        let totalMinutes = 0; let totalSeconds = 0;
+        if (currentPlaylist && playlists[currentPlaylist]) {
+            playlists[currentPlaylist].forEach(track => {
+                const [minutes, seconds] = track.duration.split(':').map(Number);
+                totalMinutes += minutes; totalSeconds += seconds;
+            });
+            totalMinutes += Math.floor(totalSeconds / 60); totalSeconds %= 60;
+        }
+        totalDurationDisplay.textContent = `Total Duration: ${totalMinutes}:${totalSeconds.toString().padStart(2, '0')}`;
+    }
+    function removeTrack(index) {
+        if (currentPlaylist && playlists[currentPlaylist]) {
+            playlists[currentPlaylist].splice(index, 1); renderPlaylist();
+        }
+    }
+    savePlaylistButton.addEventListener('click', function() {
+        const playlistsJSON = JSON.stringify(playlists);
+        localStorage.setItem('playlists', playlistsJSON);
+        alert('All playlists saved!');
+    });

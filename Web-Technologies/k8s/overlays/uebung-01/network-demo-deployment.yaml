@@ -1,0 +1,79 @@
+# Uebung 1: Docker/K8s Networking Demo
+# Two pods that can communicate with each other
+# Demonstrates: Pod networking, DNS resolution, namespace isolation
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container1
+  template:
+    metadata:
+      labels:
+        app: container1
+    spec:
+      containers:
+        - name: ubuntu
+          image: ubuntu:22.04
+          command: ["/bin/bash", "-c", "apt-get update && apt-get install -y iputils-ping net-tools dnsutils curl && sleep infinity"]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: container2
+  template:
+    metadata:
+      labels:
+        app: container2
+    spec:
+      containers:
+        - name: ubuntu
+          image: ubuntu:22.04
+          command: ["/bin/bash", "-c", "apt-get update && apt-get install -y iputils-ping net-tools dnsutils curl && sleep infinity"]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+---
+# Services for DNS resolution (pod-to-pod communication)
+apiVersion: v1
+kind: Service
+metadata:
+  name: container1
+spec:
+  selector:
+    app: container1
+  ports:
+    - port: 80
+      targetPort: 80
+  clusterIP: None  # Headless service for direct pod DNS
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: container2
+spec:
+  selector:
+    app: container2
+  ports:
+    - port: 80
+      targetPort: 80
+  clusterIP: None  # Headless service for direct pod DNS

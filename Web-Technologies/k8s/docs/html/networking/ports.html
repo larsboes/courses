@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ports - K8s Lernpfad</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+  <!-- Custom CSS -->
+  <link href="../assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <i class="bi bi-list"></i>
+    </button>
+    <h1 class="page-title">Ports</h1>
+  </header>
+
+  <div class="layout-container">
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-content">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="../index.html">Start</a></li>
+          <li class="breadcrumb-item"><a href="../index.html#networking">Networking</a></li>
+          <li class="breadcrumb-item active">Ports</li>
+        </ol>
+      </nav>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>Ports in Kubernetes</h1>
+        <p class="lead">Es gibt verschiedene Port-Typen in K8s. Hier eine klare Erklaerung wie sie zusammenhaengen.</p>
+      </div>
+
+      <!-- Accordion Sections -->
+      <div class="accordion" id="contentAccordion">
+
+        <!-- Section 1: Die vier Port-Typen -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-target="#porttypen">
+              <i class="bi bi-list-ol me-2"></i>
+              Die vier Port-Typen
+            </button>
+          </h2>
+          <div id="porttypen" class="accordion-collapse show">
+            <div class="accordion-body">
+              <div class="ascii-diagram">
+<pre class="ascii-art">
+┌─────────────────────────────────────────────────────────────────┐
+│                     DIE PORT-TYPEN                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  1. containerPort (im Pod)                                       │
+│     ─────────────────────                                        │
+│     Der Port, auf dem die App IM Container lauscht               │
+│     Beispiel: Flask lauscht auf Port 8001                        │
+│                                                                  │
+│  2. targetPort (im Service)                                      │
+│     ───────────────────────                                      │
+│     Wohin der Service Traffic leitet                             │
+│     Muss mit containerPort uebereinstimmen                        │
+│                                                                  │
+│  3. port (im Service)                                            │
+│     ─────────────────                                            │
+│     Der Port des Services INNERHALB des Clusters                 │
+│     Andere Pods erreichen den Service ueber diesen Port           │
+│                                                                  │
+│  4. nodePort (NodePort Service)                                  │
+│     ───────────────────────────                                  │
+│     Der Port auf dem HOST/NODE fuer EXTERNEN Zugriff              │
+│     Range: 30000-32767                                           │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
+</pre>
+              </div>
+
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr><th>Port</th><th>Wo definiert</th><th>Wer nutzt es</th><th>Beispiel</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="k8s-term" data-term="containerPort">containerPort</span></td>
+                      <td>Pod/Deployment</td>
+                      <td>Die App selbst</td>
+                      <td>Flask: 8001</td>
+                    </tr>
+                    <tr>
+                      <td><span class="k8s-term" data-term="targetPort">targetPort</span></td>
+                      <td>Service</td>
+                      <td>Service → Container</td>
+                      <td>8001</td>
+                    </tr>
+                    <tr>
+                      <td>port</td>
+                      <td>Service</td>
+                      <td>Cluster intern</td>
+                      <td>8001</td>
+                    </tr>
+                    <tr>
+                      <td>nodePort</td>
+                      <td>Service (NodePort)</td>
+                      <td>Externe Clients</td>
+                      <td>30001</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Wie die Ports zusammenhängen -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#zusammenhang">
+              <i class="bi bi-diagram-3 me-2"></i>
+              Wie die Ports zusammenhaengen
+            </button>
+          </h2>
+          <div id="zusammenhang" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="ascii-diagram">
+<pre class="ascii-art">
+                          EXTERNE WELT
+                               │
+                          localhost:30001      ◄── nodePort
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────┐
+│  NODE (dein Computer / kind-Container)                           │
+│                                                                   │
+│                         nodePort: 30001                           │
+│                               │                                   │
+│                               ▼                                   │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │  SERVICE: flask-webserver                                   │  │
+│  │  Type: NodePort                                             │  │
+│  │                                                             │  │
+│  │  port: 8001 ◄── andere Pods nutzen diesen Port intern      │  │
+│  │  targetPort: 8001 ◄── leitet weiter an Container-Port      │  │
+│  │  nodePort: 30001 ◄── externer Zugang                       │  │
+│  │                                                             │  │
+│  └───────────────────────────────┬────────────────────────────┘  │
+│                                  │                                │
+│                    ┌─────────────┴─────────────┐                  │
+│                    ▼                           ▼                  │
+│  ┌─────────────────────────────┐ ┌─────────────────────────────┐ │
+│  │  POD                        │ │  POD                        │ │
+│  │                             │ │                             │ │
+│  │  ┌───────────────────────┐  │ │  ┌───────────────────────┐  │ │
+│  │  │ Container             │  │ │  │ Container             │  │ │
+│  │  │ containerPort: 8001   │  │ │  │ containerPort: 8001   │  │ │
+│  │  │                       │  │ │  │                       │  │ │
+│  │  │  Flask App lauscht    │  │ │  │  Flask App lauscht    │  │ │
+│  │  │  auf 0.0.0.0:8001     │  │ │  │  auf 0.0.0.0:8001     │  │ │
+│  │  └───────────────────────┘  │ │  └───────────────────────┘  │ │
+│  └─────────────────────────────┘ └─────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────┘
+</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: In YAML -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#yaml">
+              <i class="bi bi-file-code me-2"></i>
+              In YAML
+            </button>
+          </h2>
+          <div id="yaml" class="accordion-collapse">
+            <div class="accordion-body">
+              <h4>Deployment (containerPort)</h4>
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">deployment.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">spec:
+  containers:
+    - name: flask
+      image: meta-playlist:latest
+      ports:
+        - containerPort: 8001    # ◄── App lauscht hier</code></pre>
+              </div>
+
+              <h4>Service (port, targetPort, nodePort)</h4>
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">YAML</span>
+                  <span class="code-block__filename">service.yaml</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-yaml">spec:
+  type: NodePort
+  ports:
+    - port: 8001           # ◄── Cluster-intern
+      targetPort: 8001     # ◄── → Container
+      nodePort: 30001      # ◄── Extern</code></pre>
+              </div>
+
+              <div class="info-box tip">
+                <strong>Tipp:</strong> Oft sind <code>port</code> und <code>targetPort</code> gleich. Wenn sie identisch sind, kann <code>targetPort</code> weggelassen werden.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Zugriffswege -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#zugriffswege">
+              <i class="bi bi-arrow-right-circle me-2"></i>
+              Zugriffswege
+            </button>
+          </h2>
+          <div id="zugriffswege" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Text</span>
+                  <span class="code-block__filename">Traffic Flow</span>
+                </div>
+                <pre><code>Von aussen (Browser):
+  localhost:30001 → nodePort → Service → targetPort → Container
+
+Von anderem Pod:
+  flask-webserver:8001 → port → targetPort → Container
+
+Innerhalb des Pods:
+  localhost:8001 → containerPort → App</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz-container" data-quiz-id="ports" data-questions='[
+        {
+          "question": "Welcher Port definiert wo die App im Container lauscht?",
+          "options": ["nodePort", "port", "targetPort", "containerPort"],
+          "correct": 3,
+          "explanation": "containerPort definiert den Port auf dem die Anwendung im Container lauscht. Dies wird im Pod/Deployment definiert."
+        },
+        {
+          "question": "Was muss mit containerPort uebereinstimmen?",
+          "options": ["nodePort", "port", "targetPort", "namespace"],
+          "correct": 2,
+          "explanation": "targetPort im Service muss mit containerPort uebereinstimmen, damit der Traffic korrekt an den Container weitergeleitet wird."
+        },
+        {
+          "question": "Wie greift ein Browser von aussen auf die App zu?",
+          "options": ["Ueber containerPort", "Ueber port", "Ueber targetPort", "Ueber nodePort"],
+          "correct": 3,
+          "explanation": "Von aussen greift man ueber den nodePort zu (z.B. localhost:30001). Der Traffic wird dann ueber den Service an die Container weitergeleitet."
+        }
+      ]'>
+        <div class="quiz-header">
+          <i class="bi bi-patch-question"></i>
+          <h4>Wissens-Check</h4>
+          <span class="quiz-progress">Frage 1 von 3</span>
+        </div>
+        <div class="quiz-question active">
+          <p class="question-text"></p>
+          <div class="options"></div>
+        </div>
+        <div class="question-feedback hidden">
+          <p class="feedback-text"></p>
+        </div>
+        <div class="quiz-actions">
+          <button class="btn btn-primary" id="check-answer" disabled>Antwort pruefen</button>
+          <button class="btn btn-outline-secondary" id="next-question" disabled>Naechste Frage <i class="bi bi-arrow-right"></i></button>
+        </div>
+        <div class="quiz-results hidden">
+          <div class="results-score"><span class="score-number">0</span> / <span class="score-total">3</span></div>
+          <p class="results-message"></p>
+          <button class="btn btn-outline-primary" id="retry-quiz"><i class="bi bi-arrow-repeat"></i> Nochmal versuchen</button>
+        </div>
+      </div>
+
+      <!-- Page Navigation -->
+      <nav class="page-navigation">
+        <a href="services.html" class="nav-prev">
+          <i class="bi bi-arrow-left"></i>
+          <div class="nav-content">
+            <span class="nav-label">Zurueck</span>
+            <span class="nav-title">Services</span>
+          </div>
+        </a>
+        <a href="dns.html" class="nav-next">
+          <div class="nav-content">
+            <span class="nav-label">Naechste</span>
+            <span class="nav-title">DNS</span>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </nav>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

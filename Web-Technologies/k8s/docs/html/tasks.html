@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aufgaben - K8s Lernpfad</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+  <!-- Custom CSS -->
+  <link href="assets/css/main.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="main-header">
+    <button class="sidebar-toggle" id="sidebar-toggle">
+      <i class="bi bi-list"></i>
+    </button>
+    <h1 class="page-title">Alle Aufgaben</h1>
+  </header>
+
+  <div class="layout-container">
+    <div id="sidebar-placeholder"></div>
+
+    <main class="main-content">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1>FHDW Web Technologies - Alle Uebungen</h1>
+        <p class="lead">Uebersicht aller Uebungsaufgaben aus dem Kurs Web Technologies and Applications FHDW 2025.</p>
+      </div>
+
+      <!-- Task Cards -->
+      <div class="task-grid">
+        <!-- Task 1 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">1</span>
+            <h3 class="task-card__title">Docker Infrastruktur</h3>
+          </div>
+          <p class="task-card__description">Docker-compose.yml anlegen, Container-Netzwerk und Namespaces erkunden.</p>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">2</span>
+            <h3 class="task-card__title">TLS Verstaendnis</h3>
+          </div>
+          <p class="task-card__description">Verstaendnisfragen zu TLS-Verschluesselung und Zertifikaten beantworten.</p>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">3</span>
+            <h3 class="task-card__title">DNS Praxis</h3>
+          </div>
+          <p class="task-card__description">DNS-Abfragen mit nslookup und dig durchfuehren, RR Types verstehen.</p>
+        </div>
+
+        <!-- Task 4 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">4</span>
+            <h3 class="task-card__title">Webserver bauen</h3>
+          </div>
+          <p class="task-card__description">Minimalen Flask Webserver in Docker deployen.</p>
+        </div>
+
+        <!-- Task 5 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">5</span>
+            <h3 class="task-card__title">JSON Struktur</h3>
+          </div>
+          <p class="task-card__description">JSON-Struktur fuer Warenkorb-Klassen erstellen.</p>
+        </div>
+
+        <!-- Task 6 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">6</span>
+            <h3 class="task-card__title">Statische HTML</h3>
+          </div>
+          <p class="task-card__description">Webserver um statische HTML-Seiten erweitern.</p>
+        </div>
+
+        <!-- Task 7 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">7</span>
+            <h3 class="task-card__title">Responsive UI</h3>
+          </div>
+          <p class="task-card__description">Meta Playlist App UI mit responsivem CSS implementieren.</p>
+        </div>
+
+        <!-- Task 8 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">8</span>
+            <h3 class="task-card__title">JavaScript</h3>
+          </div>
+          <p class="task-card__description">Event Listener, JSON-Verwaltung und lokale Speicherung hinzufuegen.</p>
+        </div>
+
+        <!-- Task 9 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">9</span>
+            <h3 class="task-card__title">REST API</h3>
+          </div>
+          <p class="task-card__description">REST API mit OpenAPI spezifizieren und in Flask implementieren.</p>
+        </div>
+
+        <!-- Task 10 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">10</span>
+            <h3 class="task-card__title">Datenbank</h3>
+          </div>
+          <p class="task-card__description">CouchDB anbinden und Playlists persistent speichern.</p>
+        </div>
+
+        <!-- Task 11 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">11</span>
+            <h3 class="task-card__title">K8s Basics</h3>
+          </div>
+          <p class="task-card__description">Minikube und kubectl installieren, K8s Cluster erkunden.</p>
+        </div>
+
+        <!-- Task 12 -->
+        <div class="task-card">
+          <div class="task-card__header">
+            <span class="task-card__number">12</span>
+            <h3 class="task-card__title">K8s Deployment</h3>
+          </div>
+          <p class="task-card__description">Meta Playlist App mit Manifests auf Kubernetes deployen.</p>
+        </div>
+      </div>
+
+      <!-- Detailed Exercises -->
+      <h2 style="margin-top: 3rem;">Detaillierte Beschreibungen</h2>
+
+      <div class="accordion" id="tasksAccordion">
+        <!-- Task 1 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-target="#task1">
+              <span class="badge bg-primary me-2">1</span>
+              Docker Infrastruktur (Slide 27)
+            </button>
+          </h2>
+          <div id="task1" class="accordion-collapse show">
+            <div class="accordion-body">
+              <ol>
+                <li>Installieren Sie Docker</li>
+                <li>Legen Sie eine Datei <code>docker-compose.yml</code> an</li>
+                <li>Starten Sie den Container mit <code>docker compose up -d</code></li>
+                <li>Schauen Sie sich das Netzwerk an: <code>docker network ls</code> und <code>docker network inspect</code></li>
+                <li>Starten Sie eine Shell: <code>docker exec -it container1 /bin/bash</code></li>
+                <li>Prozesse pruefen: <code>ps</code> und <code>ps -ef</code></li>
+                <li>Namespaces anschauen: <code>lsns</code></li>
+                <li>Netzwerk testen: <code>ifconfig</code>, <code>ping</code></li>
+                <li>Container beenden: <code>docker compose down</code></li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 2 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#task2">
+              <span class="badge bg-primary me-2">2</span>
+              TLS Verstaendnis (Slide 33)
+            </button>
+          </h2>
+          <div id="task2" class="accordion-collapse">
+            <div class="accordion-body">
+              <p>Welche Aussagen sind richtig oder falsch und warum?</p>
+              <ol>
+                <li>Die ausgetauschten Daten zwischen meinem Browser und dem Server sind durch TLS fuer Dritte nicht lesbar.</li>
+                <li>Das Zertifikat des Servers ueberprueft mein Client bei einer Zertifizierungsstelle (CA).</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 3 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#task3">
+              <span class="badge bg-primary me-2">3</span>
+              DNS Praxis (Slide 42)
+            </button>
+          </h2>
+          <div id="task3" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Bash</span>
+                </div>
+                <pre><code class="language-bash">nslookup fhdw.de
+nslookup -type=NS fhdw.de</code></pre>
+              </div>
+              <ol>
+                <li>Fragen Sie Informationen ueber eine Website mit verschiedenen Parametern ab</li>
+                <li>Was bedeutet es, wenn wir mehrere IP-Adressen fuer eine Domain bekommen?</li>
+                <li>Was sind potentielle Probleme mit DNS?</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 4 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#task4">
+              <span class="badge bg-primary me-2">4</span>
+              Webserver bauen (Slide 54)
+            </button>
+          </h2>
+          <div id="task4" class="accordion-collapse">
+            <div class="accordion-body">
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Python</span>
+                  <span class="code-block__filename">webserver.py</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-python">from flask import Flask
+webserver = Flask(__name__)
+
+@webserver.route('/')
+def home():
+    return '&lt;h1&gt;Willkommen auf der minimalen WTA-Homepage!&lt;/h1&gt;'
+
+if __name__ == '__main__':
+    webserver.run(host='0.0.0.0', port=8000)</code></pre>
+              </div>
+
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Bash</span>
+                </div>
+                <pre><code class="language-bash">docker buildx build -t webserver .
+docker run -p 8001:8000 webserver
+curl -v localhost:8001</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 11 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#task11">
+              <span class="badge bg-success me-2">11</span>
+              K8s Basics (Slide 122)
+            </button>
+          </h2>
+          <div id="task11" class="accordion-collapse">
+            <div class="accordion-body">
+              <ol>
+                <li>Installieren Sie <strong>Minikube</strong>: <a href="https://minikube.sigs.k8s.io/">minikube.sigs.k8s.io</a></li>
+                <li>Installieren Sie <strong>kubectl</strong>: <a href="https://kubernetes.io/docs/tasks/tools/">kubernetes.io/docs/tasks/tools</a></li>
+                <li>Starten Sie Ihren K8s Cluster mit <code>minikube start</code></li>
+                <li>Dashboard oeffnen mit <code>minikube dashboard</code></li>
+                <li>Warum bezeichnet man K8s als "Betriebssystem der Cloud"?</li>
+              </ol>
+
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Bash</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-bash"># Cluster starten
+minikube start --driver=docker
+
+# Nodes anzeigen
+kubectl get nodes
+kubectl describe node [NAME]
+
+# Dashboard
+minikube dashboard</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task 12 -->
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-target="#task12">
+              <span class="badge bg-success me-2">12</span>
+              K8s Deployment (Slide 128)
+            </button>
+          </h2>
+          <div id="task12" class="accordion-collapse">
+            <div class="accordion-body">
+              <ol>
+                <li>Entwerfen Sie eine <strong>Zielarchitektur</strong> der Komponenten auf K8s</li>
+                <li>Spezifizieren Sie passende <strong>Manifests</strong> fuer Pods und Services</li>
+                <li>Wenden Sie die Manifests an und testen Sie mit dem Web Client</li>
+              </ol>
+
+              <div class="info-box tip">
+                <strong>Tipp:</strong> Nutzen Sie die <a href="meta-playlist/architecture.html">Architektur</a> und <a href="meta-playlist/manifests.html">Manifests</a> Seiten als Referenz!
+              </div>
+
+              <div class="code-block">
+                <div class="code-block__header">
+                  <span class="code-block__language">Bash</span>
+                  <button class="code-block__copy"><i class="bi bi-clipboard"></i></button>
+                </div>
+                <pre><code class="language-bash"># Image bauen
+docker build -t meta-playlist:latest .
+
+# Deployen
+kubectl apply -k overlays/uebung-12/
+
+# Status pruefen
+kubectl -n fhdw-wta get all
+
+# Testen
+curl http://localhost:30001
+
+# Loeschen
+kubectl delete -k overlays/uebung-12/</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hinweis -->
+      <div class="info-box info" style="margin-top: 2rem;">
+        <strong>Hinweis:</strong> Sie muessen nicht unbedingt alles ausimplementieren. Wichtig ist es, dass Sie die Konzepte, Funktionsweisen und Ablaeufe praktisch nachvollziehen.
+      </div>
+
+      <!-- Page Navigation -->
+      <nav class="page-navigation">
+        <a href="meta-playlist/manifests.html" class="nav-prev">
+          <i class="bi bi-arrow-left"></i>
+          <div class="nav-content">
+            <span class="nav-label">Zurueck</span>
+            <span class="nav-title">Manifests</span>
+          </div>
+        </a>
+        <a href="index.html" class="nav-next">
+          <div class="nav-content">
+            <span class="nav-label">Zum Start</span>
+            <span class="nav-title">Lernpfad</span>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </a>
+      </nav>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

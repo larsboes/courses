@@ -1,0 +1,90 @@
+# Flask webserver for Uebung 10
+# Connects to CouchDB for persistent playlist storage
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: webserver
+  template:
+    metadata:
+      labels:
+        component: webserver
+    spec:
+      initContainers:
+        - name: wait-for-couchdb
+          image: curlimages/curl:8.5.0
+          env:
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-secret
+                  key: COUCHDB_USER
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-secret
+                  key: COUCHDB_PASSWORD
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for CouchDB to be ready..."
+              until curl -sf http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@couchdb:5984/ > /dev/null 2>&1; do
+                echo "CouchDB not ready, waiting..."
+                sleep 2
+              done
+              echo "CouchDB is ready!"
+              curl -X PUT http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@couchdb:5984/playlists || true
+              echo "Database setup complete!"
+      containers:
+        - name: flask
+          image: meta-playlist:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8001
+          env:
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-secret
+                  key: COUCHDB_USER
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: couchdb-secret
+                  key: COUCHDB_PASSWORD
+            - name: COUCHDB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: flask-config
+                  key: COUCHDB_HOST
+            - name: COUCHDB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: flask-config
+                  key: COUCHDB_PORT
+            - name: COUCHDB_URL
+              value: "http://$(COUCHDB_USER):$(COUCHDB_PASSWORD)@$(COUCHDB_HOST):$(COUCHDB_PORT)"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8001
+            initialDelaySeconds: 15
+            periodSeconds: 10
