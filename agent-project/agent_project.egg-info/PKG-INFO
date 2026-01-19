@@ -1,0 +1,317 @@
+Metadata-Version: 2.4
+Name: agent-project
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Requires-Dist: google-adk>=1.18.0
+Requires-Dist: httpx>=0.28.1
+
+# Autonomous Game-Solving Multi-Agent System
+An advanced autonomous agent system that learns to solve text adventure game puzzles using a 4-agent collaborative architecture with persistent memory and strategy optimization.
+## Architecture
+### Multi-Agent Design
+The system consists of four specialized agents working together:
+                 AGENT COORDINATOR
+          (Orchestrates multi-agent system)
+  Strategic
+   Executor
+   Planner
+   Executes
+  Plans &
+$   Actions
+  Decides
+   Memory
+Meta-Learner
+   Manager
+  Optimizes
+  Stores &
+$  Strategies
+  Retrieves
+### Agent Responsibilities
+#### 1. Strategic Planner Agent
+- Decomposes high-level goals into actionable sub-goals
+- Creates multi-step strategic plans
+- Uses pathfinding for navigation planning
+- Adapts plans based on execution results
+- Evaluates progress toward goals
+**Key Features:**
+- Goal decomposition (explore, collect, examine, use items)
+- Systematic exploration strategies
+- Priority-based action planning
+- Adaptive replanning when stuck
+#### 2. Executor Agent
+- Executes actions in the game world via API
+- Reports precise outcomes
+- Extracts structured observations from text responses
+- Handles all game interactions (move, take, examine, use)
+**Key Features:**
+- Direct game API integration
+- Structured observation extraction using LLM
+- Robust error handling
+- Precise action execution
+#### 3. Memory Manager Agent
+- Manages all persistent storage (JSON-based)
+- Builds and maintains room connectivity graphs
+- Stores episodic memory of playthroughs
+- Maintains knowledge base of discovered patterns
+- Tracks performance metrics
+**Storage Structure:**
+memory/data/
+ session_state.json      # Current game state
+ episodic_memory.json    # Complete playthrough history
+ knowledge_base.json     # Learned patterns & solutions
+ strategy_metrics.json   # Performance analytics
+**Key Features:**
+- Session state tracking
+- Episodic memory (all playthroughs)
+- Knowledge base (patterns, item properties, solutions)
+- Performance metrics (success rates, average moves)
+- Natural language knowledge queries
+#### 4. Meta-Learner Agent
+- Analyzes playthroughs to extract learnings
+- Identifies recurring patterns across levels
+- Optimizes strategies using historical data
+- Implements reinforcement learning (reward calculation)
+- Provides strategic recommendations
+**Key Features:**
+- Playthrough analysis and comparison
+- Pattern recognition across levels
+- Strategy optimization
+- Reinforcement learning rewards
+- Cross-level knowledge transfer
+## Features
+### Autonomous Gameplay
+- Fully autonomous level solving
+- No human intervention required
+- Self-learning from successes and failures
+### Persistent Learning
+- Knowledge persists across sessions
+- Learns from every attempt
+- Improves performance over time
+- Transfers learning between levels
+### Strategic Planning
+- Multi-step planning with lookahead
+- Goal decomposition
+- Adaptive replanning
+- Systematic exploration
+### Memory & Knowledge
+- Complete playthrough history
+- Room graph construction
+- Item property discovery
+- Puzzle pattern recognition
+- Solution archival
+## Installation
+### Prerequisites
+- Python 3.8+
+- Google ADK (Agent Development Kit)
+- Game API key
+### Setup
+1. **Install dependencies:**
+   ```bash
+   # From the agent-project directory
+   pip install -e .
+   ```
+2. **Set up environment variables:**
+   ```bash
+   # demo-agent/.env
+   ADK_API_KEY=your_game_api_key_here
+   GOOGLE_CLOUD_PROJECT=your_project_id
+   GOOGLE_CLOUD_REGION=us-central1
+   ```
+3. **Verify installation:**
+   ```bash
+   python main.py help
+   ```
+## Usage
+### Command Line Interface
+#### Solve a Specific Level
+```bash
+python main.py solve 1
+#### Solve All Levels
+```bash
+python main.py solve all
+#### Interactive Mode (Default)
+```bash
+python main.py interactive
+# or simply
+python main.py
+### Interactive Mode Commands
+Once in interactive mode:
+>>> solve 1          # Solve level 1 autonomously
+>>> solve all        # Solve all levels
+>>> status           # Show system status and metrics
+>>> knowledge        # Display learned knowledge
+>>> reset            # Reset current session
+>>> export           # Export knowledge to JSON file
+>>> exit             # Exit interactive mode
+## How It Works
+### Autonomous Solving Flow
+1. **Initialization**
+   - Start level via game API
+   - Initialize session in memory
+   - Load past knowledge for this level
+2. **Strategy Planning**
+   - Meta-learner suggests strategy based on past attempts
+   - Planner creates detailed action plan
+   - Plan optimized using learned knowledge
+3. **Execution Loop**
+   ```
+   while not level_complete and moves < max_moves:
+       - Get next action from plan
+       - Execute action via executor
+       - Update memory with results
+       - Check for level completion
+       - Adapt plan based on outcome
+       - Evaluate progress
+   ```
+4. **Learning**
+   - Record complete playthrough
+   - Analyze for patterns and insights
+   - Calculate reinforcement learning rewards
+   - Update knowledge base
+   - Improve future performance
+### Learning Mechanisms
+#### Episodic Memory
+- Stores every playthrough completely
+- Enables comparison with past attempts
+- Identifies what worked and what didn't
+#### Knowledge Base
+- **Room Graphs:** Learned connectivity between rooms
+- **Item Properties:** Discovered item behaviors
+- **Item Combinations:** Successful uses of items together
+- **Puzzle Patterns:** Recurring puzzle structures
+- **Solutions:** Optimal paths for completed levels
+#### Reinforcement Learning
+- Actions receive reward scores
+- Successful actions: +1.0
+- Failed actions: -0.5
+- Progress bonus for approaching goal
+- Completion bonus: +5.0
+- Item collection bonus: +0.5
+#### Strategy Optimization
+- Compares current vs past attempts
+- Removes unnecessary steps
+- Reorders for efficiency
+- Adds proven tactics
+- Avoids known failures
+## File Structure
+agent-project/
+ main.py                      # Entry point
+ demo-agent/
+ coordinator.py           # Agent orchestration
+ agents/
+ planner.py          # Strategic planning
+ executor.py         # Action execution
+ memory_manager.py   # Memory management
+ meta_learner.py     # Learning & optimization
+ memory/
+ manager.py          # Storage system
+ data/               # JSON data files
+ utils/
+ graph.py            # Room graph & pathfinding
+ strategy.py         # Strategic planning utilities
+ .env                    # Configuration
+ README.md
+## Performance Metrics
+The system tracks:
+- **Success Rate:** % of attempts that complete levels
+- **Average Moves:** Mean moves for successful completions
+- **Learning Curve:** Improvement over multiple attempts
+- **Pattern Recognition:** Reusable strategies discovered
+View metrics with:
+```bash
+# In interactive mode
+>>> status
+## Advanced Features
+### Knowledge Export
+Export all learned knowledge to analyze externally:
+```bash
+# In interactive mode
+>>> export
+Creates `knowledge_export_<timestamp>.json` with:
+- Complete session state
+- All episodic memory
+- Full knowledge base
+- Performance metrics
+### Cross-Level Learning
+The meta-learner identifies patterns that work across multiple levels:
+- Common puzzle structures
+- Universal item mechanics
+- Effective exploration strategies
+- Transferable solutions
+### Adaptive Planning
+The planner adapts to:
+- Failed actions (tries alternatives)
+- New discoveries (updates plans)
+- Progress evaluation (changes strategy if stuck)
+- Learned patterns (incorporates successful approaches)
+## Example Output
+============================================================
+AUTONOMOUS LEVEL SOLVING: Level 1
+============================================================
+[EXECUTOR] Starting level...
+ Level 1 started
+[EXECUTOR] Observing environment...
+ Current room: Garden Entrance
+  Items: ['key', 'map']
+  Exits: ['north', 'east']
+[META-LEARNER] Analyzing past attempts...
+ Strategy: Explore all areas and collect all items first
+  Confidence: 70.0%
+[PLANNER] Creating strategic plan...
+ Plan created with 8 steps
+  First 3 steps:
+    - Take key
+    - Take map
+    - Explore north
+[Move 1] Take key
+[Move 2] Take map
+[Move 3] Explore north via north
+[Move 12] Use key on door
+ LEVEL COMPLETE!
+[META-LEARNER] Analyzing playthrough...
+ Learnings extracted:
+  Successful patterns: 3
+  Transferable patterns: 2
+============================================================
+SUMMARY
+============================================================
+Success: True
+Moves: 12
+Duration: 15.3s
+============================================================
+## Troubleshooting
+### Agent fails to start level
+- Check ADK_API_KEY in `.env`
+- Verify game API is accessible
+- Check network connectivity
+### Memory errors
+- Ensure `memory/data/` directory is writable
+- Check disk space
+- Verify JSON file integrity
+### Poor performance
+- Increase `max_moves_per_level` in coordinator
+- Adjust learning rate and rewards
+- Review and reset corrupted knowledge
+### Reset everything
+```bash
+# In interactive mode
+>>> reset
+Or manually delete `memory/data/*.json`
+## Future Enhancements
+Potential improvements:
+- Vector database for semantic similarity search
+- Multi-level lookahead planning
+- Parallel hypothesis testing
+- Natural language plan explanations
+- Visualization of learned room graphs
+- A/B testing of strategies
+- Neural network-based action prediction
+## License
+See project LICENSE file.
+## Acknowledgments
+Built using:
+- Google Agent Development Kit (ADK)
+- Gemini models for reasoning
+- "The Garden of the Forgotten Prompt" game API

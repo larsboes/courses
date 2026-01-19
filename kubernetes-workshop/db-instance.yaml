@@ -1,0 +1,12 @@
+kind: postgresql
+apiVersion: acid.zalan.do/v1
+metadata:
+  name: pg
+  namespace: workshop17
+spec:
+  teamId: "workshop17"
+  postgresql:
+    version: "17"
+  numberOfInstances: 1
+  volume:
+    size: 10Gi

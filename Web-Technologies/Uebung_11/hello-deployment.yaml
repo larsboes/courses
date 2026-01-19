@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-deployment
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: hello-distributed
+  template:
+    metadata:
+      labels:
+        app: hello-distributed
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80

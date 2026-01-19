@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prepare-db
+  namespace: workshop17
+spec:
+  template:
+    spec:
+      containers:
+        - name: prepare-db-container
+          image: vtrhh/custom-db-init:latest
+          imagePullPolicy: Always
+          command: ["/bin/sh", "-c", "/scripts/init-db.sh"]
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres.pg.credentials.postgresql.acid.zalan.do
+                  key: password
+      restartPolicy: Never
