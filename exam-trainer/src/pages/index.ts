@@ -2,3 +2,4 @@
 export { HomePage } from './HomePage'
 export { CoursePage } from './CoursePage'
 export { TopicPage } from './TopicPage'
+export { QuizPage } from './QuizPage'
