@@ -1,7 +1,7 @@
 // src/pages/QuizPage.tsx
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { getTopic } from '@/content'
-import { useQuizState } from '@/core/hooks'
+import { useQuizState, useProgress } from '@/core/hooks'
 import { QuizQuestion, QuizResults } from '@/core/components/quiz'
 import { Button } from '@/core/components/ui'
 
@@ -9,6 +9,7 @@ export function QuizPage() {
   const { courseId, topicId } = useParams<{ courseId: string; topicId: string }>()
   const navigate = useNavigate()
   const topic = courseId && topicId ? getTopic(courseId, topicId) : undefined
+  const { saveQuizResult, markTopicCompleted } = useProgress(courseId ?? '')
 
   if (!topic?.quiz) {
     return (
@@ -63,7 +64,13 @@ export function QuizPage() {
             score={state.score}
             totalQuestions={state.totalQuestions}
             onRestart={actions.reset}
-            onBack={handleBack}
+            onBack={() => {
+              saveQuizResult(topicId!, state.score, state.totalQuestions)
+              if (state.score / state.totalQuestions >= 0.7) {
+                markTopicCompleted(topicId!)
+              }
+              handleBack()
+            }}
           />
         ) : state.currentQuestion ? (
           <>
