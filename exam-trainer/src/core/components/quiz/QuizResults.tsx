@@ -15,7 +15,9 @@ export function QuizResults({
   onRestart,
   onBack,
 }: QuizResultsProps) {
-  const percentage = Math.round((score / totalQuestions) * 100)
+  const percentage = totalQuestions > 0
+    ? Math.round((score / totalQuestions) * 100)
+    : 0
   const isPassing = percentage >= 70
 
   return (
