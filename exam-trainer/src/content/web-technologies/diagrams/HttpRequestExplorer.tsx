@@ -60,7 +60,6 @@ const regions: ExplorableRegion[] = [
 ]
 
 interface RegionBoxProps {
-  id: string
   isActive: boolean
   onClick: () => void
   label: string
@@ -68,7 +67,7 @@ interface RegionBoxProps {
   className?: string
 }
 
-function RegionBox({ id, isActive, onClick, label, content, className = '' }: RegionBoxProps) {
+function RegionBox({ isActive, onClick, label, content, className = '' }: RegionBoxProps) {
   return (
     <motion.div
       className={`
@@ -99,14 +98,12 @@ export function HttpRequestExplorer({ className }: DiagramProps) {
       {(activeRegion, setActiveRegion) => (
         <div className="flex flex-col gap-1 max-w-lg mx-auto">
           <RegionBox
-            id="request-line"
             isActive={activeRegion === 'request-line'}
             onClick={() => setActiveRegion(activeRegion === 'request-line' ? null : 'request-line')}
             label="REQUEST LINE"
             content={['GET /playlists?duration=300 HTTP/1.1']}
           />
           <RegionBox
-            id="headers"
             isActive={activeRegion === 'headers'}
             onClick={() => setActiveRegion(activeRegion === 'headers' ? null : 'headers')}
             label="HEADERS"
@@ -117,7 +114,6 @@ export function HttpRequestExplorer({ className }: DiagramProps) {
             ]}
           />
           <RegionBox
-            id="empty-line"
             isActive={activeRegion === 'empty-line'}
             onClick={() => setActiveRegion(activeRegion === 'empty-line' ? null : 'empty-line')}
             label="LEERZEILE"
@@ -125,7 +121,6 @@ export function HttpRequestExplorer({ className }: DiagramProps) {
             className="min-h-[2rem]"
           />
           <RegionBox
-            id="body"
             isActive={activeRegion === 'body'}
             onClick={() => setActiveRegion(activeRegion === 'body' ? null : 'body')}
             label="BODY (optional)"
