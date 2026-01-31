@@ -150,6 +150,76 @@ export const kubernetesBegriffeTopic: Topic = {
         </div>
       ),
     },
+    {
+      id: 'volumes-pvc',
+      title: 'Volumes & PVC',
+      content: (
+        <div className="space-y-4">
+          <p>
+            <strong>Volumes</strong> und <strong>Persistent Volume Claims (PVC)</strong> ermoeglichen
+            persistente Datenspeicherung in Kubernetes - ueber Container- und Pod-Neustarts hinweg.
+          </p>
+          <div className="grid gap-3">
+            <div className="p-4 bg-cyan-900/20 rounded-lg border border-cyan-800">
+              <div className="font-bold text-cyan-400 mb-2">Volume</div>
+              <ul className="list-disc list-inside space-y-1 text-slate-300 text-sm">
+                <li>Speicher, der <strong>Container-Neustarts ueberlebt</strong></li>
+                <li>Kann von <strong>mehreren Containern</strong> im selben Pod geteilt werden</li>
+                <li>Verschiedene Typen: emptyDir, hostPath, configMap, secret, etc.</li>
+                <li>Lebenszyklus an den <strong>Pod</strong> gebunden (bei einfachen Volumes)</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-teal-900/20 rounded-lg border border-teal-800">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="font-bold text-teal-400">Persistent Volume Claim (PVC)</span>
+                <span className="px-2 py-0.5 bg-teal-800 rounded text-xs">Persistenter Speicher</span>
+              </div>
+              <ul className="list-disc list-inside space-y-1 text-slate-300 text-sm">
+                <li><strong>Anforderung</strong> fuer persistenten Speicher (Groesse, Zugriffsart)</li>
+                <li>Wird an ein <strong>Persistent Volume (PV)</strong> gebunden</li>
+                <li><strong>Unabhaengig vom Pod-Lebenszyklus</strong> - Daten bleiben erhalten</li>
+                <li>Zugriffsarten: ReadWriteOnce (RWO), ReadOnlyMany (ROX), ReadWriteMany (RWX)</li>
+              </ul>
+            </div>
+          </div>
+          <div className="bg-slate-800 rounded-lg p-4 mt-4">
+            <div className="text-sm font-medium text-slate-300 mb-3">Pod → PVC → PV Verbindung:</div>
+            <div className="flex items-center justify-center gap-2 text-sm font-mono">
+              <div className="p-3 bg-blue-900/40 rounded border border-blue-700 text-center">
+                <div className="text-blue-300 font-bold">Pod</div>
+                <div className="text-slate-400 text-xs">/data mount</div>
+              </div>
+              <div className="text-slate-500">→</div>
+              <div className="p-3 bg-teal-900/40 rounded border border-teal-700 text-center">
+                <div className="text-teal-300 font-bold">PVC</div>
+                <div className="text-slate-400 text-xs">10GB, RWO</div>
+              </div>
+              <div className="text-slate-500">→</div>
+              <div className="p-3 bg-green-900/40 rounded border border-green-700 text-center">
+                <div className="text-green-300 font-bold">PV</div>
+                <div className="text-slate-400 text-xs">NFS/Cloud</div>
+              </div>
+            </div>
+            <div className="mt-3 text-xs text-slate-400 text-center">
+              Pod referenziert PVC → PVC bindet an passendes PV → PV stellt Speicher bereit
+            </div>
+          </div>
+          <div className="bg-slate-900 rounded p-3 font-mono text-xs">
+            <div className="text-slate-500"># pvc-example.yaml</div>
+            <div><span className="text-purple-400">apiVersion:</span> v1</div>
+            <div><span className="text-purple-400">kind:</span> PersistentVolumeClaim</div>
+            <div><span className="text-purple-400">metadata:</span></div>
+            <div>  <span className="text-purple-400">name:</span> my-pvc</div>
+            <div><span className="text-purple-400">spec:</span></div>
+            <div>  <span className="text-purple-400">accessModes:</span></div>
+            <div>    - <span className="text-green-400">ReadWriteOnce</span></div>
+            <div>  <span className="text-purple-400">resources:</span></div>
+            <div>    <span className="text-purple-400">requests:</span></div>
+            <div>      <span className="text-cyan-400">storage:</span> 10Gi</div>
+          </div>
+        </div>
+      ),
+    },
   ],
 
   quiz: {
