@@ -1,6 +1,8 @@
 // src/content/web-technologies/topics/css.tsx
 import type { Topic } from '@/core/types/content'
 import { CssSpecificityDiagram } from '../diagrams/CssSpecificityDiagram'
+import { CssSelectorPlayground } from '../diagrams/CssSelectorPlayground'
+import { SpecificityBattle } from '../diagrams/SpecificityBattle'
 
 export const cssTopic: Topic = {
   id: 'css',
@@ -184,6 +186,32 @@ export const cssTopic: Topic = {
           </div>
         </div>
       ),
+    },
+    {
+      id: 'selector-playground',
+      title: 'Selector Playground',
+      content: (
+        <p>
+          Teste CSS-Selektoren live an einem Mini-DOM:
+        </p>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: CssSelectorPlayground,
+      },
+    },
+    {
+      id: 'specificity-battle',
+      title: 'Specificity Battle',
+      content: (
+        <p>
+          Welcher Selektor gewinnt? Teste dein Wissen über CSS-Spezifität:
+        </p>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: SpecificityBattle,
+      },
     },
   ],
 

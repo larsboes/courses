@@ -1,6 +1,7 @@
 // src/content/web-technologies/topics/kubernetes-netzwerk.tsx
 import type { Topic } from '@/core/types/content'
 import { K8sNetworkDiagram } from '../diagrams/K8sNetworkDiagram'
+import { K8sServiceTypesViz } from '../diagrams/K8sServiceTypesViz'
 
 export const kubernetesNetzwerkTopic: Topic = {
   id: 'kubernetes-netzwerk',
@@ -195,6 +196,19 @@ export const kubernetesNetzwerkTopic: Topic = {
           </p>
         </div>
       ),
+    },
+    {
+      id: 'service-types-viz',
+      title: 'Service-Typen Visualizer',
+      content: (
+        <p>
+          Vergleiche ClusterIP, NodePort und LoadBalancer interaktiv:
+        </p>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: K8sServiceTypesViz,
+      },
     },
   ],
 

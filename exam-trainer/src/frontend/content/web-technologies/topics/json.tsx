@@ -1,5 +1,7 @@
 // src/content/web-technologies/topics/json.tsx
 import type { Topic } from '@/core/types/content'
+import { JsonValidatorPlayground } from '../diagrams/JsonValidatorPlayground'
+import { FormatComparison } from '../diagrams/FormatComparison'
 
 export const jsonTopic: Topic = {
   id: 'json',
@@ -161,6 +163,32 @@ export const jsonTopic: Topic = {
           </div>
         </div>
       ),
+    },
+    {
+      id: 'validator',
+      title: 'JSON Validator',
+      content: (
+        <p>
+          Teste dein JSON in Echtzeit. Der Validator zeigt dir sofort Syntax-Fehler:
+        </p>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: JsonValidatorPlayground,
+      },
+    },
+    {
+      id: 'format-comparison',
+      title: 'JSON vs XML vs YAML',
+      content: (
+        <p>
+          Vergleiche die drei Formate nebeneinander:
+        </p>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: FormatComparison,
+      },
     },
   ],
 

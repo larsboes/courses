@@ -2,6 +2,9 @@
 import type { Topic } from '@/core/types/content'
 import { HttpFlowDiagram } from '../diagrams/HttpFlowDiagram'
 import { HttpRequestExplorer } from '../diagrams/HttpRequestExplorer'
+import { HttpRequestBuilder } from '../diagrams/HttpRequestBuilder'
+import { StatusCodeQuiz } from '../diagrams/StatusCodeQuiz'
+import { RequestLifecycle } from '../diagrams/RequestLifecycle'
 
 export const httpTopic: Topic = {
   id: 'http',
@@ -125,6 +128,45 @@ export const httpTopic: Topic = {
           </div>
         </div>
       ),
+    },
+    {
+      id: 'request-builder',
+      title: 'Request Builder',
+      content: (
+        <p>
+          Baue deinen eigenen HTTP Request zusammen. Wähle Methode, Pfad und Header:
+        </p>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: HttpRequestBuilder,
+      },
+    },
+    {
+      id: 'request-lifecycle',
+      title: 'Request Lifecycle',
+      content: (
+        <p>
+          Verfolge Schritt für Schritt, was passiert wenn du eine URL aufrufst:
+        </p>
+      ),
+      diagram: {
+        type: 'animated',
+        component: RequestLifecycle,
+      },
+    },
+    {
+      id: 'status-code-quiz',
+      title: 'Status Code Quiz',
+      content: (
+        <p>
+          Teste dein Wissen über HTTP Status Codes im Quiz:
+        </p>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: StatusCodeQuiz,
+      },
     },
   ],
 
