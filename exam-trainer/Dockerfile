@@ -2,19 +2,15 @@
 FROM oven/bun:1 AS base
 WORKDIR /app
 
-# Install dependencies
-FROM base AS deps
-COPY package.json bun.lockb ./
-RUN bun install --frozen-lockfile
-
-# Development
-FROM deps AS dev
-COPY . .
+# Development - dependencies mounted from host
+FROM base AS dev
 EXPOSE 5173
-CMD ["bun", "run", "dev"]
+CMD ["bun", "run", "dev", "--host"]
 
-# Build
-FROM deps AS builder
+# Build (for production)
+FROM base AS builder
+COPY package.json bun.lock ./
+COPY node_modules ./node_modules
 COPY . .
 RUN bun run build
 
