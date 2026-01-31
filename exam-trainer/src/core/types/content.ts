@@ -69,6 +69,7 @@ export type QuizQuestionType =
   | 'fill-blank'
   | 'system-builder'
   | 'free-text'
+  | 'code-write'
 
 // Base question fields
 interface BaseQuizQuestion {
@@ -104,7 +105,16 @@ export interface FreeTextQuestion extends BaseQuizQuestion {
   keyPoints: string[]  // Checklist shown after submission
 }
 
-export type QuizQuestion = StandardQuizQuestion | SystemBuilderQuestion | FreeTextQuestion
+// Code-write question with syntax highlighting
+export interface CodeWriteQuestion extends BaseQuizQuestion {
+  type: 'code-write'
+  language: 'css' | 'javascript' | 'json' | 'html' | 'http'
+  placeholder?: string
+  modelAnswer: string
+  keyPoints: string[]
+}
+
+export type QuizQuestion = StandardQuizQuestion | SystemBuilderQuestion | FreeTextQuestion | CodeWriteQuestion
 
 // ─────────────────────────────────────────────────
 // Progress Types
