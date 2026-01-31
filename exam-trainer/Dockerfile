@@ -5,12 +5,12 @@ WORKDIR /app
 # Development - dependencies mounted from host
 FROM base AS dev
 EXPOSE 5173
-CMD ["bun", "run", "dev", "--host"]
+CMD ["bun", "run", "dev"]
 
 # Build (for production)
 FROM base AS builder
 COPY package.json bun.lock ./
-COPY node_modules ./node_modules
+RUN bun install --frozen-lockfile
 COPY . .
 RUN bun run build
 
