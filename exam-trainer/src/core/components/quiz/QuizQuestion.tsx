@@ -4,7 +4,8 @@ import { motion } from 'framer-motion'
 import { Button, Card } from '@/core/components/ui'
 import { SystemBuilderExercise } from './SystemBuilderExercise'
 import { FreeTextQuestion } from './FreeTextQuestion'
-import type { QuizQuestion as QuizQuestionType, SystemBuilderQuestion, StandardQuizQuestion, FreeTextQuestion as FreeTextQuestionType } from '@/core/types/content'
+import { CodeWriteQuestion } from './CodeWriteQuestion'
+import type { QuizQuestion as QuizQuestionType, SystemBuilderQuestion, StandardQuizQuestion, FreeTextQuestion as FreeTextQuestionType, CodeWriteQuestion as CodeWriteQuestionType } from '@/core/types/content'
 
 interface QuizQuestionProps {
   question: QuizQuestionType
@@ -219,6 +220,16 @@ export function QuizQuestion({
         onSubmit={onSubmit}
         showingResult={showingResult}
         isCorrect={isCorrect}
+      />
+    )
+  }
+
+  if (question.type === 'code-write') {
+    return (
+      <CodeWriteQuestion
+        question={question as CodeWriteQuestionType}
+        onSubmit={(answer) => onSubmit(answer)}
+        showingResult={showingResult}
       />
     )
   }
