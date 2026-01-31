@@ -22,7 +22,7 @@ const steps: AnimationStep[] = [
   {
     id: 'layout',
     label: 'Layout (Reflow)',
-    description: 'Der Browser berechnet die genaue Position und Groesse jedes Elements auf dem Bildschirm basierend auf dem Viewport.',
+    description: 'Der Browser berechnet die genaue Position und Größe jedes Elements auf dem Bildschirm basierend auf dem Viewport.',
   },
   {
     id: 'paint',

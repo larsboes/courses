@@ -5,6 +5,8 @@ import { HttpRequestExplorer } from '../diagrams/HttpRequestExplorer'
 import { HttpRequestBuilder } from '../diagrams/HttpRequestBuilder'
 import { StatusCodeQuiz } from '../diagrams/StatusCodeQuiz'
 import { RequestLifecycle } from '../diagrams/RequestLifecycle'
+import { DebugRequestChallenge } from '../diagrams/DebugRequestChallenge'
+import { RequestLatencyBreakdown } from '../diagrams/RequestLatencyBreakdown'
 
 export const httpTopic: Topic = {
   id: 'http',
@@ -168,6 +170,34 @@ export const httpTopic: Topic = {
         component: StatusCodeQuiz,
       },
     },
+    {
+      id: 'debug-challenge',
+      title: 'Debug the Request',
+      content: (
+        <p>
+          Finde die Fehler in diesen kaputten HTTP Requests und Responses.
+          Trainiere dein Debugging-Auge:
+        </p>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: DebugRequestChallenge,
+      },
+    },
+    {
+      id: 'latency-breakdown',
+      title: 'Request Latency',
+      content: (
+        <p>
+          Verstehe, woher die Latenz bei HTTP-Requests kommt und wie verschiedene
+          Faktoren die Ladezeit beeinflussen:
+        </p>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: RequestLatencyBreakdown,
+      },
+    },
   ],
 
   relatedTopics: [
@@ -249,13 +279,13 @@ flowchart LR
 Host: server.com:8001
 Accept: application/json`,
         keyPoints: [
-          'GET Methode fuer Abfrage',
-          'Query-Parameter fuer Filterung (?min_duration=300)',
+          'GET Methode für Abfrage',
+          'Query-Parameter für Filterung (?min_duration=300)',
           'Host-Header mit Port',
-          'Accept-Header fuer JSON-Antwort',
+          'Accept-Header für JSON-Antwort',
         ],
         explanation:
-          'HTTP Requests bestehen aus Request-Line, Headers und optionalem Body. Query-Parameter werden fuer Filterung verwendet.',
+          'HTTP Requests bestehen aus Request-Line, Headers und optionalem Body. Query-Parameter werden für Filterung verwendet.',
       },
     ],
   },

@@ -85,6 +85,23 @@ export function CoursePage() {
           </div>
         </div>
 
+        {course.examFocus && course.examFocus.length > 0 && (
+          <div className="mb-8 p-4 bg-amber-900/20 border border-amber-700/50 rounded-lg">
+            <h2 className="text-lg font-semibold text-amber-300 mb-3">Klausur-Fokus</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {course.examFocus.map((item, index) => (
+                <div key={index} className="flex gap-3">
+                  <span className="text-amber-400 font-bold shrink-0">{index + 1}.</span>
+                  <div>
+                    <span className="font-medium text-amber-200">{item.title}</span>
+                    <p className="text-sm text-slate-400 mt-0.5">{item.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {course.topics.map((topic) => {

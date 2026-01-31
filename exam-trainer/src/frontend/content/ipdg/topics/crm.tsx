@@ -1,5 +1,7 @@
 // src/content/ipdg/topics/crm.tsx
 import type { Topic } from '@/core/types/content'
+import { CrmTypesDiagram } from '../diagrams/CrmTypesDiagram'
+import { CrmTypesGame } from '../diagrams/ConceptCategorizationGame'
 
 export const crmTopic: Topic = {
   id: 'crm',
@@ -121,6 +123,25 @@ export const crmTopic: Topic = {
           </div>
         </div>
       ),
+      diagram: {
+        type: 'explorable',
+        component: CrmTypesDiagram,
+      },
+    },
+    {
+      id: 'crm-ueben',
+      title: 'CRM-Typen üben',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Ordne die Begriffe den richtigen CRM-Typen zu. Dies ist eine häufige Klausurfrage!
+          </p>
+        </div>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: CrmTypesGame,
+      },
     },
     {
       id: 'clv',
@@ -214,8 +235,123 @@ export const crmTopic: Topic = {
         correctAnswer: 'Wahr',
         explanation: 'Korrekt. Eine moderne CRM-Strategie bietet eine 360°-Kundensicht über alle Phasen.',
       },
+      {
+        id: 'crm-analytisch-bi',
+        type: 'multiple-choice',
+        question: 'Analytisches CRM nutzt traditionelle Business Intelligence (BI) Methoden wie Data Warehouse, Data Mining und Online Analytical Processing Systeme (OLAP), um Kundenzufriedenheit und Kundentreue (Share of Wallet) zu bestimmen.',
+        options: ['Wahr', 'Falsch'],
+        correctAnswer: 'Wahr',
+        explanation: 'Korrekt. Analytisches CRM ist der BI-Teil des CRM und nutzt diese Methoden zur Kundenanalyse.',
+      },
+      {
+        id: 'crm-clv',
+        type: 'multiple-choice',
+        question: 'Customer Lifetime Value (CLV) ist der einmalige Umsatz, den ein Kunde bei einem einzelnen Kauf generiert.',
+        options: ['Wahr', 'Falsch'],
+        correctAnswer: 'Falsch',
+        explanation: 'CLV ist der GESAMTWERT eines Kunden über die gesamte Dauer der Geschäftsbeziehung, nicht ein einzelner Kauf.',
+      },
+      {
+        id: 'crm-teurer-neukunde',
+        type: 'multiple-choice',
+        question: 'Es ist erheblich günstiger, an einen neuen Kunden zu verkaufen als an einen bestehenden Kunden.',
+        options: ['Wahr', 'Falsch'],
+        correctAnswer: 'Falsch',
+        explanation: 'Umgekehrt! Es ist erheblich TEURER, Neukunden zu gewinnen. Daher ist Kundenbindung (Retention) so wichtig.',
+      },
+      {
+        id: 'crm-scheitern-quote',
+        type: 'multiple-choice',
+        question: 'CRM-Projekte haben eine unterdurchschnittlich niedrige Misserfolgsquote von etwa 10%, da sie hauptsächlich technische Herausforderungen darstellen.',
+        options: ['Wahr', 'Falsch'],
+        correctAnswer: 'Falsch',
+        explanation: 'Falsch! CRM-Projekte haben eine Misserfolgsquote von ca. 50%. Der Hauptgrund ist der "Faktor Mensch/Strategie", nicht Technik.',
+      },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'crm-telekom-task',
+      title: 'CRM bei der Deutschen Telekom',
+      points: 30,
+      context: (
+        <p>
+          Die Deutsche Telekom nutzt CRM-Systeme zur Analyse, Bewertung und Optimierung
+          von Kundenbeziehungen. Als CRM-Berater sollen Sie verschiedene Aspekte analysieren.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'crm-task-a',
+          type: 'free-text',
+          question: 'Nennen Sie drei strategische CRM-Ziele, die für die Deutsche Telekom besonders relevant sind.',
+          placeholder: '1. ...',
+          modelAnswer: '1. Maximierung des Customer Lifetime Value (CLV) - langfristiger Kundenwert\n2. Reduzierung der Churn Rate - Kundenabwanderung minimieren\n3. Erhöhung des Share of Wallet - größerer Anteil der Kundenausgaben\n\nWeitere: Cross-/Up-Selling, Kundenzufriedenheit steigern, 360°-Kundensicht',
+          keyPoints: [
+            'CLV maximieren',
+            'Churn Rate reduzieren',
+            'Share of Wallet erhöhen',
+          ],
+          explanation: 'CRM-Ziele orientieren sich immer am Kundenwert und der Kundenbindung.',
+        },
+        {
+          id: 'crm-task-b',
+          type: 'free-text',
+          question: 'Erklären Sie die vier CRM-Arten und deren Zusammenspiel.',
+          placeholder: 'Strategisches CRM...',
+          modelAnswer: '1. Strategisches CRM: Definiert Ziele, Kundengruppen und Maßnahmen aus der Unternehmensstrategie\n2. Analytisches CRM: Nutzt BI-Methoden (Data Mining, OLAP) zur Kundenanalyse\n3. Operatives CRM: Setzt Maßnahmen in automatisierten Lösungen um (Marketing, Sales, Service)\n4. Kommunikatives CRM: Multi-Channel-Management aller Kundenkanäle\n\nZusammenspiel: Strategie → Analyse → Umsetzung → Kommunikation',
+          keyPoints: [
+            'Strategisch = Zieldefinition',
+            'Analytisch = BI-Methoden',
+            'Operativ = Umsetzung',
+            'Kommunikativ = Multi-Channel',
+          ],
+          explanation: 'Die vier CRM-Arten bauen aufeinander auf und bilden einen geschlossenen Kreislauf.',
+        },
+        {
+          id: 'crm-task-c',
+          type: 'free-text',
+          question: 'Berechnen Sie den CLV für einen Kunden: Geschäftsbeziehung 10 Jahre, Konsole alle 2 Jahre für 500€, Kundenpflege 50€/Jahr.',
+          placeholder: 'CLV = ...',
+          modelAnswer: 'Umsatz: 5 Käufe × 500€ = 2.500€\nKosten: 10 Jahre × 50€ = 500€\n\nCLV = 2.500€ - 500€ = 2.000€\n\n(Vereinfachte Formel ohne Diskontierung)',
+          keyPoints: [
+            'Anzahl Käufe richtig berechnet',
+            'Gesamtkosten ermittelt',
+            'CLV = Umsatz - Kosten',
+          ],
+          explanation: 'Der CLV zeigt den Gesamtwert eines Kunden über die Beziehungsdauer.',
+        },
+      ],
+    },
+    {
+      id: 'crm-scheitern-task',
+      title: 'Warum CRM-Projekte scheitern',
+      points: 15,
+      context: (
+        <p>
+          Die Misserfolgsquote von CRM-Projekten liegt bei etwa 50% - deutlich höher
+          als bei anderen IT-Projekten.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'crm-scheitern-a',
+          type: 'free-text',
+          question: 'Nennen Sie die vier Hauptgründe für das Scheitern von CRM-Projekten.',
+          placeholder: '1. ...',
+          modelAnswer: '1. Mangel an bereichs- und funktionsübergreifender Koordination\n2. Keine CRM Business Strategie\n3. Fehlende Prozessänderungen\n4. Mangelnde Senior Executive Unterstützung\n\nBesonderheit: Bei CRM ist der "Faktor Mensch/Strategie" kritischer als bei reinen IT-Projekten!',
+          keyPoints: [
+            'Fehlende Koordination',
+            'Keine Strategie',
+            'Fehlende Prozessänderungen',
+            'Mangelnde Führungsunterstützung',
+          ],
+          explanation: 'CRM scheitert meist an organisatorischen, nicht technischen Gründen.',
+        },
+      ],
+    },
+  ],
 
   relatedTopics: [
     { id: 'erp-grundlagen', title: 'ERP', relationship: 'liefert Kundendaten' },

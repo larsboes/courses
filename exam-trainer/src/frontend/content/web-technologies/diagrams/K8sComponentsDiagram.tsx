@@ -13,7 +13,7 @@ const regions: ExplorableRegion[] = [
         <ul className="list-disc list-inside space-y-1">
           <li>Besteht aus <strong>Master Node(s)</strong> und <strong>Worker Nodes</strong></li>
           <li>Wird von der <strong>Control Plane</strong> verwaltet</li>
-          <li>Stellt die Infrastruktur fuer Anwendungen bereit</li>
+          <li>Stellt die Infrastruktur für Anwendungen bereit</li>
         </ul>
       </>
     ),
@@ -25,10 +25,10 @@ const regions: ExplorableRegion[] = [
       <>
         <p className="mb-2">Das "Gehirn" des Clusters mit wichtigen Komponenten:</p>
         <ul className="list-disc list-inside space-y-1">
-          <li><strong>API Server</strong> - Zentrale Schnittstelle fuer alle Operationen</li>
-          <li><strong>etcd</strong> - Key-Value Store fuer Cluster-Zustand</li>
+          <li><strong>API Server</strong> - Zentrale Schnittstelle für alle Operationen</li>
+          <li><strong>etcd</strong> - Key-Value Store für Cluster-Zustand</li>
           <li><strong>Scheduler</strong> - Weist Pods den Nodes zu</li>
-          <li><strong>Controller Manager</strong> - Ueberwacht und reguliert Zustand</li>
+          <li><strong>Controller Manager</strong> - Überwacht und reguliert Zustand</li>
         </ul>
       </>
     ),
@@ -40,9 +40,9 @@ const regions: ExplorableRegion[] = [
       <>
         <p className="mb-2">Ein <strong>Node</strong> ist eine physische oder virtuelle Maschine:</p>
         <ul className="list-disc list-inside space-y-1">
-          <li>Fuehrt <strong>kubelet</strong> aus (Agent fuer Control Plane)</li>
-          <li>Enthaelt <strong>Container Runtime</strong> (z.B. containerd)</li>
-          <li>Betreibt <strong>kube-proxy</strong> fuer Netzwerk</li>
+          <li>Führt <strong>kubelet</strong> aus (Agent für Control Plane)</li>
+          <li>Enthält <strong>Container Runtime</strong> (z.B. containerd)</li>
+          <li>Betreibt <strong>kube-proxy</strong> für Netzwerk</li>
           <li>Hostet einen oder mehrere Pods</li>
         </ul>
       </>
@@ -55,7 +55,7 @@ const regions: ExplorableRegion[] = [
       <>
         <p className="mb-2">Ein <strong>Pod</strong> ist die kleinste deploybare Einheit:</p>
         <ul className="list-disc list-inside space-y-1">
-          <li>Enthaelt einen oder mehrere <strong>Container</strong></li>
+          <li>Enthält einen oder mehrere <strong>Container</strong></li>
           <li>Container im Pod teilen <strong>Netzwerk</strong> und <strong>Storage</strong></li>
           <li>Hat eine <strong>eigene IP-Adresse</strong> im Cluster</li>
           <li>Kurzlebig - kann jederzeit neu erstellt werden</li>
@@ -71,9 +71,9 @@ const regions: ExplorableRegion[] = [
         <p className="mb-2">Ein <strong>Container</strong> ist eine isolierte Anwendungsinstanz:</p>
         <ul className="list-disc list-inside space-y-1">
           <li>Basiert auf einem <strong>Container Image</strong></li>
-          <li>Laeuft isoliert mit eigenem Dateisystem</li>
+          <li>Läuft isoliert mit eigenem Dateisystem</li>
           <li>Teilt den Kernel mit dem Host (anders als VMs)</li>
-          <li>Mehrere Container pro Pod moeglich (Sidecar Pattern)</li>
+          <li>Mehrere Container pro Pod möglich (Sidecar Pattern)</li>
         </ul>
       </>
     ),

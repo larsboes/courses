@@ -5,10 +5,16 @@ import { ComponentType, ReactNode } from 'react'
 // Course & Topic Structure
 // ─────────────────────────────────────────────────
 
+export interface ExamFocusItem {
+  title: string
+  description: string
+}
+
 export interface Course {
   id: string
   title: string
   description: string
+  examFocus?: ExamFocusItem[]
   topics: Topic[]
 }
 

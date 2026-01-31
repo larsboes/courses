@@ -3,17 +3,18 @@ import type { Topic } from '@/core/types/content'
 import { CssSpecificityDiagram } from '../diagrams/CssSpecificityDiagram'
 import { CssSelectorPlayground } from '../diagrams/CssSelectorPlayground'
 import { SpecificityBattle } from '../diagrams/SpecificityBattle'
+import { CssCascadeSimulator } from '../diagrams/CssCascadeSimulator'
 
 export const cssTopic: Topic = {
   id: 'css',
   title: 'CSS - Cascading Style Sheets',
-  description: 'Selektoren, Spezifitaet, Box Model, Styling',
-  examNotes: 'Spezifitaet berechnen koennen',
+  description: 'Selektoren, Spezifität, Box Model, Styling',
+  examNotes: 'Spezifität berechnen können',
 
   sections: [
     {
       id: 'overview',
-      title: 'Ueberblick',
+      title: 'Überblick',
       content: (
         <div className="space-y-4">
           <p>
@@ -100,12 +101,12 @@ export const cssTopic: Topic = {
     },
     {
       id: 'specificity',
-      title: 'Spezifitaet',
+      title: 'Spezifität',
       content: (
         <div className="space-y-4">
           <p>
             Bei mehreren passenden Regeln gewinnt die mit der{' '}
-            <strong>hoechsten Spezifitaet</strong>. Die Berechnung folgt dem
+            <strong>höchsten Spezifität</strong>. Die Berechnung folgt dem
             Schema:
           </p>
           <div className="grid grid-cols-4 gap-2 text-center">
@@ -131,7 +132,7 @@ export const cssTopic: Topic = {
             </div>
           </div>
           <p className="text-slate-400 text-sm">
-            <strong>!important</strong> ueberschreibt alle Spezifitaeten (sollte
+            <strong>!important</strong> überschreibt alle Spezifitäten (sollte
             vermieden werden).
           </p>
         </div>
@@ -174,13 +175,13 @@ export const cssTopic: Topic = {
             <div className="bg-slate-800 p-3 rounded-lg">
               <code className="text-blue-400">box-sizing: content-box</code>
               <p className="text-slate-400 text-xs mt-1">
-                width/height gilt nur fuer Content (Standard)
+                width/height gilt nur für Content (Standard)
               </p>
             </div>
             <div className="bg-slate-800 p-3 rounded-lg">
               <code className="text-green-400">box-sizing: border-box</code>
               <p className="text-slate-400 text-xs mt-1">
-                width/height schliesst padding + border ein
+                width/height schließt padding + border ein
               </p>
             </div>
           </div>
@@ -213,6 +214,20 @@ export const cssTopic: Topic = {
         component: SpecificityBattle,
       },
     },
+    {
+      id: 'cascade-simulator',
+      title: 'Cascade Simulator',
+      content: (
+        <p>
+          Verstehe die CSS Cascade: Wenn mehrere Regeln auf ein Element zutreffen,
+          welche gewinnt? Simuliere verschiedene Szenarien:
+        </p>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: CssCascadeSimulator,
+      },
+    },
   ],
 
   relatedTopics: [
@@ -226,11 +241,11 @@ export const cssTopic: Topic = {
         id: 'css-specificity-calc',
         type: 'multiple-choice',
         question:
-          'Welche Spezifitaet hat der Selektor "#nav .menu li a:hover"?',
+          'Welche Spezifität hat der Selektor "#nav .menu li a:hover"?',
         options: ['0,1,2,2', '0,2,1,1', '0,1,1,2', '0,0,3,2'],
         correctAnswer: '0,1,2,2',
         explanation:
-          'Der Selektor enthaelt: 1 ID (#nav) = 0,1,0,0 + 2 Klassen (.menu, :hover) = 0,0,2,0 + 2 Elemente (li, a) = 0,0,0,2. Zusammen: 0,1,2,2.',
+          'Der Selektor enthält: 1 ID (#nav) = 0,1,0,0 + 2 Klassen (.menu, :hover) = 0,0,2,0 + 2 Elemente (li, a) = 0,0,0,2. Zusammen: 0,1,2,2.',
       },
       {
         id: 'css-box-model',
@@ -245,11 +260,11 @@ export const cssTopic: Topic = {
       {
         id: 'css-units',
         type: 'multiple-choice',
-        question: 'Welche CSS-Einheit ist relativ zur Schriftgroesse des Elternelements?',
+        question: 'Welche CSS-Einheit ist relativ zur Schriftgröße des Elternelements?',
         options: ['em', 'rem', 'px', 'vh'],
         correctAnswer: 'em',
         explanation:
-          'em ist relativ zur Schriftgroesse des Elternelements. rem ist relativ zur Root-Schriftgroesse (html). px ist absolut. vh ist relativ zur Viewport-Hoehe.',
+          'em ist relativ zur Schriftgröße des Elternelements. rem ist relativ zur Root-Schriftgröße (html). px ist absolut. vh ist relativ zur Viewport-Höhe.',
       },
       {
         id: 'css-playlist-styling',

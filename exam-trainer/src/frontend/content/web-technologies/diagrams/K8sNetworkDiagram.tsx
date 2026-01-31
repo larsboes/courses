@@ -15,7 +15,7 @@ const steps: AnimationStep[] = [
     id: 'ingress',
     label: 'Ingress Controller',
     description:
-      'Der Ingress Controller empfaengt die Anfrage und routet sie basierend auf Host/Path-Regeln zum richtigen Service.',
+      'Der Ingress Controller empfängt die Anfrage und routet sie basierend auf Host/Path-Regeln zum richtigen Service.',
   },
   {
     id: 'loadbalancer',
@@ -27,7 +27,7 @@ const steps: AnimationStep[] = [
     id: 'nodeport',
     label: 'NodePort Service',
     description:
-      'Ein NodePort Service oeffnet einen Port (30000-32767) auf jedem Node. Intern wird der Traffic zum ClusterIP weitergeleitet.',
+      'Ein NodePort Service öffnet einen Port (30000-32767) auf jedem Node. Intern wird der Traffic zum ClusterIP weitergeleitet.',
   },
   {
     id: 'clusterip',
@@ -37,9 +37,9 @@ const steps: AnimationStep[] = [
   },
   {
     id: 'pod-reached',
-    label: 'Pod empfaengt Request',
+    label: 'Pod empfängt Request',
     description:
-      'Der Pod empfaengt die Anfrage. Pods haben eigene IP-Adressen und koennen direkt miteinander kommunizieren.',
+      'Der Pod empfängt die Anfrage. Pods haben eigene IP-Adressen und können direkt miteinander kommunizieren.',
   },
 ]
 

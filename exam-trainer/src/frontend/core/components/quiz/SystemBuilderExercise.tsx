@@ -286,7 +286,7 @@ export function SystemBuilderExercise({
     setEdges(solutionEdges)
     setShowResult(true)
     setIsCorrect(false)
-    setFeedback(['Loesung angezeigt'])
+    setFeedback(['Lösung angezeigt'])
     onComplete(false)
   }, [expectedNodes, expectedEdges, setNodes, setEdges, onComplete])
 
@@ -375,13 +375,13 @@ export function SystemBuilderExercise({
       {/* Action Buttons */}
       <div className="flex gap-3">
         <Button onClick={validateSolution} disabled={nodes.length === 0}>
-          Pruefen
+          Prüfen
         </Button>
         <Button variant="secondary" onClick={showSolution}>
-          Loesung zeigen
+          Lösung zeigen
         </Button>
         <Button variant="ghost" onClick={reset}>
-          Zuruecksetzen
+          Zurücksetzen
         </Button>
       </div>
     </div>

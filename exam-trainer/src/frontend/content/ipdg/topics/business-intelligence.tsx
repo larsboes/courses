@@ -1,5 +1,8 @@
 // src/content/ipdg/topics/business-intelligence.tsx
 import type { Topic } from '@/core/types/content'
+import { BiArchitectureDiagram } from '../diagrams/BiArchitectureDiagram'
+import { DwhLayerDrillDown } from '../diagrams/DwhLayerDrillDown'
+import { OltpOlapGame } from '../diagrams/ConceptCategorizationGame'
 
 export const businessIntelligenceTopic: Topic = {
   id: 'business-intelligence',
@@ -139,6 +142,41 @@ export const businessIntelligenceTopic: Topic = {
           </div>
         </div>
       ),
+      diagram: {
+        type: 'animated',
+        component: BiArchitectureDiagram,
+      },
+    },
+    {
+      id: 'dwh-layers',
+      title: 'Data Warehouse Schichten',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Klicke durch die Schichten der Data-Warehouse-Architektur um zu verstehen,
+            was in jeder Ebene passiert.
+          </p>
+        </div>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: DwhLayerDrillDown,
+      },
+    },
+    {
+      id: 'oltp-olap-ueben',
+      title: 'OLTP vs OLAP üben',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Ordne die Eigenschaften dem richtigen System zu - eine klassische Klausurfrage!
+          </p>
+        </div>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: OltpOlapGame,
+      },
     },
     {
       id: 'data-warehouse-lake',
@@ -286,8 +324,95 @@ export const businessIntelligenceTopic: Topic = {
         correctAnswer: 'Falsch',
         explanation: 'Das beschreibt TRADITIONELLES Data Mining! Big Data Analytics fokussiert auf den INDIVIDUELLEN Kunden, nicht Gruppen.',
       },
+      {
+        id: 'bi-etl-definition',
+        type: 'multiple-choice',
+        question: 'Der ETL-Prozess (Extract, Transform, Load) ist ein Verfahren, das die Daten für das Business Warehouse aufbereitet. In der Transformation erfolgt das Bereinigen, Harmonisieren, Verdichten und Anreichern der Daten.',
+        options: ['Wahr', 'Falsch'],
+        correctAnswer: 'Wahr',
+        explanation: 'Korrekt. ETL ist der Standardprozess zur Datenaufbereitung für das Data Warehouse.',
+      },
+      {
+        id: 'bi-sternschema',
+        type: 'multiple-choice',
+        question: 'Das Sternschema ist ein Datenmodell für OLTP-Systeme, das auf häufige Schreiboperationen optimiert ist.',
+        options: ['Wahr', 'Falsch'],
+        correctAnswer: 'Falsch',
+        explanation: 'Falsch! Das Sternschema ist für OLAP und Data Warehouse optimiert - für effiziente LESE-Operationen, nicht Schreiben.',
+      },
+      {
+        id: 'bi-olap-cube',
+        type: 'multiple-choice',
+        question: 'OLAP greift auf Daten aus dem Business Warehouse für Analyse und Data Mining zu. OLAP Datenwürfel (OLAP Cube) aggregieren Fakten aus jeder Ebene einer Dimension.',
+        options: ['Wahr', 'Falsch'],
+        correctAnswer: 'Wahr',
+        explanation: 'Korrekt. OLAP Cubes ermöglichen multidimensionale Analysen mit Drill-Down, Slice & Dice.',
+      },
+      {
+        id: 'bi-faktentabellen',
+        type: 'multiple-choice',
+        question: 'Faktentabellen im Sternschema beinhalten beschreibende Daten und sind vergleichsweise statisch.',
+        options: ['Wahr', 'Falsch'],
+        correctAnswer: 'Falsch',
+        explanation: 'Das beschreibt DIMENSIONSTABELLEN! Faktentabellen enthalten Kenn-/Ergebniszahlen (Umsatz, Kosten, Gewinn).',
+      },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'bi-architecture-task',
+      title: 'BI-Architektur',
+      points: 20,
+      context: (
+        <p>
+          Ein Unternehmen möchte ein Business Intelligence System aufbauen, um
+          bessere strategische Entscheidungen treffen zu können.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'bi-task-a',
+          type: 'free-text',
+          question: 'Erklären Sie den Unterschied zwischen OLTP und OLAP.',
+          placeholder: 'OLTP ist...',
+          modelAnswer: 'OLTP (Online Transaction Processing):\n- Operative Transaktionen\n- Schreiben und Lesen\n- Normalisierte Datenbanken\n- Aktueller Zustand\n- Beispiel: ERP-System\n\nOLAP (Online Analytical Processing):\n- Analytische Abfragen\n- Nur Lesen\n- Sternschema (denormalisiert)\n- Historische Daten\n- Beispiel: Data Warehouse',
+          keyPoints: [
+            'OLTP = operative Transaktionen',
+            'OLAP = analytische Abfragen',
+            'Normalisiert vs. Sternschema',
+          ],
+          explanation: 'OLTP und OLAP erfüllen unterschiedliche Aufgaben im Unternehmen.',
+        },
+        {
+          id: 'bi-task-b',
+          type: 'free-text',
+          question: 'Beschreiben Sie den ETL-Prozess und seine Schritte.',
+          placeholder: 'ETL steht für...',
+          modelAnswer: 'ETL = Extract, Transform, Load\n\n1. Extract: Daten aus Quellsystemen (ERP, CRM, Excel) ziehen\n2. Transform: Bereinigen (Fehler), Harmonisieren (Formate), Verdichten (Aggregieren), Anreichern (Kennzahlen)\n3. Load: Ins Data Warehouse laden\n\nZiel: Daten für Analysen aufbereiten',
+          keyPoints: [
+            'Extract aus Quellsystemen',
+            'Transform = Bereinigen, Harmonisieren, Verdichten, Anreichern',
+            'Load ins Data Warehouse',
+          ],
+          explanation: 'ETL ist der Standardprozess zur Befüllung eines Data Warehouse.',
+        },
+        {
+          id: 'bi-task-c',
+          type: 'free-text',
+          question: 'Was ist der Unterschied zwischen Data Warehouse und Data Lake?',
+          placeholder: 'Data Warehouse...',
+          modelAnswer: 'Data Warehouse:\n- Strukturierte, transformierte Daten\n- Schema-on-Write\n- Für OLAP und Reporting\n- Daten werden vor Speicherung aufbereitet\n\nData Lake:\n- Rohdaten in Originalformaten\n- Schema-on-Read\n- Strukturiert UND unstrukturiert\n- Daten werden bei Bedarf aufbereitet',
+          keyPoints: [
+            'DW = strukturiert, transformiert',
+            'DL = Rohdaten, alle Formate',
+            'Schema-on-Write vs. Schema-on-Read',
+          ],
+          explanation: 'Data Lake ermöglicht die Speicherung unstrukturierter Big Data.',
+        },
+      ],
+    },
+  ],
 
   relatedTopics: [
     { id: 'big-data', title: 'Big Data Analytics', relationship: 'erweitert BI' },

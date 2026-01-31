@@ -26,7 +26,7 @@ const serviceTypeInfo: Record<ServiceType, ServiceTypeInfo> = {
   NodePort: {
     title: 'NodePort',
     description:
-      'Oeffnet einen statischen Port (30000-32767) auf jedem Node. Externe Anfragen erreichen den Service ueber NodeIP:NodePort.',
+      'Öffnet einen statischen Port (30000-32767) auf jedem Node. Externe Anfragen erreichen den Service über NodeIP:NodePort.',
     useCase: 'Entwicklung, einfacher externer Zugriff, On-Premise Deployments',
     portRange: '30000-32767',
     accessibility: 'NodeIP:NodePort',

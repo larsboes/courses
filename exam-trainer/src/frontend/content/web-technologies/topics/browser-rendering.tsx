@@ -11,7 +11,7 @@ export const browserRenderingTopic: Topic = {
   sections: [
     {
       id: 'overview',
-      title: 'Ueberblick',
+      title: 'Überblick',
       content: (
         <div className="space-y-4">
           <p>
@@ -20,16 +20,16 @@ export const browserRenderingTopic: Topic = {
             verarbeiten und in <strong>sichtbare Pixel</strong> umwandeln.
           </p>
           <p>
-            Dieser Prozess heisst <strong>Rendering Pipeline</strong> (auch
-            "Critical Rendering Path"). Das Verstaendnis dieser Pipeline ist
-            wichtig fuer die <strong>Performance-Optimierung</strong> von
+            Dieser Prozess heißt <strong>Rendering Pipeline</strong> (auch
+            "Critical Rendering Path"). Das Verständnis dieser Pipeline ist
+            wichtig für die <strong>Performance-Optimierung</strong> von
             Webseiten.
           </p>
           <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
             <p className="text-sm text-slate-300">
               <strong className="text-white">Merke:</strong> Der Browser kann
               nichts anzeigen, bis die Rendering Pipeline abgeschlossen ist.
-              Alles was diese Pipeline blockiert, verzoegert die Anzeige!
+              Alles was diese Pipeline blockiert, verzögert die Anzeige!
             </p>
           </div>
         </div>
@@ -41,7 +41,7 @@ export const browserRenderingTopic: Topic = {
       content: (
         <div className="space-y-4">
           <p>
-            Die Rendering Pipeline besteht aus <strong>fuenf Schritten</strong>.
+            Die Rendering Pipeline besteht aus <strong>fünf Schritten</strong>.
             Klicke durch die Animation um jeden Schritt zu verstehen:
           </p>
           <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700 font-mono text-sm">
@@ -97,7 +97,7 @@ export const browserRenderingTopic: Topic = {
               <div>
                 <div className="font-medium text-amber-300">Layout (Reflow)</div>
                 <div className="text-sm text-slate-400">
-                  Berechnung der genauen Position und Groesse jedes Elements
+                  Berechnung der genauen Position und Größe jedes Elements
                 </div>
               </div>
             </div>
@@ -140,7 +140,7 @@ export const browserRenderingTopic: Topic = {
                 <strong>parser-blocking</strong> - stoppt HTML Parsing
               </li>
               <li>
-                Grosse Bilder und Schriftarten verzoegern den Paint
+                Große Bilder und Schriftarten verzögern den Paint
               </li>
             </ul>
           </div>
@@ -149,7 +149,7 @@ export const browserRenderingTopic: Topic = {
             <ul className="list-disc list-inside space-y-2 text-slate-300">
               <li>
                 CSS im <code className="bg-slate-700 px-1 rounded">&lt;head&gt;</code>{' '}
-                laden (frueh verfuegbar)
+                laden (früh verfügbar)
               </li>
               <li>
                 JavaScript mit{' '}
@@ -157,7 +157,7 @@ export const browserRenderingTopic: Topic = {
                 <code className="bg-slate-700 px-1 rounded">async</code> laden
               </li>
               <li>
-                Critical CSS inline einbetten fuer schnellen FMP
+                Critical CSS inline einbetten für schnellen FMP
               </li>
               <li>
                 Bilder lazy-loaden mit{' '}
@@ -249,7 +249,7 @@ flowchart TB
         ],
         correctAnswer: 'DOM + CSSOM (nur sichtbare Elemente)',
         explanation:
-          'Der Render Tree ist die Kombination aus DOM und CSSOM, enthaelt aber nur sichtbare Elemente. Elemente mit display:none oder im <head> sind nicht enthalten.',
+          'Der Render Tree ist die Kombination aus DOM und CSSOM, enthält aber nur sichtbare Elemente. Elemente mit display:none oder im <head> sind nicht enthalten.',
       },
       {
         id: 'rendering-order',
@@ -275,7 +275,7 @@ flowchart TB
       {
         id: 'render-blocking',
         type: 'multi-select',
-        question: 'Was kann das Rendering blockieren? (Mehrere Antworten moeglich)',
+        question: 'Was kann das Rendering blockieren? (Mehrere Antworten möglich)',
         options: [
           'CSS im <head>',
           'JavaScript ohne defer/async',

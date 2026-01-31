@@ -27,7 +27,7 @@ const battlePairs: BattlePair[] = [
     specificity1: { inline: 0, ids: 1, classes: 0, elements: 0 },
     specificity2: { inline: 0, ids: 0, classes: 2, elements: 0 },
     winner: 1,
-    explanation: 'Eine ID (0,1,0,0) schlaegt beliebig viele Klassen (0,0,2,0).',
+    explanation: 'Eine ID (0,1,0,0) schlägt beliebig viele Klassen (0,0,2,0).',
   },
   {
     selector1: 'div.active',
@@ -35,7 +35,7 @@ const battlePairs: BattlePair[] = [
     specificity1: { inline: 0, ids: 0, classes: 1, elements: 1 },
     specificity2: { inline: 0, ids: 0, classes: 0, elements: 1 },
     winner: 1,
-    explanation: 'Die zusaetzliche Klasse erhoeht die Spezifitaet von (0,0,0,1) auf (0,0,1,1).',
+    explanation: 'Die zusätzliche Klasse erhöht die Spezifität von (0,0,0,1) auf (0,0,1,1).',
   },
   {
     selector1: '#main .content p',
@@ -51,7 +51,7 @@ const battlePairs: BattlePair[] = [
     specificity1: { inline: 0, ids: 0, classes: 3, elements: 0 },
     specificity2: { inline: 0, ids: 1, classes: 0, elements: 0 },
     winner: 2,
-    explanation: 'Eine einzelne ID (0,1,0,0) schlaegt drei Klassen (0,0,3,0).',
+    explanation: 'Eine einzelne ID (0,1,0,0) schlägt drei Klassen (0,0,3,0).',
   },
   {
     selector1: 'div div div',
@@ -59,7 +59,7 @@ const battlePairs: BattlePair[] = [
     specificity1: { inline: 0, ids: 0, classes: 0, elements: 3 },
     specificity2: { inline: 0, ids: 0, classes: 1, elements: 0 },
     winner: 2,
-    explanation: 'Eine Klasse (0,0,1,0) schlaegt drei Elemente (0,0,0,3).',
+    explanation: 'Eine Klasse (0,0,1,0) schlägt drei Elemente (0,0,0,3).',
   },
   {
     selector1: 'a:hover',
@@ -67,7 +67,7 @@ const battlePairs: BattlePair[] = [
     specificity1: { inline: 0, ids: 0, classes: 1, elements: 1 },
     specificity2: { inline: 0, ids: 0, classes: 1, elements: 1 },
     winner: 2,
-    explanation: 'Beide haben (0,0,1,1) - bei gleicher Spezifitaet gewinnt der spaeteren Regel (hier: selector2).',
+    explanation: 'Beide haben (0,0,1,1) - bei gleicher Spezifität gewinnt die spätere Regel (hier: selector2).',
   },
   {
     selector1: '#nav ul li a',
@@ -83,7 +83,7 @@ const battlePairs: BattlePair[] = [
     specificity1: { inline: 0, ids: 0, classes: 1, elements: 1 },
     specificity2: { inline: 0, ids: 0, classes: 1, elements: 1 },
     winner: 2,
-    explanation: 'Attribut-Selektoren und Klassen zaehlen gleich (0,0,1,1) - spaetere Regel gewinnt.',
+    explanation: 'Attribut-Selektoren und Klassen zählen gleich (0,0,1,1) - spätere Regel gewinnt.',
   },
   {
     selector1: 'ul > li::before',
@@ -91,7 +91,7 @@ const battlePairs: BattlePair[] = [
     specificity1: { inline: 0, ids: 0, classes: 0, elements: 3 },
     specificity2: { inline: 0, ids: 0, classes: 0, elements: 2 },
     winner: 1,
-    explanation: 'Pseudo-Elemente (::before) zaehlen als Element (0,0,0,3) > (0,0,0,2).',
+    explanation: 'Pseudo-Elemente (::before) zählen als Element (0,0,0,3) > (0,0,0,2).',
   },
   {
     selector1: '.card .title',
@@ -277,8 +277,8 @@ export function SpecificityBattle() {
                 : score >= 7
                   ? 'Sehr gut! Du verstehst CSS-Spezifitaet gut.'
                   : score >= 5
-                    ? 'Nicht schlecht! Etwas Uebung hilft.'
-                    : 'Weiter ueben! Spezifitaet braucht Zeit.'}
+                    ? 'Nicht schlecht! Etwas Übung hilft.'
+                    : 'Weiter üben! Spezifität braucht Zeit.'}
             </p>
           </div>
           <Button onClick={handleRestart} size="lg">
@@ -377,7 +377,7 @@ export function SpecificityBattle() {
 
             <div className="flex justify-center">
               <Button onClick={handleNext} size="lg">
-                {currentRound < 9 ? 'Naechste Runde' : 'Ergebnis anzeigen'}
+                {currentRound < 9 ? 'Nächste Runde' : 'Ergebnis anzeigen'}
               </Button>
             </div>
           </motion.div>
@@ -386,7 +386,7 @@ export function SpecificityBattle() {
 
       {/* Legend */}
       <div className="mt-8 p-4 bg-slate-800/50 rounded-lg">
-        <h4 className="text-sm font-medium text-slate-400 mb-2">Spezifitaets-Legende:</h4>
+        <h4 className="text-sm font-medium text-slate-400 mb-2">Spezifitäts-Legende:</h4>
         <div className="flex flex-wrap gap-4 text-xs">
           <span className="flex items-center gap-1">
             <span className="w-3 h-3 bg-blue-900/50 rounded" />

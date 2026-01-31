@@ -159,7 +159,7 @@ export function CodeWriteQuestion({
             >
               <div className="font-medium">
                 {selfAssessment === 'correct' && 'Gut gemacht!'}
-                {selfAssessment === 'partial' && 'Weiter ueben!'}
+                {selfAssessment === 'partial' && 'Weiter üben!'}
                 {selfAssessment === 'incorrect' && 'Wiederhole das Thema.'}
               </div>
               <div className="text-sm text-slate-300 mt-1">{question.explanation}</div>

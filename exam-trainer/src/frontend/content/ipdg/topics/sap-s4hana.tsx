@@ -10,7 +10,7 @@ export const sapS4HanaTopic: Topic = {
 
   sections: [
     {
-      id: 'ueberblick',
+      id: 'überblick',
       title: 'SAP im Überblick',
       content: (
         <div className="space-y-4">

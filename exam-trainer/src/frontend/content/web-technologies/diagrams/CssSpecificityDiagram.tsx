@@ -14,31 +14,31 @@ const steps: AnimationStep[] = [
     id: 'inline-styles',
     label: 'Inline-Styles (1,0,0,0)',
     description:
-      'Inline-Styles haben die hoechste Spezifitaet. Sie werden direkt im HTML-Element definiert (style="...").',
+      'Inline-Styles haben die höchste Spezifität. Sie werden direkt im HTML-Element definiert (style="...").',
   },
   {
     id: 'ids',
-    label: 'IDs zaehlen (0,1,0,0)',
+    label: 'IDs zählen (0,1,0,0)',
     description:
-      'Jede ID (#name) im Selektor erhoeht die Spezifitaet um 0,1,0,0.',
+      'Jede ID (#name) im Selektor erhöht die Spezifität um 0,1,0,0.',
   },
   {
     id: 'classes',
-    label: 'Klassen zaehlen (0,0,1,0)',
+    label: 'Klassen zählen (0,0,1,0)',
     description:
-      'Klassen (.name), Attribute ([type="text"]) und Pseudo-Klassen (:hover) zaehlen als 0,0,1,0.',
+      'Klassen (.name), Attribute ([type="text"]) und Pseudo-Klassen (:hover) zählen als 0,0,1,0.',
   },
   {
     id: 'elements',
-    label: 'Elemente zaehlen (0,0,0,1)',
+    label: 'Elemente zählen (0,0,0,1)',
     description:
-      'Element-Selektoren (div, p, h1) und Pseudo-Elemente (::before) zaehlen als 0,0,0,1.',
+      'Element-Selektoren (div, p, h1) und Pseudo-Elemente (::before) zählen als 0,0,0,1.',
   },
   {
     id: 'result',
     label: 'Ergebnis berechnen',
     description:
-      'Die Zahlen werden zusammengezaehlt. Die hoehere Spezifitaet gewinnt.',
+      'Die Zahlen werden zusammengezählt. Die höhere Spezifität gewinnt.',
   },
 ]
 

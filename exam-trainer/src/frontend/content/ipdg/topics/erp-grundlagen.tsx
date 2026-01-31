@@ -1,5 +1,8 @@
 // src/content/ipdg/topics/erp-grundlagen.tsx
 import type { Topic } from '@/core/types/content'
+import { ErpModuleMap } from '../diagrams/ErpModuleMap'
+import { ProcessFlowBuilder } from '../diagrams/ProcessFlowBuilder'
+import { ConceptConfusionBuster } from '../diagrams/ConceptConfusionBuster'
 
 export const erpGrundlagenTopic: Topic = {
   id: 'erp-grundlagen',
@@ -29,6 +32,10 @@ export const erpGrundlagenTopic: Topic = {
           </p>
         </div>
       ),
+      diagram: {
+        type: 'explorable',
+        component: ErpModuleMap,
+      },
     },
     {
       id: 'ziele',
@@ -146,6 +153,26 @@ export const erpGrundlagenTopic: Topic = {
           </div>
         </div>
       ),
+      diagram: {
+        type: 'explorable',
+        component: ConceptConfusionBuster,
+      },
+    },
+    {
+      id: 'geschaeftsprozesse',
+      title: 'Geschäftsprozesse üben',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Ordne die Schritte der wichtigsten ERP-Geschäftsprozesse in die richtige Reihenfolge.
+            Dies hilft beim Verständnis der Prozessabläufe.
+          </p>
+        </div>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: ProcessFlowBuilder,
+      },
     },
     {
       id: 'tco',
@@ -290,6 +317,88 @@ export const erpGrundlagenTopic: Topic = {
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'erp-einfuehrung-task',
+      title: 'ERP-Einführung bei der Telekom',
+      points: 25,
+      context: (
+        <p>
+          Sie erhalten vom Managementboard der Telekom die Aufgabe, ein neues ERP-System
+          für die Bereiche Finanzen, Personalwesen, Fertigung, Logistik, Service, Sales
+          und Beschaffung einzuführen.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'erp-task-a',
+          type: 'free-text',
+          question: 'Was sind die drei grundlegenden Ziele einer ERP-Einführung?',
+          placeholder: 'Standardisierung von...',
+          modelAnswer: '1. Standardisierung von Geschäftsprozessen (einheitliche Prozesslandschaft)\n2. Standardisierung von Stammdaten (interne und externe)\n3. Standardisierung der IT-Infrastruktur (Hardware, Software, Wartungsverträge)',
+          keyPoints: [
+            'Standardisierung Geschäftsprozesse',
+            'Standardisierung Stammdaten',
+            'Standardisierung IT-Infrastruktur',
+          ],
+          explanation: 'Die drei Säulen der ERP-Standardisierung bilden das Fundament jeder erfolgreichen Einführung.',
+        },
+        {
+          id: 'erp-task-b',
+          type: 'free-text',
+          question: 'Erklären Sie den Unterschied zwischen Configuration und Customization.',
+          placeholder: 'Configuration ist...',
+          modelAnswer: 'Configuration: Anpassung durch Parameter und Stammdaten OHNE externe Programmierung - nur Standard-Module werden genutzt.\n\nCustomization: Ergänzung/Modifikation durch externe Programmierung für Funktionen, die im Standard nicht existieren (z.B. Schnittstellen, Reports).',
+          keyPoints: [
+            'Configuration ohne Programmierung',
+            'Customization mit Programmierung',
+            'Standard-Module vs. Erweiterungen',
+          ],
+          explanation: 'Diese Unterscheidung ist fundamental für die Bewertung von ERP-Projekten.',
+        },
+        {
+          id: 'erp-task-c',
+          type: 'free-text',
+          question: 'Ein Berater schlägt vor, den Systemanbieter auf Basis von Best-Practice-Erfahrungen auszuwählen, bevor die IST-Prozesse analysiert werden. Wie reagieren Sie?',
+          placeholder: 'Die Reihenfolge sollte...',
+          modelAnswer: 'Die Reihenfolge ist falsch! Erst müssen die IST-Prozesse dokumentiert und analysiert werden, dann kann ein passendes System ausgewählt werden. Sonst besteht das Risiko, dass die Unternehmensprozesse nicht abgebildet werden können (siehe Lidl-SAP-Desaster).',
+          keyPoints: [
+            'IST-Prozesse zuerst',
+            'Dann Systemauswahl',
+            'Risiko bei falscher Reihenfolge',
+          ],
+          explanation: 'Prozess vor System - eine goldene Regel der ERP-Einführung.',
+        },
+      ],
+    },
+    {
+      id: 'tco-task',
+      title: 'Total Cost of Ownership',
+      points: 15,
+      context: (
+        <p>
+          Sie müssen die Entscheidung zwischen On-Premise und Cloud-Lösung für das
+          neue ERP-System treffen.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'tco-task-a',
+          type: 'free-text',
+          question: 'Was bedeutet TCO und welche Kostenarten umfasst es?',
+          placeholder: 'TCO steht für...',
+          modelAnswer: 'TCO = Total Cost of Ownership = Gesamtkosten während der Nutzungsdauer.\n\nDirekte Kosten: Budgetierbar (Lizenzen, Hardware, Support, Netzwerk)\nIndirekte Kosten: Schwer budgetierbar (Schulung, Ausfallzeiten, Produktivitätsverlust)',
+          keyPoints: [
+            'TCO = Gesamtkosten Nutzungsdauer',
+            'Direkte Kosten (budgetierbar)',
+            'Indirekte Kosten (schwer budgetierbar)',
+          ],
+          explanation: 'TCO ist entscheidend für die On-Premise vs. Cloud-Entscheidung.',
+        },
+      ],
+    },
+  ],
 
   relatedTopics: [
     { id: 'enterprise-architecture', title: 'Enterprise Architecture', relationship: 'Prozess- & IT-Architektur' },

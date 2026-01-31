@@ -12,7 +12,7 @@ export const kubernetesNetzwerkTopic: Topic = {
   sections: [
     {
       id: 'overview',
-      title: 'Ueberblick',
+      title: 'Überblick',
       content: (
         <div className="space-y-4">
           <p>
@@ -21,21 +21,21 @@ export const kubernetesNetzwerkTopic: Topic = {
           </p>
           <ul className="list-disc list-inside space-y-2 text-slate-300">
             <li>
-              Jeder <strong>Pod</strong> erhaelt eine eigene IP-Adresse
+              Jeder <strong>Pod</strong> erhält eine eigene IP-Adresse
             </li>
             <li>
-              Pods koennen <strong>direkt</strong> miteinander kommunizieren (ohne NAT)
+              Pods können <strong>direkt</strong> miteinander kommunizieren (ohne NAT)
             </li>
             <li>
-              <strong>Services</strong> bieten stabile Endpunkte fuer Pods
+              <strong>Services</strong> bieten stabile Endpunkte für Pods
             </li>
             <li>
-              <strong>Ingress</strong> ermoeglicht externen HTTP/HTTPS-Zugriff
+              <strong>Ingress</strong> ermöglicht externen HTTP/HTTPS-Zugriff
             </li>
           </ul>
           <div className="p-4 bg-blue-900/20 rounded-lg border border-blue-800">
             <p className="text-blue-300">
-              <strong>Wichtig:</strong> Pods sind kurzlebig und koennen jederzeit neu erstellt
+              <strong>Wichtig:</strong> Pods sind kurzlebig und können jederzeit neu erstellt
               werden. Daher sollte man nie direkt auf Pod-IPs zugreifen, sondern immer Services
               verwenden.
             </p>
@@ -50,7 +50,7 @@ export const kubernetesNetzwerkTopic: Topic = {
         <div className="space-y-4">
           <p>
             Ein <strong>Service</strong> ist eine Abstraktion, die einen stabilen Netzwerk-Endpunkt
-            fuer eine Gruppe von Pods bereitstellt. Es gibt verschiedene Service-Typen:
+            für eine Gruppe von Pods bereitstellt. Es gibt verschiedene Service-Typen:
           </p>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -69,7 +69,7 @@ export const kubernetesNetzwerkTopic: Topic = {
                 </tr>
                 <tr className="border-b border-slate-800">
                   <td className="py-2 px-3 font-mono text-green-400">NodePort</td>
-                  <td className="py-2 px-3">Oeffnet Port auf allen Nodes</td>
+                  <td className="py-2 px-3">Öffnet Port auf allen Nodes</td>
                   <td className="py-2 px-3">Extern via NodeIP:Port</td>
                 </tr>
                 <tr className="border-b border-slate-800">
@@ -101,8 +101,8 @@ export const kubernetesNetzwerkTopic: Topic = {
       content: (
         <div className="space-y-4">
           <p>
-            Ein <strong>Ingress</strong> ist ein API-Objekt, das HTTP(S)-Routing von ausserhalb des
-            Clusters zu Services ermoeglicht. Es bietet:
+            Ein <strong>Ingress</strong> ist ein API-Objekt, das HTTP(S)-Routing von außerhalb des
+            Clusters zu Services ermöglicht. Es bietet:
           </p>
           <div className="grid gap-3">
             <div className="flex items-start gap-3 p-3 bg-slate-800 rounded-lg border border-slate-700">
@@ -149,12 +149,12 @@ export const kubernetesNetzwerkTopic: Topic = {
       content: (
         <div className="space-y-4">
           <p>
-            Kubernetes hat ein integriertes <strong>DNS-System</strong> (meist CoreDNS) fuer
-            Service Discovery. Jeder Service erhaelt automatisch einen DNS-Namen:
+            Kubernetes hat ein integriertes <strong>DNS-System</strong> (meist CoreDNS) für
+            Service Discovery. Jeder Service erhält automatisch einen DNS-Namen:
           </p>
           <div className="p-4 bg-slate-800 rounded-lg border border-slate-700 font-mono text-sm">
             <div className="text-green-400">
-              # Vollstaendiger DNS-Name (FQDN)
+              # Vollständiger DNS-Name (FQDN)
             </div>
             <div className="text-slate-300 mb-3">
               service-name.namespace.svc.cluster.local
@@ -175,8 +175,8 @@ export const kubernetesNetzwerkTopic: Topic = {
                 <li>
                   • <code className="text-blue-400">my-service.default.svc.cluster.local</code>
                 </li>
-                <li>• Loest zur ClusterIP auf</li>
-                <li>• Automatisch fuer jeden Service</li>
+                <li>• Löst zur ClusterIP auf</li>
+                <li>• Automatisch für jeden Service</li>
               </ul>
             </div>
             <div className="p-3 bg-green-900/20 rounded-lg border border-green-800">
@@ -191,7 +191,7 @@ export const kubernetesNetzwerkTopic: Topic = {
             </div>
           </div>
           <p className="text-slate-400 text-sm">
-            Tipp: Verwende immer den Service-DNS-Namen statt IP-Adressen fuer zuverlaessige
+            Tipp: Verwende immer den Service-DNS-Namen statt IP-Adressen für zuverlässige
             Kommunikation.
           </p>
         </div>
@@ -246,40 +246,40 @@ flowchart TB
         id: 'k8s-service-types',
         type: 'multiple-choice',
         question:
-          'Welcher Service-Typ stellt eine stabile interne IP bereit, ist aber NICHT von ausserhalb des Clusters erreichbar?',
+          'Welcher Service-Typ stellt eine stabile interne IP bereit, ist aber NICHT von außerhalb des Clusters erreichbar?',
         options: ['NodePort', 'ClusterIP', 'LoadBalancer', 'ExternalName'],
         correctAnswer: 'ClusterIP',
         explanation:
-          'ClusterIP ist der Standard-Service-Typ und stellt eine interne Cluster-IP bereit. Er ist nur innerhalb des Clusters erreichbar. Fuer externen Zugriff braucht man NodePort oder LoadBalancer.',
+          'ClusterIP ist der Standard-Service-Typ und stellt eine interne Cluster-IP bereit. Er ist nur innerhalb des Clusters erreichbar. Für externen Zugriff braucht man NodePort oder LoadBalancer.',
       },
       {
         id: 'k8s-ingress-purpose',
         type: 'multiple-choice',
-        question: 'Wofuer wird ein Ingress in Kubernetes hauptsaechlich verwendet?',
+        question: 'Wofür wird ein Ingress in Kubernetes hauptsächlich verwendet?',
         options: [
           'Um Pods auf verschiedene Nodes zu verteilen',
-          'Um HTTP/HTTPS-Traffic von aussen zum richtigen Service zu routen',
+          'Um HTTP/HTTPS-Traffic von außen zum richtigen Service zu routen',
           'Um Container-Images herunterzuladen',
           'Um den Cluster-Zustand in etcd zu speichern',
         ],
         correctAnswer:
-          'Um HTTP/HTTPS-Traffic von aussen zum richtigen Service zu routen',
+          'Um HTTP/HTTPS-Traffic von außen zum richtigen Service zu routen',
         explanation:
-          'Ingress ermoeglicht es, HTTP/HTTPS-Anfragen von ausserhalb des Clusters basierend auf Host oder Path an verschiedene Services weiterzuleiten. Es bietet auch TLS-Terminierung.',
+          'Ingress ermöglicht es, HTTP/HTTPS-Anfragen von außerhalb des Clusters basierend auf Host oder Path an verschiedene Services weiterzuleiten. Es bietet auch TLS-Terminierung.',
       },
       {
         id: 'k8s-pod-communication',
         type: 'multiple-choice',
-        question: 'Wie koennen Pods im gleichen Kubernetes Cluster miteinander kommunizieren?',
+        question: 'Wie können Pods im gleichen Kubernetes Cluster miteinander kommunizieren?',
         options: [
-          'Pods koennen nur ueber externe Load Balancer kommunizieren',
-          'Jeder Pod hat eine eigene IP, Pods koennen direkt kommunizieren',
-          'Pods muessen immer auf dem gleichen Node sein, um zu kommunizieren',
-          'Kommunikation zwischen Pods ist nicht moeglich',
+          'Pods können nur über externe Load Balancer kommunizieren',
+          'Jeder Pod hat eine eigene IP, Pods können direkt kommunizieren',
+          'Pods müssen immer auf dem gleichen Node sein, um zu kommunizieren',
+          'Kommunikation zwischen Pods ist nicht möglich',
         ],
-        correctAnswer: 'Jeder Pod hat eine eigene IP, Pods koennen direkt kommunizieren',
+        correctAnswer: 'Jeder Pod hat eine eigene IP, Pods können direkt kommunizieren',
         explanation:
-          'Im Kubernetes Networking Model erhaelt jeder Pod eine eigene IP-Adresse. Pods koennen direkt miteinander kommunizieren, egal auf welchem Node sie laufen. Es gibt kein NAT zwischen Pods.',
+          'Im Kubernetes Networking Model erhält jeder Pod eine eigene IP-Adresse. Pods können direkt miteinander kommunizieren, egal auf welchem Node sie laufen. Es gibt kein NAT zwischen Pods.',
       },
     ],
   },

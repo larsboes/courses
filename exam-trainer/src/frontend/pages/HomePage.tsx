@@ -1,6 +1,7 @@
 // src/pages/HomePage.tsx
 import { Link } from 'react-router-dom'
 import { Card } from '@/core/components/ui'
+import { courses } from '@/content'
 
 export function HomePage() {
   return (
@@ -10,14 +11,17 @@ export function HomePage() {
         <p className="text-slate-400 mb-8">Wähle einen Kurs zum Lernen</p>
 
         <div className="grid gap-4">
-          <Link to="/course/web-technologies">
-            <Card hover className="p-6">
-              <h2 className="text-xl font-semibold mb-2">Web Technologies</h2>
-              <p className="text-slate-400">
-                HTTP, JSON, HTML, CSS, JavaScript, REST, Kubernetes, DNS/TLS
-              </p>
-            </Card>
-          </Link>
+          {Object.values(courses).map((course) => (
+            <Link key={course.id} to={`/course/${course.id}`}>
+              <Card hover className="p-6">
+                <h2 className="text-xl font-semibold mb-2">{course.title}</h2>
+                <p className="text-slate-400">{course.description}</p>
+                <p className="text-sm text-slate-500 mt-2">
+                  {course.topics.length} Themen
+                </p>
+              </Card>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
