@@ -223,6 +223,26 @@ export const cssTopic: Topic = {
         explanation:
           'em ist relativ zur Schriftgroesse des Elternelements. rem ist relativ zur Root-Schriftgroesse (html). px ist absolut. vh ist relativ zur Viewport-Hoehe.',
       },
+      {
+        id: 'css-playlist-styling',
+        type: 'code-write',
+        language: 'css',
+        question: 'Schreiben Sie CSS, sodass der Header "Playlist Details" (h2 in .playlist) grün und die Track-Links (a in .playlist li) blau dargestellt werden.',
+        placeholder: '.playlist h2 {\n  \n}',
+        modelAnswer: `.playlist h2 {
+  color: green;
+}
+
+.playlist li a {
+  color: blue;
+}`,
+        keyPoints: [
+          'Verschachtelte Selektoren (.playlist h2)',
+          'color Property für Textfarbe',
+          'Spezifität: Element in Klasse',
+        ],
+        explanation: 'CSS Selektoren können verschachtelt werden um spezifische Elemente zu stylen.',
+      },
     ],
   },
 }
