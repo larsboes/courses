@@ -224,6 +224,104 @@ flowchart TB
   style Manifest fill:#3b82f6,stroke:#1d4ed8
 `,
 
+  examTasks: [
+    {
+      id: 'kubernetes-task',
+      title: 'Container & Kubernetes',
+      points: 20,
+      context: (
+        <div className="space-y-4">
+          <p>Gegeben ist folgendes Kubernetes-Manifest:</p>
+          <pre className="p-3 bg-slate-800 rounded-lg font-mono text-xs overflow-x-auto">
+{`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web-container
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-nodeport-service
+spec:
+  selector:
+    app: web
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30080
+  type: NodePort`}
+          </pre>
+        </div>
+      ),
+      parts: [
+        {
+          id: 'k8s-a',
+          type: 'free-text',
+          question: 'In welchem Zusammenhang stehen Container und Kubernetes? Was sind in diesem Zusammenhang Nodes und Pods?',
+          placeholder: 'Kubernetes orchestriert Container...',
+          modelAnswer: 'Kubernetes orchestriert Container - es startet, überwacht und steuert containerisierte Anwendungen, um eine komplexe verteilte Applikation zu betreiben. Nodes sind physische oder virtuelle Rechner im Cluster, die über das Netzwerk verbunden sind. Pods bestehen aus einem oder mehreren Containern, die logisch zusammengehören. Kubernetes verteilt Pods optimal auf die Nodes des Clusters.',
+          keyPoints: [
+            'Kubernetes orchestriert Container',
+            'Nodes sind Rechner im Cluster',
+            'Pods enthalten Container',
+            'Verteilung auf Nodes',
+          ],
+          explanation: 'Kubernetes abstrahiert die Infrastruktur und verwaltet Container automatisch.',
+        },
+        {
+          id: 'k8s-b',
+          type: 'free-text',
+          question: 'Skizzieren Sie das entstehende System, wenn wir das Manifest K8s zur Anwendung übergeben. Beschreiben Sie die Komponenten und ihre Beziehungen.',
+          placeholder: 'Deployment -> ReplicaSet -> ...',
+          modelAnswer: `Das System besteht aus:
+- 1 Deployment "my-web-app" das ein ReplicaSet erstellt
+- 1 ReplicaSet das 2 Pods verwaltet (replicas: 2)
+- 2 Pods mit je einem nginx-Container (Port 80)
+- 1 NodePort Service der auf Port 30080 von außen erreichbar ist
+- Der Service verbindet sich über selector "app: web" mit den Pods
+- Traffic von außen: Node:30080 → Service:80 → Pod:80`,
+          keyPoints: [
+            'Deployment erstellt ReplicaSet',
+            '2 Pods wegen replicas: 2',
+            'Service mit NodePort 30080',
+            'Selector verbindet Service mit Pods',
+          ],
+          explanation: 'Deployment → ReplicaSet → Pods ist die typische Hierarchie. Der Service macht die Pods erreichbar.',
+        },
+        {
+          id: 'k8s-c',
+          type: 'free-text',
+          question: 'Wozu dient der Service? Warum stellen wir die Anfragen nicht direkt an die Container mit den Webservern?',
+          placeholder: 'Die Container sind Pods, die von Kubernetes...',
+          modelAnswer: 'Container in Pods werden von Kubernetes dynamisch verwaltet - sie werden skaliert, neu gestartet nach Absturz etc. Dadurch ändern sich ihre IP-Adressen im Laufe des Betriebs. Die Pod-IPs sind außerdem nur cluster-intern erreichbar. Ein Service bietet einen stabilen Endpunkt: Der NodePort öffnet Port 30080 nach außen. So können wir nginx nutzen ohne uns um den Zustand der einzelnen Pods zu kümmern - Kubernetes stellt sicher, dass passende Pods verfügbar sind.',
+          keyPoints: [
+            'Pods sind kurzlebig, IPs ändern sich',
+            'Pod-IPs nur cluster-intern',
+            'Service bietet stabilen Endpunkt',
+            'NodePort öffnet Port nach außen',
+          ],
+          explanation: 'Services abstrahieren die dynamische Natur von Pods und bieten stabile Netzwerk-Endpunkte.',
+        },
+      ],
+    },
+  ],
+
   quiz: {
     questions: [
       {

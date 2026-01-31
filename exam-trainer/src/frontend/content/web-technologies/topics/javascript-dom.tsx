@@ -202,6 +202,114 @@ flowchart TB
   style DOM fill:#3b82f6,stroke:#1d4ed8
 `,
 
+  examTasks: [
+    {
+      id: 'html-css-js-dom-task',
+      title: 'HTML, CSS, JavaScript & DOM',
+      points: 30,
+      context: (
+        <div className="space-y-4">
+          <p>Betrachten Sie folgenden HTML-Ausschnitt unserer Playlist Web-Seite:</p>
+          <pre className="p-3 bg-slate-800 rounded-lg font-mono text-sm overflow-x-auto">
+{`<body>
+  <div class="playlist">
+    <h2>Playlist Details</h2>
+    <ul id="playlist"></ul>
+    <div id="total-duration">Total Duration: 0:00</div>
+    <button id="save-playlist">Save Playlist</button>
+  </div>
+</body>`}
+          </pre>
+          <p>Und folgendes JavaScript-Fragment:</p>
+          <pre className="p-3 bg-slate-800 rounded-lg font-mono text-sm overflow-x-auto">
+{`const playlistContainer = document.getElementById('playlist');
+
+playlists[currentPlaylist].forEach((track, index) => {
+  const li = document.createElement('li');
+  li.innerHTML = \`
+    <a href="\${track.link}" target="_blank">\${track.title}</a>
+    <button onclick="removeTrack(\${index})">Remove</button>
+  \`;
+  playlistContainer.appendChild(li);
+});`}
+          </pre>
+        </div>
+      ),
+      parts: [
+        {
+          id: 'html-css-js-a',
+          type: 'free-text',
+          question: 'Beschreiben Sie kurz die Zwecke von HTML und CSS. Welche Schritte führt der Browser vom Empfang einer Web-Seite bis zur Darstellung durch?',
+          placeholder: 'HTML dient der...',
+          modelAnswer: 'HTML (Hypertext Markup Language) beschreibt und strukturiert Web-Inhalte wie Text, Grafiken, Videos. CSS (Cascading Style Sheets) definiert die Darstellung (Farben, Fonts, Größen) und das Layout (Positionen, Abstände). Browser-Schritte: 1) HTML parsen → DOM erstellen, 2) CSS parsen → CSSOM erstellen, 3) DOM + CSSOM → Render Tree, 4) Layout berechnen (Geometrien), 5) First Meaningful Paint darstellen.',
+          keyPoints: [
+            'HTML für Struktur und Inhalt',
+            'CSS für Styling und Layout',
+            'DOM und CSSOM Erstellung',
+            'Render Tree und Layout',
+            'First Meaningful Paint',
+          ],
+          explanation: 'Der Browser baut schrittweise ein Modell der Seite auf, bevor er sie rendert.',
+        },
+        {
+          id: 'html-css-js-b',
+          type: 'code-write',
+          language: 'css',
+          question: 'Geben Sie CSS an, so dass der Header "Playlist Details" in grün dargestellt wird und die Elemente der Tracks in der Liste in blau.',
+          placeholder: 'h2 {\n  ...\n}',
+          modelAnswer: `h2 {
+  color: green;
+}
+
+li a {
+  color: blue;
+}`,
+          keyPoints: [
+            'h2 Selektor für Header',
+            'color: green für Überschrift',
+            'li a Selektor für Links in Liste',
+            'color: blue für Track-Links',
+          ],
+          explanation: 'CSS-Selektoren erlauben präzise Auswahl von Elementen. "li a" selektiert alle Links innerhalb von Listenelementen.',
+        },
+        {
+          id: 'html-css-js-c',
+          type: 'free-text',
+          question: 'Erläutern Sie, was der JavaScript-Ausschnitt mit dem HTML-Dokument macht.',
+          placeholder: 'Das JS-Programm holt sich zunächst...',
+          modelAnswer: 'Das JS-Programm holt sich das Element mit der ID "playlist" aus dem Dokument - eine leere HTML-Liste (ul). Dann iteriert es über die Tracks der aktuellen Playlist. Für jeden Track wird ein Listeneintrag (li) erstellt und mit HTML-Inhalt gefüllt: ein Link zum Track und ein Remove-Button. Der neue Listeneintrag wird mit appendChild() an die HTML-Liste angehängt.',
+          keyPoints: [
+            'getElementById holt ul-Element',
+            'forEach iteriert über Tracks',
+            'createElement erstellt li-Elemente',
+            'innerHTML setzt Link und Button',
+            'appendChild fügt zur Liste hinzu',
+          ],
+          explanation: 'JavaScript manipuliert das DOM dynamisch, um Inhalte basierend auf Daten zu generieren.',
+        },
+        {
+          id: 'html-css-js-d',
+          type: 'free-text',
+          question: 'Geben Sie das DOM der Playlist nach Durchführung des JavaScript-Ausschnitts als Baumstruktur an (ein Listeneintrag reicht).',
+          placeholder: 'ul#playlist\n  └── li\n      ├── ...',
+          modelAnswer: `ul#playlist
+  └── li
+      ├── a (href, target="_blank")
+      │   └── [text: track.title]
+      └── button (onclick)
+          └── [text: "Remove"]`,
+          keyPoints: [
+            'ul als Wurzel',
+            'li als Kind von ul',
+            'a und button als Kinder von li',
+            'Textknoten in a und button',
+          ],
+          explanation: 'Das DOM spiegelt die hierarchische Struktur des HTML-Dokuments wider.',
+        },
+      ],
+    },
+  ],
+
   quiz: {
     questions: [
       {

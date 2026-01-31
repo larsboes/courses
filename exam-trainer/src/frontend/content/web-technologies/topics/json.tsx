@@ -170,6 +170,72 @@ export const jsonTopic: Topic = {
     { id: 'kubernetes-manifests', title: 'K8s Manifests', relationship: 'ähnlich wie YAML' },
   ],
 
+  examTasks: [
+    {
+      id: 'json-xml-task',
+      title: 'JSON & Datenformate',
+      points: 20,
+      context: (
+        <div className="space-y-2">
+          <p>Für unsere Meta Playlists Anwendung speichern wir Playlist-Daten. Eine Playlist hat:</p>
+          <ul className="list-disc list-inside text-slate-300 ml-4">
+            <li>name (String)</li>
+            <li>user (String)</li>
+            <li>duration (Zahl in Minuten)</li>
+            <li>tracks (Array von Track-Objekten mit title, link, duration)</li>
+          </ul>
+        </div>
+      ),
+      parts: [
+        {
+          id: 'json-xml-a',
+          type: 'code-write',
+          language: 'json',
+          question: 'Erstellen Sie für die Playlist-Klasse ein Beispielobjekt in JSON mit mindestens 2 Tracks.',
+          placeholder: '{\n  "name": "...",\n  ...\n}',
+          modelAnswer: `{
+  "name": "My Playlist",
+  "user": "Max",
+  "duration": 45.5,
+  "tracks": [
+    {
+      "title": "Song 1",
+      "link": "https://example.com/song1",
+      "duration": 3.25
+    },
+    {
+      "title": "Song 2",
+      "link": "https://example.com/song2",
+      "duration": 4.10
+    }
+  ]
+}`,
+          keyPoints: [
+            'Gültiges JSON-Format',
+            'Doppelte Anführungszeichen für Schlüssel und Strings',
+            'Verschachtelte Objekte für Tracks',
+            'Array-Syntax korrekt',
+          ],
+          explanation: 'JSON erfordert strenge Syntax: doppelte Anführungszeichen, kein Trailing Comma.',
+        },
+        {
+          id: 'json-xml-b',
+          type: 'free-text',
+          question: 'Welche Vor- oder Nachteile würde der Einsatz von XML statt JSON hier im Kontext unserer Meta-Playlist-Anwendung bieten?',
+          placeholder: 'XML ist eine Metasprache...',
+          modelAnswer: 'XML ist eine Metasprache zur Definition komplexer Strukturen mit Attributen und Schemas. Für unsere Playlist-Anwendung bietet XML keinen Mehrwert: Es würde die Datenmenge und den Verarbeitungsaufwand erhöhen, ohne greifbaren Nutzen. JSON ermöglicht bereits die strukturierte Speicherung und Übertragung, ist kompakter, leichter lesbar und in JavaScript direkt nutzbar.',
+          keyPoints: [
+            'XML als Metasprache erklärt',
+            'Kein Mehrwert für einfache Datenstrukturen',
+            'JSON kompakter und einfacher',
+            'Verarbeitungsaufwand bei XML höher',
+          ],
+          explanation: 'JSON ist für Web-APIs der De-facto-Standard, da es leichtgewichtig und JavaScript-nativ ist.',
+        },
+      ],
+    },
+  ],
+
   quiz: {
     questions: [
       {
