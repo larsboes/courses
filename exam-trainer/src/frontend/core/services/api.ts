@@ -31,6 +31,17 @@ export interface HintResponse {
   hints_remaining: number
 }
 
+export interface RecommendRequest {
+  recent_results: Record<string, unknown>[]
+  completed_topics: string[]
+}
+
+export interface RecommendResponse {
+  weak_areas: string[]
+  recommended_topics: string[]
+  message: string
+}
+
 export async function evaluateAnswer(data: EvaluateRequest): Promise<EvaluateResponse> {
   const res = await fetch(`${API_BASE}/evaluate`, {
     method: 'POST',
@@ -59,9 +70,20 @@ export async function saveProgress(data: {
   user_answer: string
   hints_used: number
 }): Promise<void> {
-  await fetch(`${API_BASE}/progress/save`, {
+  const res = await fetch(`${API_BASE}/progress/save`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
+  if (!res.ok) throw new Error(`Save progress failed: ${res.statusText}`)
+}
+
+export async function getRecommendations(data: RecommendRequest): Promise<RecommendResponse> {
+  const res = await fetch(`${API_BASE}/recommend`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) throw new Error(`Recommendations failed: ${res.statusText}`)
+  return res.json()
 }
