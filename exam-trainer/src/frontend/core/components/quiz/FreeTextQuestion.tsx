@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button, Card } from '@/core/components/ui'
-import { evaluateAnswer, type EvaluateResponse } from '@/core/services/api'
+import { evaluateAnswer, saveProgress, type EvaluateResponse } from '@/core/services/api'
 import { HintButton } from './HintButton'
 import type { FreeTextQuestion as FreeTextQuestionType } from '@/core/types/content'
 
@@ -110,6 +110,17 @@ export function FreeTextQuestion({
         topic_id: topicId,
       })
       setEvaluation(result)
+
+      // Fire-and-forget: persist progress to backend for AI recommendations
+      saveProgress({
+        topic_id: topicId,
+        question_id: question.id,
+        question_type: 'free-text',
+        score: result.score,
+        user_answer: answer,
+        hints_used: 0, // TODO: Track hints from HintButton
+      })
+
       onSubmit(answer)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Evaluation failed')
