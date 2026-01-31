@@ -5,7 +5,8 @@ import { Button, Card } from '@/core/components/ui'
 import { SystemBuilderExercise } from './SystemBuilderExercise'
 import { FreeTextQuestion } from './FreeTextQuestion'
 import { CodeWriteQuestion } from './CodeWriteQuestion'
-import type { QuizQuestion as QuizQuestionType, SystemBuilderQuestion, StandardQuizQuestion, FreeTextQuestion as FreeTextQuestionType, CodeWriteQuestion as CodeWriteQuestionType } from '@/core/types/content'
+import { DomTreeBuilder } from './DomTreeBuilder'
+import type { QuizQuestion as QuizQuestionType, SystemBuilderQuestion, StandardQuizQuestion, FreeTextQuestion as FreeTextQuestionType, CodeWriteQuestion as CodeWriteQuestionType, DiagramBuildQuestion } from '@/core/types/content'
 
 interface QuizQuestionProps {
   question: QuizQuestionType
@@ -220,6 +221,18 @@ export function QuizQuestion({
         onSubmit={onSubmit}
         showingResult={showingResult}
         isCorrect={isCorrect}
+      />
+    )
+  }
+
+  if (question.type === 'diagram-build' && (question as DiagramBuildQuestion).diagramType === 'dom-tree') {
+    const dbQuestion = question as DiagramBuildQuestion
+    return (
+      <DomTreeBuilder
+        question={dbQuestion.question}
+        availableNodes={dbQuestion.availableNodes}
+        expectedStructure={dbQuestion.expectedStructure}
+        onComplete={(correct) => onSubmit(correct ? 'correct' : 'incorrect')}
       />
     )
   }
