@@ -146,13 +146,13 @@ export function SystemBuilderExercise({
     [setEdges]
   )
 
-  const onDragOver = useCallback((event: DragEvent) => {
+  const onDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
     event.preventDefault()
     event.dataTransfer.dropEffect = 'move'
   }, [])
 
   const onDrop = useCallback(
-    (event: DragEvent) => {
+    (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault()
 
       const componentType = event.dataTransfer.getData('application/k8s-component')
@@ -216,7 +216,7 @@ export function SystemBuilderExercise({
 
       let status: 'correct' | 'incorrect' | 'neutral' = 'neutral'
       if (expected) {
-        status = actualCount <= expected.count ? 'correct' : 'incorrect'
+        status = actualCount === expected.count ? 'correct' : 'incorrect'
       } else {
         status = 'incorrect'
         if (!nodeStatusMap.has(type)) {
@@ -365,8 +365,8 @@ export function SystemBuilderExercise({
             {isCorrect ? 'Richtig!' : 'Ergebnis:'}
           </div>
           <ul className="text-sm text-slate-300 space-y-1">
-            {feedback.map((item, i) => (
-              <li key={i}>{item}</li>
+            {feedback.map((item) => (
+              <li key={item}>{item}</li>
             ))}
           </ul>
         </Card>
