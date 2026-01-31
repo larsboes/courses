@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button, Card } from '@/core/components/ui'
 import { SystemBuilderExercise } from './SystemBuilderExercise'
-import type { QuizQuestion as QuizQuestionType, SystemBuilderQuestion, StandardQuizQuestion } from '@/core/types/content'
+import { FreeTextQuestion } from './FreeTextQuestion'
+import type { QuizQuestion as QuizQuestionType, SystemBuilderQuestion, StandardQuizQuestion, FreeTextQuestion as FreeTextQuestionType } from '@/core/types/content'
 
 interface QuizQuestionProps {
   question: QuizQuestionType
@@ -218,6 +219,16 @@ export function QuizQuestion({
         onSubmit={onSubmit}
         showingResult={showingResult}
         isCorrect={isCorrect}
+      />
+    )
+  }
+
+  if (question.type === 'free-text') {
+    return (
+      <FreeTextQuestion
+        question={question as FreeTextQuestionType}
+        onSubmit={(answer) => onSubmit(answer)}
+        showingResult={showingResult}
       />
     )
   }
