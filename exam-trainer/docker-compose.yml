@@ -1,11 +1,30 @@
 services:
-  exam-trainer:
+  frontend:
     build:
       context: .
+      dockerfile: Dockerfile
       target: dev
     ports:
       - "5173:5173"
     volumes:
       - .:/app
+      - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src/backend/src:/app/src
+      - ./data:/app/data
+      - ~/.config/gcloud:/root/.config/gcloud:ro
+    environment:
+      - VERTEX_PROJECT_ID=${VERTEX_PROJECT_ID:-de0360-sbx-lars}
+      - VERTEX_LOCATION=${VERTEX_LOCATION:-europe-west4}
+      - VERTEX_MODEL=${VERTEX_MODEL:-gemini-2.0-flash}
