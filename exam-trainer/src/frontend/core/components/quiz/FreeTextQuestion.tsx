@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button, Card } from '@/core/components/ui'
 import { evaluateAnswer, type EvaluateResponse } from '@/core/services/api'
+import { HintButton } from './HintButton'
 import type { FreeTextQuestion as FreeTextQuestionType } from '@/core/types/content'
 
 interface FreeTextQuestionProps {
@@ -75,13 +76,20 @@ export function FreeTextQuestion({
       />
 
       {!showingResult && (
-        <Button
-          onClick={handleSubmit}
-          disabled={!answer.trim() || isLoading}
-          className="w-full"
-        >
-          {isLoading ? 'Wird ausgewertet...' : 'Antwort pruefen'}
-        </Button>
+        <div className="space-y-4">
+          <HintButton
+            question={question.question}
+            modelAnswer={question.modelAnswer}
+            disabled={isLoading}
+          />
+          <Button
+            onClick={handleSubmit}
+            disabled={!answer.trim() || isLoading}
+            className="w-full"
+          >
+            {isLoading ? 'Wird ausgewertet...' : 'Antwort pruefen'}
+          </Button>
+        </div>
       )}
 
       {error && (
