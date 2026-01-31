@@ -14,6 +14,7 @@ interface QuizQuestionProps {
   showingResult: boolean
   isCorrect: boolean | null
   selectedAnswer?: string | string[]
+  topicId?: string
 }
 
 // Separate component for system-builder to avoid hooks rules violation
@@ -213,6 +214,7 @@ export function QuizQuestion({
   showingResult,
   isCorrect,
   selectedAnswer,
+  topicId,
 }: QuizQuestionProps) {
   if (question.type === 'system-builder') {
     return (
@@ -251,6 +253,7 @@ export function QuizQuestion({
     return (
       <FreeTextQuestion
         question={question as FreeTextQuestionType}
+        topicId={topicId || 'unknown'}
         onSubmit={(answer) => onSubmit(answer)}
         showingResult={showingResult}
       />

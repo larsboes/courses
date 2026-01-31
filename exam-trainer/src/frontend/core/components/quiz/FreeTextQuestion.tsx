@@ -2,44 +2,70 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button, Card } from '@/core/components/ui'
+import { evaluateAnswer, type EvaluateResponse } from '@/core/services/api'
 import type { FreeTextQuestion as FreeTextQuestionType } from '@/core/types/content'
 
 interface FreeTextQuestionProps {
   question: FreeTextQuestionType
+  topicId: string
   onSubmit: (answer: string) => void
   showingResult: boolean
 }
 
 export function FreeTextQuestion({
   question,
+  topicId,
   onSubmit,
   showingResult,
 }: FreeTextQuestionProps) {
   const [answer, setAnswer] = useState('')
-  const [selfAssessment, setSelfAssessment] = useState<'correct' | 'partial' | 'incorrect' | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [evaluation, setEvaluation] = useState<EvaluateResponse | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = () => {
-    if (!showingResult && answer.trim()) {
+  const handleSubmit = async () => {
+    if (!answer.trim()) return
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const result = await evaluateAnswer({
+        question: question.question,
+        user_answer: answer,
+        model_answer: question.modelAnswer,
+        key_points: question.keyPoints,
+        topic_id: topicId,
+      })
+      setEvaluation(result)
       onSubmit(answer)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Evaluation failed')
+      // Fallback to showing model answer
+      onSubmit(answer)
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  const handleSelfAssess = (assessment: 'correct' | 'partial' | 'incorrect') => {
-    setSelfAssessment(assessment)
-  }
+  const scoreColor = evaluation
+    ? evaluation.score >= 0.8
+      ? 'text-green-400'
+      : evaluation.score >= 0.5
+      ? 'text-amber-400'
+      : 'text-red-400'
+    : ''
 
   return (
     <div className="space-y-6">
-      {/* Question */}
       <div className="text-lg font-medium">{question.question}</div>
 
-      {/* Text Input */}
       <textarea
         aria-label={question.question}
         value={answer}
         onChange={(e) => setAnswer(e.target.value)}
         placeholder={question.placeholder || 'Deine Antwort...'}
-        disabled={showingResult}
+        disabled={showingResult || isLoading}
         className={`
           w-full h-48 p-4 rounded-lg border-2 bg-slate-900 text-slate-100
           font-mono text-sm resize-none
@@ -48,33 +74,89 @@ export function FreeTextQuestion({
         `}
       />
 
-      {/* Submit Button */}
       {!showingResult && (
         <Button
           onClick={handleSubmit}
-          disabled={!answer.trim()}
+          disabled={!answer.trim() || isLoading}
           className="w-full"
         >
-          Antwort pruefen
+          {isLoading ? 'Wird ausgewertet...' : 'Antwort pruefen'}
         </Button>
       )}
 
-      {/* Model Answer & Self-Assessment */}
-      {showingResult && (
+      {error && (
+        <Card className="p-4 bg-red-900/20 border-red-700">
+          <div className="text-sm text-red-300">{error}</div>
+        </Card>
+      )}
+
+      {showingResult && evaluation && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="space-y-4"
         >
-          {/* Model Answer */}
+          {/* Score */}
+          <Card className="p-4 bg-slate-800/50 border-slate-600">
+            <div className="flex items-center justify-between">
+              <span className="font-medium">Bewertung:</span>
+              <span className={`text-2xl font-bold ${scoreColor}`}>
+                {Math.round(evaluation.score * 100)}%
+              </span>
+            </div>
+          </Card>
+
+          {/* Feedback */}
+          <Card className="p-4 bg-slate-800/50 border-slate-600">
+            <div className="font-medium mb-2 text-blue-400">Feedback:</div>
+            <p className="text-slate-300">{evaluation.feedback}</p>
+          </Card>
+
+          {/* Missing Concepts */}
+          {evaluation.missing_concepts.length > 0 && (
+            <Card className="p-4 bg-amber-900/20 border-amber-700">
+              <div className="font-medium mb-2">Fehlende Konzepte:</div>
+              <ul className="space-y-1">
+                {evaluation.missing_concepts.map((concept, i) => (
+                  <li key={i} className="text-sm text-slate-300">• {concept}</li>
+                ))}
+              </ul>
+            </Card>
+          )}
+
+          {/* Suggestion */}
+          <Card className="p-4 bg-slate-800/50 border-slate-600">
+            <div className="font-medium mb-2 text-green-400">Tipp:</div>
+            <p className="text-sm text-slate-300">{evaluation.suggestion}</p>
+          </Card>
+
+          {/* Model Answer (collapsible) */}
+          <details className="group">
+            <summary className="cursor-pointer text-sm text-slate-400 hover:text-slate-300">
+              Musterantwort anzeigen
+            </summary>
+            <Card className="mt-2 p-4 bg-slate-800/50 border-slate-600">
+              <pre className="text-sm text-slate-300 whitespace-pre-wrap font-mono">
+                {question.modelAnswer}
+              </pre>
+            </Card>
+          </details>
+        </motion.div>
+      )}
+
+      {/* Fallback when no AI evaluation */}
+      {showingResult && !evaluation && !error && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-4"
+        >
           <Card className="p-4 bg-slate-800/50 border-slate-600">
             <div className="font-medium mb-2 text-blue-400">Musterantwort:</div>
             <pre className="text-sm text-slate-300 whitespace-pre-wrap font-mono">
               {question.modelAnswer}
             </pre>
           </Card>
-
-          {/* Key Points Checklist */}
           <Card className="p-4 bg-slate-800/50 border-slate-600">
             <div className="font-medium mb-3">Wichtige Punkte:</div>
             <ul className="space-y-2">
@@ -86,52 +168,6 @@ export function FreeTextQuestion({
               ))}
             </ul>
           </Card>
-
-          {/* Self-Assessment */}
-          {!selfAssessment && (
-            <div className="space-y-2">
-              <div className="text-sm text-slate-400">Wie hast du abgeschnitten?</div>
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => handleSelfAssess('correct')}
-                  className="flex-1 bg-green-900/30 border-green-700 hover:bg-green-900/50"
-                >
-                  Richtig
-                </Button>
-                <Button
-                  onClick={() => handleSelfAssess('partial')}
-                  className="flex-1 bg-amber-900/30 border-amber-700 hover:bg-amber-900/50"
-                >
-                  Teilweise
-                </Button>
-                <Button
-                  onClick={() => handleSelfAssess('incorrect')}
-                  className="flex-1 bg-red-900/30 border-red-700 hover:bg-red-900/50"
-                >
-                  Falsch
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {selfAssessment && (
-            <Card
-              className={`p-4 ${
-                selfAssessment === 'correct'
-                  ? 'bg-green-900/20 border-green-700'
-                  : selfAssessment === 'partial'
-                  ? 'bg-amber-900/20 border-amber-700'
-                  : 'bg-red-900/20 border-red-700'
-              }`}
-            >
-              <div className="font-medium">
-                {selfAssessment === 'correct' && 'Gut gemacht!'}
-                {selfAssessment === 'partial' && 'Weiter üben!'}
-                {selfAssessment === 'incorrect' && 'Wiederhole das Thema.'}
-              </div>
-              <div className="text-sm text-slate-300 mt-1">{question.explanation}</div>
-            </Card>
-          )}
         </motion.div>
       )}
     </div>

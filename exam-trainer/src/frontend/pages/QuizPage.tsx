@@ -80,6 +80,7 @@ export function QuizPage() {
               showingResult={state.showingResult}
               isCorrect={state.isCorrect}
               selectedAnswer={state.answers.get(state.currentQuestion.id)}
+              topicId={topicId}
             />
 
             {/* Navigation */}
