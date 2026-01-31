@@ -68,6 +68,7 @@ export type QuizQuestionType =
   | 'identify-error'
   | 'fill-blank'
   | 'system-builder'
+  | 'free-text'
 
 // Base question fields
 interface BaseQuizQuestion {
@@ -95,7 +96,15 @@ export interface SystemBuilderQuestion extends BaseQuizQuestion {
   availableComponents: string[]
 }
 
-export type QuizQuestion = StandardQuizQuestion | SystemBuilderQuestion
+// Free-text question with self-check
+export interface FreeTextQuestion extends BaseQuizQuestion {
+  type: 'free-text'
+  placeholder?: string
+  modelAnswer: string
+  keyPoints: string[]  // Checklist shown after submission
+}
+
+export type QuizQuestion = StandardQuizQuestion | SystemBuilderQuestion | FreeTextQuestion
 
 // ─────────────────────────────────────────────────
 // Progress Types
