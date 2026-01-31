@@ -24,9 +24,13 @@ services:
       - ./data:/data
       - ~/.config/gcloud:/root/.config/gcloud:ro
     environment:
+      # Direct API mode (Google AI Studio) - set GEMINI_API_KEY to enable
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3-flash-preview}
+      # Vertex AI mode (Google Cloud) - used when GEMINI_API_KEY is not set
       - VERTEX_PROJECT_ID=${VERTEX_PROJECT_ID:-de0360-sbx-lars}
       - VERTEX_LOCATION=${VERTEX_LOCATION:-europe-west4}
-      - VERTEX_MODEL=${VERTEX_MODEL:-gemini-2.0-flash}
+      - VERTEX_MODEL=${VERTEX_MODEL:-gemini-3-flash-preview}
       - HTTP_PROXY=${HTTP_PROXY}
       - HTTPS_PROXY=${HTTPS_PROXY}
       - NO_PROXY=${NO_PROXY}
