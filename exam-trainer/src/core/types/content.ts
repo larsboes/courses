@@ -26,6 +26,7 @@ export interface Topic {
   examNotes?: string
   sections: Section[]
   quiz?: Quiz
+  examTasks?: ExamTask[]
   relatedTopics?: RelatedTopicRef[]
   connectionDiagram?: string // Mermaid diagram showing topic relationships
 }
@@ -124,6 +125,15 @@ export interface DiagramBuildQuestion extends BaseQuizQuestion {
 }
 
 export type QuizQuestion = StandardQuizQuestion | SystemBuilderQuestion | FreeTextQuestion | CodeWriteQuestion | DiagramBuildQuestion
+
+// Exam task (groups related questions)
+export interface ExamTask {
+  id: string
+  title: string
+  points: number
+  context?: ReactNode
+  parts: QuizQuestion[]
+}
 
 // ─────────────────────────────────────────────────
 // Progress Types
