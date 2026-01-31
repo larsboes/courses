@@ -1,6 +1,6 @@
 // src/App.tsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { HomePage, CoursePage, TopicPage, QuizPage } from './pages'
+import { HomePage, CoursePage, TopicPage, QuizPage, ExamPage } from './pages'
 
 export function App() {
   return (
@@ -10,6 +10,7 @@ export function App() {
         <Route path="/course/:courseId" element={<CoursePage />} />
         <Route path="/course/:courseId/topic/:topicId" element={<TopicPage />} />
         <Route path="/course/:courseId/topic/:topicId/quiz" element={<QuizPage />} />
+        <Route path="/course/:courseId/exam" element={<ExamPage />} />
       </Routes>
     </BrowserRouter>
   )
