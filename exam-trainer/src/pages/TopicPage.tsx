@@ -1,12 +1,16 @@
 // src/pages/TopicPage.tsx
 import { useParams, Link } from 'react-router-dom'
 import { useState } from 'react'
-import { getTopic } from '@/content'
+import { getTopic, getCourse } from '@/content'
 import { Button } from '@/core/components/ui'
+import { RelatedTopics, NextTopicSuggestion } from '@/core/components/content'
+import { useProgress } from '@/core/hooks/useProgress'
 
 export function TopicPage() {
   const { courseId, topicId } = useParams<{ courseId: string; topicId: string }>()
   const topic = courseId && topicId ? getTopic(courseId, topicId) : undefined
+  const course = courseId ? getCourse(courseId) : undefined
+  const { progress } = useProgress(courseId ?? '')
   const [activeSectionIndex, setActiveSectionIndex] = useState(0)
 
   if (!topic) {
@@ -111,6 +115,25 @@ export function TopicPage() {
                 Nächste →
               </Button>
             </div>
+
+            {/* Related Topics */}
+            {topic.relatedTopics && topic.relatedTopics.length > 0 && (
+              <RelatedTopics
+                topics={topic.relatedTopics}
+                courseId={courseId!}
+                connectionDiagram={topic.connectionDiagram}
+              />
+            )}
+
+            {/* Next Topic Suggestion */}
+            {course && (
+              <NextTopicSuggestion
+                currentTopic={topic}
+                allTopics={course.topics}
+                progress={progress}
+                courseId={courseId!}
+              />
+            )}
           </div>
         </div>
       </div>
