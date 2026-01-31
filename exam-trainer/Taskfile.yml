@@ -2,27 +2,66 @@ version: '3'
 
 tasks:
   up:
-    desc: Start the exam-trainer container with hot reload
+    desc: Start frontend + backend with hot reload
     cmds:
-      - docker compose up --build -d
-      - echo "Exam Trainer running at http://localhost:5173"
+      - docker compose up -d
+      - echo ""
+      - echo "🎓 Exam Trainer running!"
+      - echo "   Frontend: http://localhost:5173"
+      - echo "   Backend:  http://localhost:8000"
+      - echo "   API Docs: http://localhost:8000/docs"
 
   down:
-    desc: Stop the exam-trainer container
+    desc: Stop all services
     cmds:
       - docker compose down
 
   logs:
-    desc: Show container logs
+    desc: Show all logs (follow)
     cmds:
       - docker compose logs -f
 
+  logs:frontend:
+    desc: Show frontend logs
+    cmds:
+      - docker compose logs -f frontend
+
+  logs:backend:
+    desc: Show backend logs
+    cmds:
+      - docker compose logs -f backend
+
   restart:
-    desc: Restart the container
+    desc: Restart all services
     cmds:
       - docker compose restart
 
-  shell:
-    desc: Open a shell in the container
+  restart:frontend:
+    desc: Restart frontend only
     cmds:
-      - docker compose exec exam-trainer sh
+      - docker compose restart frontend
+
+  restart:backend:
+    desc: Restart backend only
+    cmds:
+      - docker compose restart backend
+
+  shell:frontend:
+    desc: Open shell in frontend container
+    cmds:
+      - docker compose exec frontend sh
+
+  shell:backend:
+    desc: Open shell in backend container
+    cmds:
+      - docker compose exec backend bash
+
+  health:
+    desc: Check backend health
+    cmds:
+      - curl -s http://localhost:8000/api/health | jq .
+
+  build:
+    desc: Build frontend for production
+    cmds:
+      - bun run build
