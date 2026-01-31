@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+  up:
+    desc: Start the exam-trainer container with hot reload
+    cmds:
+      - docker compose up --build -d
+      - echo "Exam Trainer running at http://localhost:5173"
+
+  down:
+    desc: Stop the exam-trainer container
+    cmds:
+      - docker compose down
+
+  logs:
+    desc: Show container logs
+    cmds:
+      - docker compose logs -f
+
+  restart:
+    desc: Restart the container
+    cmds:
+      - docker compose restart
+
+  shell:
+    desc: Open a shell in the container
+    cmds:
+      - docker compose exec exam-trainer sh
