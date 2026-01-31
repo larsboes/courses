@@ -187,6 +187,11 @@ export const cssTopic: Topic = {
     },
   ],
 
+  relatedTopics: [
+    { id: 'html', title: 'HTML', relationship: 'styled HTML' },
+    { id: 'browser-rendering', title: 'Browser Rendering', relationship: 'CSSOM im Render Tree' },
+  ],
+
   quiz: {
     questions: [
       {

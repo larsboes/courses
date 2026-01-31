@@ -164,6 +164,12 @@ export const jsonTopic: Topic = {
     },
   ],
 
+  relatedTopics: [
+    { id: 'rest', title: 'REST', relationship: 'API Datenformat' },
+    { id: 'http', title: 'HTTP', relationship: 'im Body' },
+    { id: 'kubernetes-manifests', title: 'K8s Manifests', relationship: 'ähnlich wie YAML' },
+  ],
+
   quiz: {
     questions: [
       {

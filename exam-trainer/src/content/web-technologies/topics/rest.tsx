@@ -229,6 +229,38 @@ export const restTopic: Topic = {
     },
   ],
 
+  relatedTopics: [
+    { id: 'http', title: 'HTTP', relationship: 'baut auf' },
+    { id: 'json', title: 'JSON', relationship: 'Datenformat' },
+    { id: 'kubernetes-netzwerk', title: 'K8s Netzwerk', relationship: 'API-Zugriff' },
+    { id: 'playlist-app', title: 'Playlist App', relationship: 'Praxisbeispiel' },
+  ],
+
+  connectionDiagram: `
+flowchart LR
+  subgraph Client["Client"]
+    Browser["Browser"]
+    App["App"]
+  end
+
+  subgraph API["REST API"]
+    Endpoint["/api/v1/playlists"]
+  end
+
+  subgraph Server["Backend"]
+    Handler["Request Handler"]
+    DB["Datenbank"]
+  end
+
+  Browser -->|"HTTP GET"| Endpoint
+  App -->|"HTTP POST"| Endpoint
+  Endpoint -->|"Route"| Handler
+  Handler -->|"Query"| DB
+  Handler -->|"JSON Response"| Endpoint
+
+  style Endpoint fill:#3b82f6,stroke:#1d4ed8
+`,
+
   quiz: {
     questions: [
       {

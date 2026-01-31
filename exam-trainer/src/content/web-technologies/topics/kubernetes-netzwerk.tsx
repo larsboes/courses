@@ -198,6 +198,34 @@ export const kubernetesNetzwerkTopic: Topic = {
     },
   ],
 
+  relatedTopics: [
+    { id: 'kubernetes-begriffe', title: 'K8s Begriffe', relationship: 'setzt voraus' },
+    { id: 'kubernetes-manifests', title: 'K8s Manifests', relationship: 'Service Manifest' },
+    { id: 'dns-tls', title: 'DNS/TLS', relationship: 'vertieft durch' },
+  ],
+
+  connectionDiagram: `
+flowchart TB
+  subgraph External["Extern"]
+    User["User/Browser"]
+    DNS["DNS"]
+  end
+
+  subgraph K8s["Kubernetes Cluster"]
+    Ingress["Ingress\nController"]
+    Service["Service"]
+    Pods["Pods"]
+  end
+
+  User -->|"1. DNS Lookup"| DNS
+  DNS -->|"2. IP"| User
+  User -->|"3. HTTPS"| Ingress
+  Ingress -->|"4. HTTP"| Service
+  Service -->|"5. Round Robin"| Pods
+
+  style Service fill:#3b82f6,stroke:#1d4ed8
+`,
+
   quiz: {
     questions: [
       {

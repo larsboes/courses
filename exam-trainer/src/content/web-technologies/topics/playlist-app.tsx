@@ -368,6 +368,50 @@ spec:
     },
   ],
 
+  relatedTopics: [
+    { id: 'rest', title: 'REST', relationship: 'API Design' },
+    { id: 'http', title: 'HTTP', relationship: 'Request/Response' },
+    { id: 'json', title: 'JSON', relationship: 'Datenformat' },
+    { id: 'html', title: 'HTML', relationship: 'Frontend Struktur' },
+    { id: 'css', title: 'CSS', relationship: 'Frontend Styling' },
+    { id: 'javascript-dom', title: 'JavaScript DOM', relationship: 'Interaktivität' },
+    { id: 'kubernetes-manifests', title: 'K8s Manifests', relationship: 'Deployment' },
+  ],
+
+  connectionDiagram: `
+flowchart TB
+  subgraph Frontend["Frontend (Browser)"]
+    HTML["HTML Struktur"]
+    CSS["CSS Styling"]
+    JS["JavaScript DOM"]
+  end
+
+  subgraph Backend["Backend (Server)"]
+    REST["REST API"]
+    Logic["Business Logic"]
+    DB["Datenbank"]
+  end
+
+  subgraph Deploy["Deployment (K8s)"]
+    Pod1["Frontend Pod"]
+    Pod2["Backend Pod"]
+    Service["Service"]
+  end
+
+  HTML --> JS
+  CSS --> HTML
+  JS -->|"HTTP/JSON"| REST
+  REST --> Logic
+  Logic --> DB
+
+  Pod1 -->|"enthält"| Frontend
+  Pod2 -->|"enthält"| Backend
+  Service -->|"loadbalancer"| Pod2
+
+  style REST fill:#3b82f6,stroke:#1d4ed8
+  style JS fill:#22c55e,stroke:#16a34a
+`,
+
   quiz: {
     questions: [
       {

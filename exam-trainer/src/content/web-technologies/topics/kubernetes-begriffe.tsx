@@ -222,6 +222,32 @@ export const kubernetesBegriffeTopic: Topic = {
     },
   ],
 
+  relatedTopics: [
+    { id: 'docker-basics', title: 'Docker Grundlagen', relationship: 'baut auf' },
+    { id: 'kubernetes-manifests', title: 'K8s Manifests', relationship: 'benötigt für' },
+    { id: 'kubernetes-netzwerk', title: 'K8s Netzwerk', relationship: 'ergänzt durch' },
+  ],
+
+  connectionDiagram: `
+flowchart LR
+  subgraph Foundation["Grundlagen"]
+    Docker["Docker\nBasics"]
+  end
+
+  subgraph K8s["Kubernetes"]
+    Begriffe["K8s\nBegriffe"]
+    Manifests["K8s\nManifests"]
+    Netzwerk["K8s\nNetzwerk"]
+  end
+
+  Docker -->|"Images"| Begriffe
+  Begriffe -->|"definiert in"| Manifests
+  Begriffe -->|"kommuniziert via"| Netzwerk
+  Manifests <-->|"Service ↔ Pods"| Netzwerk
+
+  style Begriffe fill:#3b82f6,stroke:#1d4ed8
+`,
+
   quiz: {
     questions: [
       {

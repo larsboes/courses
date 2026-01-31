@@ -164,6 +164,44 @@ export const javascriptDomTopic: Topic = {
     },
   ],
 
+  relatedTopics: [
+    { id: 'html', title: 'HTML', relationship: 'DOM Struktur aus' },
+    { id: 'browser-rendering', title: 'Browser Rendering', relationship: 'DOM im Render Tree' },
+    { id: 'playlist-app', title: 'Playlist App', relationship: 'Praxisbeispiel' },
+  ],
+
+  connectionDiagram: `
+flowchart TB
+  subgraph HTML["HTML Document"]
+    Source["&lt;div id='app'&gt;&lt;ul&gt;...&lt;/ul&gt;&lt;/div&gt;"]
+  end
+
+  subgraph DOM["DOM Tree"]
+    Document["document"]
+    Div["div#app"]
+    Ul["ul"]
+    Li1["li"]
+    Li2["li"]
+    Document --> Div
+    Div --> Ul
+    Ul --> Li1
+    Ul --> Li2
+  end
+
+  subgraph JS["JavaScript"]
+    Select["document.querySelector()"]
+    Create["document.createElement()"]
+    Modify["element.innerHTML = ..."]
+  end
+
+  Source -->|"Browser parst"| Document
+  Select -->|"findet"| Div
+  Create -->|"erstellt neues"| Li2
+  Modify -->|"ändert"| Li1
+
+  style DOM fill:#3b82f6,stroke:#1d4ed8
+`,
+
   quiz: {
     questions: [
       {
