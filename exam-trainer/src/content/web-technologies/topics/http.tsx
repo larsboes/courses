@@ -197,6 +197,24 @@ flowchart LR
         explanation:
           '404 ist ein Client-Fehler (4xx) und bedeutet, dass die URL nicht existiert. Der Server hat die Anfrage verstanden, aber keine passende Ressource gefunden.',
       },
+      {
+        id: 'http-request-write',
+        type: 'free-text',
+        question:
+          'Schreiben Sie einen HTTP GET Request, der alle Playlists mit einer Mindestlaufzeit von 300 Minuten abfragt. Server: server.com:8001',
+        placeholder: 'GET /playlists...',
+        modelAnswer: `GET /playlists?min_duration=300 HTTP/1.1
+Host: server.com:8001
+Accept: application/json`,
+        keyPoints: [
+          'GET Methode fuer Abfrage',
+          'Query-Parameter fuer Filterung (?min_duration=300)',
+          'Host-Header mit Port',
+          'Accept-Header fuer JSON-Antwort',
+        ],
+        explanation:
+          'HTTP Requests bestehen aus Request-Line, Headers und optionalem Body. Query-Parameter werden fuer Filterung verwendet.',
+      },
     ],
   },
 }
