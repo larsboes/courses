@@ -2,7 +2,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button, Card } from '@/core/components/ui'
-import type { QuizQuestion as QuizQuestionType } from '@/core/types/content'
+import { SystemBuilderExercise } from './SystemBuilderExercise'
+import type { QuizQuestion as QuizQuestionType, SystemBuilderQuestion, StandardQuizQuestion } from '@/core/types/content'
 
 interface QuizQuestionProps {
   question: QuizQuestionType
@@ -12,13 +13,65 @@ interface QuizQuestionProps {
   selectedAnswer?: string | string[]
 }
 
-export function QuizQuestion({
+// Separate component for system-builder to avoid hooks rules violation
+function SystemBuilderQuizQuestion({
+  question,
+  onSubmit,
+  showingResult,
+  isCorrect,
+}: {
+  question: SystemBuilderQuestion
+  onSubmit: (answer: string | string[]) => void
+  showingResult: boolean
+  isCorrect: boolean | null
+}) {
+  return (
+    <div className="space-y-6">
+      <div className="text-lg font-medium">{question.question}</div>
+      <SystemBuilderExercise
+        manifest={question.manifest}
+        expectedNodes={question.expectedNodes}
+        expectedEdges={question.expectedEdges}
+        availableComponents={question.availableComponents}
+        onComplete={(correct) => onSubmit(correct ? 'correct' : 'incorrect')}
+      />
+      {showingResult && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Card
+            className={`p-4 ${
+              isCorrect
+                ? 'bg-green-900/20 border-green-700'
+                : 'bg-amber-900/20 border-amber-700'
+            }`}
+          >
+            <div className="font-medium mb-2">
+              {isCorrect ? 'Richtig!' : 'Hinweis:'}
+            </div>
+            <div className="text-sm text-slate-300">{question.explanation}</div>
+          </Card>
+        </motion.div>
+      )}
+    </div>
+  )
+}
+
+// Separate component for standard questions
+function StandardQuizQuestionComponent({
   question,
   onSubmit,
   showingResult,
   isCorrect,
   selectedAnswer,
-}: QuizQuestionProps) {
+}: {
+  question: StandardQuizQuestion
+  onSubmit: (answer: string | string[]) => void
+  showingResult: boolean
+  isCorrect: boolean | null
+  selectedAnswer?: string | string[]
+}) {
   const [selected, setSelected] = useState<string | string[]>(
     selectedAnswer ?? (question.type === 'multi-select' ? [] : '')
   )
@@ -64,7 +117,7 @@ export function QuizQuestion({
       <div className="text-lg font-medium">{question.question}</div>
 
       {question.type === 'multi-select' && (
-        <p className="text-sm text-slate-400">Mehrere Antworten möglich</p>
+        <p className="text-sm text-slate-400">Mehrere Antworten moglich</p>
       )}
 
       {/* Options */}
@@ -128,7 +181,7 @@ export function QuizQuestion({
             }`}
           >
             <div className="font-medium mb-2">
-              {isCorrect ? '✓ Richtig!' : '✗ Leider falsch'}
+              {isCorrect ? 'Richtig!' : 'Leider falsch'}
             </div>
             <div className="text-sm text-slate-300">{question.explanation}</div>
           </Card>
@@ -144,9 +197,38 @@ export function QuizQuestion({
           }
           className="w-full"
         >
-          Antwort prüfen
+          Antwort pruefen
         </Button>
       )}
     </div>
+  )
+}
+
+export function QuizQuestion({
+  question,
+  onSubmit,
+  showingResult,
+  isCorrect,
+  selectedAnswer,
+}: QuizQuestionProps) {
+  if (question.type === 'system-builder') {
+    return (
+      <SystemBuilderQuizQuestion
+        question={question as SystemBuilderQuestion}
+        onSubmit={onSubmit}
+        showingResult={showingResult}
+        isCorrect={isCorrect}
+      />
+    )
+  }
+
+  return (
+    <StandardQuizQuestionComponent
+      question={question as StandardQuizQuestion}
+      onSubmit={onSubmit}
+      showingResult={showingResult}
+      isCorrect={isCorrect}
+      selectedAnswer={selectedAnswer}
+    />
   )
 }

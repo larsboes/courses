@@ -12,6 +12,12 @@ export interface Course {
   topics: Topic[]
 }
 
+export interface RelatedTopicRef {
+  id: string
+  title: string
+  relationship: string // e.g., "builds on", "required for", "related to"
+}
+
 export interface Topic {
   id: string
   title: string
@@ -20,6 +26,8 @@ export interface Topic {
   examNotes?: string
   sections: Section[]
   quiz?: Quiz
+  relatedTopics?: RelatedTopicRef[]
+  connectionDiagram?: string // Mermaid diagram showing topic relationships
 }
 
 export interface Section {
@@ -59,17 +67,35 @@ export type QuizQuestionType =
   | 'match-pairs'
   | 'identify-error'
   | 'fill-blank'
+  | 'system-builder'
 
-export interface QuizQuestion {
+// Base question fields
+interface BaseQuizQuestion {
   id: string
   type: QuizQuestionType
   question: string
   visual?: ReactNode
-  options?: string[]
-  correctAnswer: string | string[]
   explanation: string
   explanationVisual?: ReactNode
 }
+
+// Standard question with options
+export interface StandardQuizQuestion extends BaseQuizQuestion {
+  type: 'multiple-choice' | 'multi-select' | 'order-steps' | 'match-pairs' | 'identify-error' | 'fill-blank'
+  options?: string[]
+  correctAnswer: string | string[]
+}
+
+// System builder question
+export interface SystemBuilderQuestion extends BaseQuizQuestion {
+  type: 'system-builder'
+  manifest: string
+  expectedNodes: { type: string; count: number }[]
+  expectedEdges: { from: string; to: string }[]
+  availableComponents: string[]
+}
+
+export type QuizQuestion = StandardQuizQuestion | SystemBuilderQuestion
 
 // ─────────────────────────────────────────────────
 // Progress Types

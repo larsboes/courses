@@ -1,6 +1,11 @@
 // src/core/hooks/useQuizState.ts
 import { useState, useCallback, useMemo } from 'react'
-import type { Quiz, QuizQuestion } from '@/core/types/content'
+import type { Quiz, QuizQuestion, StandardQuizQuestion } from '@/core/types/content'
+
+// Helper to check if a question has correctAnswer property
+function isStandardQuestion(q: QuizQuestion): q is StandardQuizQuestion {
+  return q.type !== 'system-builder'
+}
 
 interface QuizState {
   currentIndex: number
@@ -39,36 +44,57 @@ export function useQuizState(quiz: Quiz): [QuizState & QuizInfo, QuizActions] {
   const isCorrect = useMemo(() => {
     if (!currentAnswer || !currentQuestion) return null
 
-    const correct = currentQuestion.correctAnswer
-    if (Array.isArray(correct)) {
-      if (!Array.isArray(currentAnswer)) return false
-      return (
-        correct.length === currentAnswer.length &&
-        correct.every((c) => currentAnswer.includes(c))
-      )
+    // System-builder questions use 'correct'/'incorrect' as answer
+    if (currentQuestion.type === 'system-builder') {
+      return currentAnswer === 'correct'
     }
-    return currentAnswer === correct
+
+    // Standard questions with correctAnswer property
+    if (isStandardQuestion(currentQuestion)) {
+      const correct = currentQuestion.correctAnswer
+      if (Array.isArray(correct)) {
+        if (!Array.isArray(currentAnswer)) return false
+        return (
+          correct.length === currentAnswer.length &&
+          correct.every((c: string) => currentAnswer.includes(c))
+        )
+      }
+      return currentAnswer === correct
+    }
+
+    return null
   }, [currentAnswer, currentQuestion])
 
   const score = useMemo(() => {
-    let correct = 0
+    let correctCount = 0
     quiz.questions.forEach((q) => {
       const answer = state.answers.get(q.id)
       if (!answer) return
 
-      if (Array.isArray(q.correctAnswer)) {
-        if (
-          Array.isArray(answer) &&
-          q.correctAnswer.length === answer.length &&
-          q.correctAnswer.every((c) => answer.includes(c))
-        ) {
-          correct++
+      // System-builder questions use 'correct'/'incorrect' as answer
+      if (q.type === 'system-builder') {
+        if (answer === 'correct') {
+          correctCount++
         }
-      } else if (answer === q.correctAnswer) {
-        correct++
+        return
+      }
+
+      // Standard questions with correctAnswer property
+      if (isStandardQuestion(q)) {
+        if (Array.isArray(q.correctAnswer)) {
+          if (
+            Array.isArray(answer) &&
+            q.correctAnswer.length === answer.length &&
+            q.correctAnswer.every((c: string) => answer.includes(c))
+          ) {
+            correctCount++
+          }
+        } else if (answer === q.correctAnswer) {
+          correctCount++
+        }
       }
     })
-    return correct
+    return correctCount
   }, [quiz.questions, state.answers])
 
   const submitAnswer = useCallback((answer: string | string[]) => {
