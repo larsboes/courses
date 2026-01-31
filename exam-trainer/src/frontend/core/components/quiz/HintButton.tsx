@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button, Card } from '@/core/components/ui'
-import { getHint, type HintResponse } from '@/core/services/api'
+import { getHint } from '@/core/services/api'
 
 interface HintButtonProps {
   question: string
