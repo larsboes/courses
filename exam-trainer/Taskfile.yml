@@ -5,11 +5,12 @@ tasks:
     desc: Start frontend + backend with hot reload
     cmds:
       - docker compose up -d
-      - echo ""
-      - echo "🎓 Exam Trainer running!"
-      - echo "   Frontend: http://localhost:5173"
-      - echo "   Backend:  http://localhost:8000"
-      - echo "   API Docs: http://localhost:8000/docs"
+      - |
+        echo ""
+        echo "Exam Trainer running!"
+        echo "  Frontend: http://localhost:5173"
+        echo "  Backend:  http://localhost:8000"
+        echo "  API Docs: http://localhost:8000/docs"
 
   down:
     desc: Stop all services

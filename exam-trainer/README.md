@@ -54,9 +54,9 @@ task build           # Production build
 
 - Topic-based learning with interactive diagrams
 - Quiz mode with multiple question types
-- AI-powered free-text answer evaluation (coming soon)
-- Progressive hints system (coming soon)
-- Learning recommendations (coming soon)
+- AI-powered free-text answer evaluation
+- Progressive hints system (3 levels)
+- Personalized learning recommendations
 
 ## Development
 
