@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from exam_trainer_api.routers import evaluate_router
+
 app = FastAPI(title="Exam Trainer API")
 
 app.add_middleware(
@@ -9,6 +11,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(evaluate_router, prefix="/api")
 
 
 @app.get("/api/health")
