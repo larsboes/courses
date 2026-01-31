@@ -1,0 +1,247 @@
+// src/content/web-technologies/topics/kubernetes-manifests.tsx
+import type { Topic } from '@/core/types/content'
+import { K8sManifestExplorer } from '../diagrams/K8sManifestExplorer'
+
+export const kubernetesManifestsTopic: Topic = {
+  id: 'kubernetes-manifests',
+  title: 'Kubernetes Manifests',
+  description: 'YAML-Manifeste, deklarative Konfiguration, Deployment & Service',
+  examNotes: 'Manifest-Struktur, Pflichtfelder, Label Selektoren',
+
+  sections: [
+    {
+      id: 'overview',
+      title: 'Überblick',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Kubernetes verwendet <strong>YAML-Manifeste</strong> zur deklarativen
+            Konfiguration von Ressourcen. Anstatt imperative Befehle auszuführen,
+            beschreibt man den <strong>gewünschten Zustand</strong> (Desired State).
+          </p>
+          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+            <div className="text-sm text-slate-400 mb-2">Deklarativ vs. Imperativ:</div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="p-3 bg-green-900/20 rounded border border-green-800">
+                <div className="text-green-400 font-medium mb-1">Deklarativ</div>
+                <div className="text-sm text-slate-300">
+                  "Ich möchte 3 Pods" - Kubernetes sorgt dafür
+                </div>
+              </div>
+              <div className="p-3 bg-amber-900/20 rounded border border-amber-800">
+                <div className="text-amber-400 font-medium mb-1">Imperativ</div>
+                <div className="text-sm text-slate-300">
+                  "Starte Pod 1, dann Pod 2, dann Pod 3"
+                </div>
+              </div>
+            </div>
+          </div>
+          <p>
+            Manifeste werden mit <code className="bg-slate-700 px-1 rounded">kubectl apply -f</code> angewendet.
+            Kubernetes vergleicht dann den aktuellen mit dem gewünschten Zustand
+            und nimmt die nötigen Änderungen vor.
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'structure',
+      title: 'Struktur',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Jedes Kubernetes-Manifest hat vier Pflichtfelder. Klicke auf die
+            Bereiche für Details:
+          </p>
+          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+            <div className="text-sm text-slate-400 mb-2">Pflichtfelder:</div>
+            <ul className="list-disc list-inside space-y-1 text-slate-300">
+              <li><strong>apiVersion</strong> - API-Gruppe und Version</li>
+              <li><strong>kind</strong> - Ressourcentyp</li>
+              <li><strong>metadata</strong> - Name und Labels</li>
+              <li><strong>spec</strong> - Gewünschter Zustand</li>
+            </ul>
+          </div>
+        </div>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: K8sManifestExplorer,
+      },
+    },
+    {
+      id: 'deployment-manifest',
+      title: 'Deployment Manifest',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Ein <strong>Deployment</strong> verwaltet ReplicaSets und sorgt für
+            Rolling Updates. Es garantiert eine bestimmte Anzahl von Pod-Replikas.
+          </p>
+          <div className="bg-slate-900 rounded-lg p-4 border border-slate-700 overflow-x-auto">
+            <pre className="font-mono text-sm text-slate-300">
+{`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playlist-api
+  labels:
+    app: playlist-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: playlist-api
+  template:
+    metadata:
+      labels:
+        app: playlist-api
+    spec:
+      containers:
+      - name: api
+        image: playlist-api:1.0
+        ports:
+        - containerPort: 8001`}
+            </pre>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="p-3 bg-slate-800/50 rounded border border-slate-700">
+              <div className="text-blue-400 font-mono text-sm mb-1">replicas: 3</div>
+              <div className="text-sm text-slate-300">
+                Kubernetes hält immer 3 Pods am Laufen
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800/50 rounded border border-slate-700">
+              <div className="text-blue-400 font-mono text-sm mb-1">selector.matchLabels</div>
+              <div className="text-sm text-slate-300">
+                Verbindet Deployment mit seinen Pods
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800/50 rounded border border-slate-700">
+              <div className="text-blue-400 font-mono text-sm mb-1">template</div>
+              <div className="text-sm text-slate-300">
+                Pod-Vorlage - was in jedem Pod läuft
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800/50 rounded border border-slate-700">
+              <div className="text-blue-400 font-mono text-sm mb-1">containerPort</div>
+              <div className="text-sm text-slate-300">
+                Port, auf dem der Container lauscht
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'service-manifest',
+      title: 'Service Manifest',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Ein <strong>Service</strong> bietet einen stabilen Netzwerk-Endpunkt
+            für Pods. Da Pods kurzlebig sind (werden ersetzt bei Updates/Fehlern),
+            braucht man einen festen DNS-Namen und IP-Adresse.
+          </p>
+          <div className="bg-slate-900 rounded-lg p-4 border border-slate-700 overflow-x-auto">
+            <pre className="font-mono text-sm text-slate-300">
+{`apiVersion: v1
+kind: Service
+metadata:
+  name: playlist-api-service
+spec:
+  selector:
+    app: playlist-api
+  ports:
+  - port: 80
+    targetPort: 8001
+  type: ClusterIP`}
+            </pre>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="p-3 bg-slate-800/50 rounded border border-slate-700">
+              <div className="text-green-400 font-mono text-sm mb-1">selector.app</div>
+              <div className="text-sm text-slate-300">
+                Findet alle Pods mit Label <code className="bg-slate-700 px-1 rounded">app: playlist-api</code>
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800/50 rounded border border-slate-700">
+              <div className="text-green-400 font-mono text-sm mb-1">port: 80</div>
+              <div className="text-sm text-slate-300">
+                Service-Port (nach außen sichtbar)
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800/50 rounded border border-slate-700">
+              <div className="text-green-400 font-mono text-sm mb-1">targetPort: 8001</div>
+              <div className="text-sm text-slate-300">
+                Pod-Port (Container lauscht hier)
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800/50 rounded border border-slate-700">
+              <div className="text-green-400 font-mono text-sm mb-1">type: ClusterIP</div>
+              <div className="text-sm text-slate-300">
+                Nur intern erreichbar (Standard)
+              </div>
+            </div>
+          </div>
+          <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+            <div className="text-blue-300 font-medium mb-2">Service-Typen:</div>
+            <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
+              <li><strong>ClusterIP</strong> - Nur cluster-intern (Standard)</li>
+              <li><strong>NodePort</strong> - Auf jedem Node über festen Port erreichbar</li>
+              <li><strong>LoadBalancer</strong> - Externer Load Balancer (Cloud)</li>
+            </ul>
+          </div>
+        </div>
+      ),
+    },
+  ],
+
+  quiz: {
+    questions: [
+      {
+        id: 'k8s-manifest-fields',
+        type: 'multi-select',
+        question: 'Welche Felder sind in jedem Kubernetes-Manifest Pflicht? (Mehrere Antworten)',
+        options: [
+          'apiVersion',
+          'kind',
+          'metadata',
+          'spec',
+          'status',
+          'replicas',
+        ],
+        correctAnswer: ['apiVersion', 'kind', 'metadata', 'spec'],
+        explanation:
+          'Jedes Manifest braucht apiVersion (API-Gruppe), kind (Ressourcentyp), metadata (mindestens name) und spec (gewünschter Zustand). "status" wird von Kubernetes verwaltet, "replicas" gehört in die spec.',
+      },
+      {
+        id: 'k8s-deployment-vs-service',
+        type: 'multiple-choice',
+        question: 'Was ist der Hauptunterschied zwischen Deployment und Service?',
+        options: [
+          'Deployment verwaltet Pods, Service bietet Netzwerk-Endpunkte',
+          'Service verwaltet Pods, Deployment bietet Netzwerk-Endpunkte',
+          'Deployment ist für Datenbanken, Service für APIs',
+          'Es gibt keinen Unterschied, beide können austauschbar verwendet werden',
+        ],
+        correctAnswer: 'Deployment verwaltet Pods, Service bietet Netzwerk-Endpunkte',
+        explanation:
+          'Ein Deployment kümmert sich um das Erstellen, Skalieren und Aktualisieren von Pods. Ein Service hingegen bietet einen stabilen Netzwerk-Endpunkt (IP + DNS), über den die Pods erreichbar sind.',
+      },
+      {
+        id: 'k8s-label-selector',
+        type: 'multiple-choice',
+        question: 'Wie verbindet ein Service die richtigen Pods?',
+        options: [
+          'Über Label Selektoren - der selector muss mit den Pod-Labels übereinstimmen',
+          'Über den Namen - Service und Pods müssen gleich heißen',
+          'Über die IP-Adresse - der Service kennt alle Pod-IPs',
+          'Automatisch - Kubernetes verbindet alles im gleichen Namespace',
+        ],
+        correctAnswer: 'Über Label Selektoren - der selector muss mit den Pod-Labels übereinstimmen',
+        explanation:
+          'Services nutzen Label Selektoren (z.B. selector.app: my-app), um Pods zu finden. Alle Pods mit dem passenden Label (labels.app: my-app) werden vom Service erfasst und erhalten Traffic.',
+      },
+    ],
+  },
+}
