@@ -40,7 +40,7 @@ export function RecommendationsPanel({
       <motion.div variants={itemVariants}>
         <Card className="p-4 bg-emerald-900/20 border-emerald-700/50">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xl">AI</span>
+            <span className="text-xl">🤖</span>
             <span className="font-semibold text-emerald-400">Empfehlung</span>
           </div>
           <p className="text-slate-300 leading-relaxed">{message}</p>
@@ -52,7 +52,7 @@ export function RecommendationsPanel({
         <motion.div variants={itemVariants}>
           <Card className="p-4 bg-amber-900/20 border-amber-700/50">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xl">!</span>
+              <span className="text-xl">⚠️</span>
               <span className="font-semibold text-amber-400">Schwachstellen</span>
             </div>
             <ul className="space-y-2">
@@ -72,7 +72,7 @@ export function RecommendationsPanel({
         <motion.div variants={itemVariants}>
           <Card className="p-4 bg-blue-900/20 border-blue-700/50">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xl">*</span>
+              <span className="text-xl">📚</span>
               <span className="font-semibold text-blue-400">Empfohlene Themen</span>
             </div>
             <ul className="space-y-2">

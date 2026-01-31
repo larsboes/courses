@@ -119,6 +119,10 @@ export function FreeTextQuestion({
         score: result.score,
         user_answer: answer,
         hints_used: 0, // TODO: Track hints from HintButton
+      }).catch((err) => {
+        if (import.meta.env.DEV) {
+          console.warn('[saveProgress] Failed:', err.message)
+        }
       })
 
       onSubmit(answer)
