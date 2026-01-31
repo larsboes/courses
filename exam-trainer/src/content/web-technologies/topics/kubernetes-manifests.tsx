@@ -196,6 +196,34 @@ spec:
     },
   ],
 
+  relatedTopics: [
+    { id: 'kubernetes-begriffe', title: 'K8s Begriffe', relationship: 'setzt voraus' },
+    { id: 'kubernetes-netzwerk', title: 'K8s Netzwerk', relationship: 'Service definiert' },
+    { id: 'docker-basics', title: 'Docker Grundlagen', relationship: 'Image-Referenz' },
+    { id: 'json', title: 'JSON', relationship: 'ähnliche Syntax (YAML)' },
+  ],
+
+  connectionDiagram: `
+flowchart TB
+  subgraph Manifest["YAML Manifest"]
+    Deployment["Deployment"]
+    Service["Service"]
+  end
+
+  subgraph Resources["Kubernetes Ressourcen"]
+    RS["ReplicaSet"]
+    Pods["Pods"]
+    Endpoints["Endpoints"]
+  end
+
+  Deployment -->|"erstellt"| RS
+  RS -->|"verwaltet"| Pods
+  Service -->|"selector"| Pods
+  Service -->|"aktualisiert"| Endpoints
+
+  style Manifest fill:#3b82f6,stroke:#1d4ed8
+`,
+
   quiz: {
     questions: [
       {
@@ -241,6 +269,40 @@ spec:
         correctAnswer: 'Über Label Selektoren - der selector muss mit den Pod-Labels übereinstimmen',
         explanation:
           'Services nutzen Label Selektoren (z.B. selector.app: my-app), um Pods zu finden. Alle Pods mit dem passenden Label (labels.app: my-app) werden vom Service erfasst und erhalten Traffic.',
+      },
+      {
+        id: 'k8s-system-builder',
+        type: 'system-builder',
+        question: 'Baue das Diagramm, das durch dieses Deployment-Manifest entsteht:',
+        manifest: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web
+        image: nginx:1.21`,
+        expectedNodes: [
+          { type: 'Deployment', count: 1 },
+          { type: 'ReplicaSet', count: 1 },
+          { type: 'Pod', count: 2 },
+        ],
+        expectedEdges: [
+          { from: 'Deployment', to: 'ReplicaSet' },
+          { from: 'ReplicaSet', to: 'Pod' },
+        ],
+        availableComponents: ['Pod', 'Service', 'Deployment', 'ReplicaSet', 'Container'],
+        explanation:
+          'Ein Deployment mit replicas: 2 erstellt ein ReplicaSet, das wiederum 2 Pods verwaltet. Das Deployment -> ReplicaSet -> Pods ist die typische Hierarchie.',
       },
     ],
   },

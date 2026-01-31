@@ -1,3 +1,5 @@
 // src/core/components/quiz/index.ts
 export { QuizQuestion } from './QuizQuestion'
 export { QuizResults } from './QuizResults'
+export { SystemBuilderExercise } from './SystemBuilderExercise'
+export { ComponentToolbox } from './ComponentToolbox'
