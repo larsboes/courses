@@ -1,4 +1,5 @@
 // src/core/components/content/NextTopicSuggestion.tsx
+import React from 'react'
 import { Link } from 'react-router-dom'
 import type { Topic, CourseProgress } from '@/core/types/content'
 
@@ -21,11 +22,14 @@ function findNextTopic(
 ): SuggestedTopic | null {
   const isCompleted = (topicId: string) => progress.topics[topicId]?.completed ?? false
 
+  // Create a Map for O(1) topic lookups instead of O(n) array.find()
+  const topicMap = new Map(allTopics.map((topic) => [topic.id, topic]))
+
   // 1. First uncompleted topic from relatedTopics
   if (currentTopic.relatedTopics && currentTopic.relatedTopics.length > 0) {
     for (const related of currentTopic.relatedTopics) {
       if (!isCompleted(related.id)) {
-        const topic = allTopics.find((t) => t.id === related.id)
+        const topic = topicMap.get(related.id)
         if (topic) {
           return {
             topic,
@@ -60,7 +64,7 @@ function findNextTopic(
   return null
 }
 
-export function NextTopicSuggestion({
+function NextTopicSuggestionComponent({
   currentTopic,
   allTopics,
   progress,
@@ -110,3 +114,5 @@ export function NextTopicSuggestion({
     </div>
   )
 }
+
+export const NextTopicSuggestion = React.memo(NextTopicSuggestionComponent)
