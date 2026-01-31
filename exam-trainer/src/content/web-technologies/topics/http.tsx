@@ -217,4 +217,78 @@ Accept: application/json`,
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'rest-http-task',
+      title: 'REST & HTTP',
+      points: 20,
+      context: (
+        <p>
+          Für unsere Meta Playlists haben wir einen REST Endpoint zur Abfrage von Playlists definiert:
+          <code className="mx-2 px-2 py-1 bg-slate-700 rounded">/playlists</code>
+          – liefert die Namen aller Playlists.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'rest-http-a',
+          type: 'free-text',
+          question: 'Was hat REST mit HTTP zu tun?',
+          placeholder: 'REST nutzt HTTP...',
+          modelAnswer: 'REST nutzt HTTP als Transportprotokoll. RESTful APIs verwenden HTTP-Methoden (GET, POST, PUT, DELETE) um CRUD-Operationen auf Ressourcen durchzuführen. HTTP stellt die Grundlage für die zustandslose Kommunikation.',
+          keyPoints: [
+            'HTTP als Transportprotokoll',
+            'HTTP-Methoden für CRUD',
+            'Zustandslose Kommunikation',
+          ],
+          explanation: 'REST ist ein Architekturstil, HTTP das Protokoll.',
+        },
+        {
+          id: 'rest-http-b',
+          type: 'free-text',
+          question: 'Wie können wir die Abfrage erweitern um einen Zahlenwert für Mindestlaufzeit? Erläutern Sie den Mechanismus.',
+          placeholder: 'Query-Parameter...',
+          modelAnswer: 'Durch Query-Parameter in der URL: /playlists?min_duration=300. Query-Parameter werden nach dem ? angehängt und mit & getrennt. Vorteil: einfach, cachebar. Nachteil: in URL sichtbar, begrenzte Länge.',
+          keyPoints: [
+            'Query-Parameter nach ?',
+            'Name=Wert Format',
+            'Vor-/Nachteile erwähnt',
+          ],
+          explanation: 'Query-Parameter sind der Standard-Mechanismus für Filterung in REST APIs.',
+        },
+        {
+          id: 'rest-http-c',
+          type: 'code-write',
+          language: 'http',
+          question: 'Geben Sie einen HTTP Request für Playlists mit Laufzeit > 300 Minuten an.',
+          placeholder: 'GET /playlists...',
+          modelAnswer: `GET /playlists?min_duration=300 HTTP/1.1
+Host: server.com:8001
+Accept: application/json`,
+          keyPoints: [
+            'GET Methode',
+            'Query-Parameter min_duration=300',
+            'Host Header',
+            'Accept Header',
+          ],
+          explanation: 'Ein vollständiger HTTP Request besteht aus Request-Line, Headers und optionalem Body.',
+        },
+        {
+          id: 'rest-http-d',
+          type: 'free-text',
+          question: 'Welche technischen Möglichkeiten gibt es, den Endpoint zu testen?',
+          placeholder: 'curl, Postman...',
+          modelAnswer: 'curl (Kommandozeile), Postman/Insomnia (GUI), Browser DevTools, automatisierte Tests (Jest, pytest), OpenAPI/Swagger UI.',
+          keyPoints: [
+            'Kommandozeilen-Tools (curl)',
+            'GUI-Tools (Postman)',
+            'Browser DevTools',
+            'Automatisierte Tests',
+          ],
+          explanation: 'Es gibt viele Möglichkeiten, REST APIs zu testen - von manuell bis automatisiert.',
+        },
+      ],
+    },
+  ],
 }
