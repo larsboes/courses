@@ -88,7 +88,17 @@ export function TopicGraph({ topics, progress }: TopicGraphProps) {
           id: `${topic.id}-${related.id}`,
           source: topic.id,
           target: related.id,
+          label: related.relationship,
           animated: true,
+          labelBgStyle: {
+            fill: '#1e293b',
+            color: '#cbd5e1',
+            fillOpacity: 0.9,
+          },
+          labelStyle: {
+            fill: '#cbd5e1',
+            fontSize: '12px',
+          },
           style: {
             stroke: '#475569',
             strokeWidth: 1,
