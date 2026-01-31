@@ -70,6 +70,7 @@ export type QuizQuestionType =
   | 'system-builder'
   | 'free-text'
   | 'code-write'
+  | 'diagram-build'
 
 // Base question fields
 interface BaseQuizQuestion {
@@ -114,7 +115,15 @@ export interface CodeWriteQuestion extends BaseQuizQuestion {
   keyPoints: string[]
 }
 
-export type QuizQuestion = StandardQuizQuestion | SystemBuilderQuestion | FreeTextQuestion | CodeWriteQuestion
+// Diagram-build question (DOM tree, K8s system)
+export interface DiagramBuildQuestion extends BaseQuizQuestion {
+  type: 'diagram-build'
+  diagramType: 'dom-tree' | 'k8s-system'
+  availableNodes: string[]
+  expectedStructure: { type: string; children?: string[] }[]
+}
+
+export type QuizQuestion = StandardQuizQuestion | SystemBuilderQuestion | FreeTextQuestion | CodeWriteQuestion | DiagramBuildQuestion
 
 // ─────────────────────────────────────────────────
 // Progress Types
