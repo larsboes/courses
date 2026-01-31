@@ -1,7 +1,7 @@
 // src/pages/CoursePage.tsx
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Card } from '@/core/components/ui'
+import { Button, Card } from '@/core/components/ui'
 import { TopicGraph } from '@/core/components/graph'
 import { getCourse } from '@/content'
 import { useProgress } from '@/core/hooks'
@@ -51,29 +51,37 @@ export function CoursePage() {
             <p className="text-slate-400">{course.description}</p>
           </div>
 
-          <div className="flex bg-slate-800 rounded-lg p-1 border border-slate-700 shrink-0">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`
-                px-3 py-1.5 text-sm font-medium rounded-md transition-colors
-                ${viewMode === 'grid'
-                  ? 'bg-slate-700 text-slate-50'
-                  : 'text-slate-400 hover:text-slate-300'}
-              `}
-            >
-              Grid
-            </button>
-            <button
-              onClick={() => setViewMode('graph')}
-              className={`
-                px-3 py-1.5 text-sm font-medium rounded-md transition-colors
-                ${viewMode === 'graph'
-                  ? 'bg-slate-700 text-slate-50'
-                  : 'text-slate-400 hover:text-slate-300'}
-              `}
-            >
-              Graph
-            </button>
+          <div className="flex items-center gap-3 shrink-0">
+            <Link to={`/course/${courseId}/exam`}>
+              <Button className="bg-purple-900/30 border border-purple-700 hover:bg-purple-900/50">
+                Prüfungssimulation starten
+              </Button>
+            </Link>
+
+            <div className="flex bg-slate-800 rounded-lg p-1 border border-slate-700">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`
+                  px-3 py-1.5 text-sm font-medium rounded-md transition-colors
+                  ${viewMode === 'grid'
+                    ? 'bg-slate-700 text-slate-50'
+                    : 'text-slate-400 hover:text-slate-300'}
+                `}
+              >
+                Grid
+              </button>
+              <button
+                onClick={() => setViewMode('graph')}
+                className={`
+                  px-3 py-1.5 text-sm font-medium rounded-md transition-colors
+                  ${viewMode === 'graph'
+                    ? 'bg-slate-700 text-slate-50'
+                    : 'text-slate-400 hover:text-slate-300'}
+                `}
+              >
+                Graph
+              </button>
+            </div>
           </div>
         </div>
 

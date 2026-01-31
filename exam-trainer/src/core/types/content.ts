@@ -26,6 +26,7 @@ export interface Topic {
   examNotes?: string
   sections: Section[]
   quiz?: Quiz
+  examTasks?: ExamTask[]
   relatedTopics?: RelatedTopicRef[]
   connectionDiagram?: string // Mermaid diagram showing topic relationships
 }
@@ -68,6 +69,9 @@ export type QuizQuestionType =
   | 'identify-error'
   | 'fill-blank'
   | 'system-builder'
+  | 'free-text'
+  | 'code-write'
+  | 'diagram-build'
 
 // Base question fields
 interface BaseQuizQuestion {
@@ -95,7 +99,41 @@ export interface SystemBuilderQuestion extends BaseQuizQuestion {
   availableComponents: string[]
 }
 
-export type QuizQuestion = StandardQuizQuestion | SystemBuilderQuestion
+// Free-text question with self-check
+export interface FreeTextQuestion extends BaseQuizQuestion {
+  type: 'free-text'
+  placeholder?: string
+  modelAnswer: string
+  keyPoints: string[]  // Checklist shown after submission
+}
+
+// Code-write question with syntax highlighting
+export interface CodeWriteQuestion extends BaseQuizQuestion {
+  type: 'code-write'
+  language: 'css' | 'javascript' | 'json' | 'html' | 'http'
+  placeholder?: string
+  modelAnswer: string
+  keyPoints: string[]
+}
+
+// Diagram-build question (DOM tree, K8s system)
+export interface DiagramBuildQuestion extends BaseQuizQuestion {
+  type: 'diagram-build'
+  diagramType: 'dom-tree' | 'k8s-system'
+  availableNodes: string[]
+  expectedStructure: { type: string; children?: string[] }[]
+}
+
+export type QuizQuestion = StandardQuizQuestion | SystemBuilderQuestion | FreeTextQuestion | CodeWriteQuestion | DiagramBuildQuestion
+
+// Exam task (groups related questions)
+export interface ExamTask {
+  id: string
+  title: string
+  points: number
+  context?: ReactNode
+  parts: QuizQuestion[]
+}
 
 // ─────────────────────────────────────────────────
 // Progress Types

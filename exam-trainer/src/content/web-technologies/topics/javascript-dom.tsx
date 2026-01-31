@@ -247,6 +247,22 @@ flowchart TB
         explanation:
           'appendChild(), insertBefore() und append() fügen Elemente zum DOM hinzu. textContent ändert nur den Textinhalt, setAttribute() setzt Attribute eines existierenden Elements.',
       },
+      {
+        id: 'dom-tree-build',
+        type: 'diagram-build',
+        diagramType: 'dom-tree',
+        question:
+          'Zeichne das DOM der Playlist nach Ausführung des JavaScript-Codes. Die ul#playlist enthält ein li mit einem a-Element und einem button.',
+        availableNodes: ['ul', 'li', 'a', 'button', 'div', 'h2'],
+        expectedStructure: [
+          { type: 'ul', children: ['li'] },
+          { type: 'li', children: ['a', 'button'] },
+          { type: 'a' },
+          { type: 'button' },
+        ],
+        explanation:
+          'Das DOM spiegelt die hierarchische Struktur des HTML-Dokuments wider.',
+      },
     ],
   },
 }
