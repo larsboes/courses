@@ -128,6 +128,36 @@ export const httpTopic: Topic = {
     },
   ],
 
+  relatedTopics: [
+    { id: 'rest', title: 'REST', relationship: 'erweitert durch' },
+    { id: 'dns-tls', title: 'DNS/TLS', relationship: 'HTTPS' },
+    { id: 'browser-rendering', title: 'Browser Rendering', relationship: 'liefert HTML/CSS/JS' },
+    { id: 'json', title: 'JSON', relationship: 'Datenformat im Body' },
+  ],
+
+  connectionDiagram: `
+flowchart LR
+  subgraph Request["HTTP Request"]
+    Method["GET /playlists"]
+    Headers["Host, Accept"]
+    ReqBody["Body (optional)"]
+  end
+
+  subgraph Response["HTTP Response"]
+    Status["200 OK"]
+    RespHeaders["Content-Type"]
+    RespBody["JSON/HTML Body"]
+  end
+
+  Client["Client"] -->|"1. Request"| Request
+  Request -->|"2. Senden"| Server["Server"]
+  Server -->|"3. Verarbeiten"| Response
+  Response -->|"4. Antwort"| Client
+
+  style Request fill:#3b82f6,stroke:#1d4ed8
+  style Response fill:#22c55e,stroke:#16a34a
+`,
+
   quiz: {
     questions: [
       {

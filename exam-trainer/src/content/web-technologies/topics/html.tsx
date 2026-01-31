@@ -209,6 +209,12 @@ export const htmlTopic: Topic = {
     },
   ],
 
+  relatedTopics: [
+    { id: 'css', title: 'CSS', relationship: 'Styling für' },
+    { id: 'javascript-dom', title: 'JavaScript DOM', relationship: 'wird zu DOM' },
+    { id: 'browser-rendering', title: 'Browser Rendering', relationship: 'Rendering Pipeline' },
+  ],
+
   quiz: {
     questions: [
       {

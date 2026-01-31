@@ -198,6 +198,43 @@ export const browserRenderingTopic: Topic = {
     },
   ],
 
+  relatedTopics: [
+    { id: 'html', title: 'HTML', relationship: 'DOM Quelle' },
+    { id: 'css', title: 'CSS', relationship: 'CSSOM Quelle' },
+    { id: 'javascript-dom', title: 'JavaScript DOM', relationship: 'DOM Manipulation' },
+    { id: 'http', title: 'HTTP', relationship: 'liefert Ressourcen' },
+  ],
+
+  connectionDiagram: `
+flowchart TB
+  subgraph Netzwerk["HTTP Response"]
+    HTML["HTML"]
+    CSS["CSS"]
+    JS["JavaScript"]
+  end
+
+  subgraph Browser["Browser Engine"]
+    DOM["DOM Tree"]
+    CSSOM["CSSOM"]
+    RenderTree["Render Tree"]
+    Layout["Layout"]
+    Paint["Paint"]
+  end
+
+  HTML -->|"Parse"| DOM
+  CSS -->|"Parse"| CSSOM
+  DOM --> RenderTree
+  CSSOM --> RenderTree
+  JS -.->|"kann modifizieren"| DOM
+  JS -.->|"kann modifizieren"| CSSOM
+  RenderTree --> Layout
+  Layout --> Paint
+  Paint -->|"Pixel auf Bildschirm"| Display["Display"]
+
+  style RenderTree fill:#3b82f6,stroke:#1d4ed8
+  style Paint fill:#22c55e,stroke:#16a34a
+`,
+
   quiz: {
     questions: [
       {

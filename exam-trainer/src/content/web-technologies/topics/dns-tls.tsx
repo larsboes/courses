@@ -182,6 +182,33 @@ export const dnsTlsTopic: Topic = {
     },
   ],
 
+  relatedTopics: [
+    { id: 'http', title: 'HTTP', relationship: 'HTTPS nutzt TLS' },
+    { id: 'kubernetes-netzwerk', title: 'K8s Netzwerk', relationship: 'DNS in K8s' },
+  ],
+
+  connectionDiagram: `
+sequenceDiagram
+  participant B as Browser
+  participant DNS as DNS Server
+  participant S as Web Server
+
+  B->>DNS: 1. DNS Query (example.com)
+  DNS-->>B: 2. IP: 93.184.216.34
+
+  Note over B,S: TLS Handshake
+
+  B->>S: 3. ClientHello
+  S-->>B: 4. ServerHello + Zertifikat
+  B->>S: 5. Key Exchange
+  S-->>B: 6. Finished
+
+  Note over B,S: Verschlüsselte HTTP-Kommunikation
+
+  B->>S: 7. HTTPS Request (GET /)
+  S-->>B: 8. HTTPS Response
+`,
+
   quiz: {
     questions: [
       {
