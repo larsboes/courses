@@ -6,9 +6,22 @@
 
 **Architecture:** React SPA with typed content modules. Core platform in `src/core/`, course content in `src/content/`. Three diagram types (animated, explorable, manipulatable) built with Framer Motion and React Flow. Progress saved as JSON in `progress/` folder.
 
-**Tech Stack:** Bun, Vite, React 18, TypeScript, Tailwind CSS, Framer Motion, React Flow, Docker
+**Tech Stack:** Bun, Vite, React 18, TypeScript, Tailwind CSS v4, Framer Motion, React Flow, Docker
 
 **Design Document:** `docs/plans/2026-01-30-exam-trainer-design.md`
+
+---
+
+## Status: Phases 1-5 COMPLETE ✅
+
+**Completed 2026-01-31:**
+- Phase 1: Project Foundation (Bun, Vite, React, Tailwind v4, Docker)
+- Phase 2: Diagram System (AnimatedFlow, ExplorableSVG, primitives)
+- Phase 3: First Topic - HTTP (content, diagrams, quiz)
+- Phase 4: Quiz System (QuizQuestion, QuizResults, QuizPage)
+- Phase 5: Progress Persistence (useProgress, localStorage)
+
+**Next:** See `docs/plans/2026-01-31-exam-trainer-phase6-topics.md` for remaining topics.
 
 ---
 
