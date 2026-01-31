@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button, Card } from '@/core/components/ui'
+import { HintButton } from './HintButton'
 import type { CodeWriteQuestion as CodeWriteQuestionType } from '@/core/types/content'
 
 interface CodeWriteQuestionProps {
@@ -72,15 +73,21 @@ export function CodeWriteQuestion({
         </div>
       </div>
 
-      {/* Submit Button */}
+      {/* Hint Button and Submit Button */}
       {!showingResult && (
-        <Button
-          onClick={handleSubmit}
-          disabled={!code.trim()}
-          className="w-full"
-        >
-          Code pruefen
-        </Button>
+        <div className="space-y-4">
+          <HintButton
+            question={question.question}
+            modelAnswer={question.modelAnswer}
+          />
+          <Button
+            onClick={handleSubmit}
+            disabled={!code.trim()}
+            className="w-full"
+          >
+            Code pruefen
+          </Button>
+        </div>
       )}
 
       {/* Model Answer & Self-Assessment - same pattern as FreeTextQuestion */}
