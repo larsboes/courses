@@ -10,6 +10,7 @@
 - **Always use Docker** for running applications in this project
 - Start dev servers with `docker compose up -d`, not `bun run dev` directly
 - Build verification can use local `bun run build` for speed, but final testing should be in Docker
+- **Never use git worktrees** - work directly on the main branch
 
 ## Project: exam-trainer
 

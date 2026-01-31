@@ -1,22 +1,31 @@
 # Courses
 
-Personal learning and exam preparation projects.
+Personal learning and exam preparation.
 
-## Projects
+## Structure
 
-### exam-trainer
-
-Interactive exam trainer with visual learning through animated diagrams, explorable visualizations, and topic-based quizzes.
-
-**Current Course:** Web Technologies (HTTP, REST, HTML/CSS/JS, Kubernetes, DNS/TLS)
-
-```bash
-cd exam-trainer
-docker compose up -d
-# Open http://localhost:5173
+```
+courses/
+├── exam-trainer/       # Interactive study app
+└── resources/          # Course materials
+    ├── Web-Technologies/
+    ├── Implementierung-digitaler-Geschäftsprozesse/
+    └── workshops/
 ```
 
-## Documentation
+## exam-trainer
 
-- `docs/plans/` - Design documents and implementation plans
-- `CLAUDE.md` - Claude Code project memory
+AI-powered exam preparation app with:
+- Interactive diagrams and visualizations
+- Topic-based quizzes
+- AI answer evaluation (Gemini)
+- Progressive hints
+- Learning recommendations
+
+```bash
+cd exam-trainer && task up
+# Frontend: http://localhost:5173
+# Backend:  http://localhost:8000
+```
+
+See [exam-trainer/README.md](exam-trainer/README.md) for details.
