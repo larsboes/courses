@@ -34,7 +34,7 @@ exam-trainer/
 |-------|------|
 | Frontend | React 18, Vite, TypeScript, Tailwind CSS v4, Framer Motion |
 | Backend | FastAPI, Python 3.12, uv |
-| AI | Gemini 2.0 Flash (Vertex AI) |
+| AI | Gemini 3.0 Flash Preview |
 | Runtime | Docker Compose |
 
 ## Task Commands
