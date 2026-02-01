@@ -2,6 +2,32 @@
 
 Interactive exam preparation app with AI-powered answer evaluation.
 
+## Prerequisites
+
+Since this project runs entirely in Docker, you do **not** need to install Python, Node.js, Bun, or uv locally. You only need:
+
+1. **Docker**:
+   - [Windows](https://docs.docker.com/desktop/install/windows-install/) (Docker Desktop)
+   - [Mac](https://docs.docker.com/desktop/install/mac-install/) (Docker Desktop)
+   - [Linux](https://docs.docker.com/engine/install/) (Docker Engine)
+
+2. **Task** (Optional, for easier commands):
+   - [Installation Guide](https://taskfile.dev/installation/)
+   - *If you skip this, just replace `task up` with `docker compose up -d`.*
+
+## Setup
+
+1. **Get an API Key**:
+   - Go to [Google AI Studio](https://aistudio.google.com/api-keys).
+   - Create a new API key.
+
+2. **Configure Environment**:
+   - Create a `.env` file in the project root:
+     ```bash
+     GEMINI_API_KEY=your_api_key_here
+     ```
+   - *Note: If not set, the app defaults to Vertex AI settings which require Google Cloud credentials.*
+
 ## Quick Start
 
 ```bash
