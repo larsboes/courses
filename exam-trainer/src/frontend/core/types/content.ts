@@ -162,3 +162,14 @@ export interface QuizProgress {
   totalQuestions: number
   lastAttempt: string
 }
+
+// Re-export glossary types
+export type {
+  GlossaryTerm,
+  Comparison,
+  RequestScenario,
+  ScenarioStep,
+  K8sGlossary,
+  TermCategory,
+  ExamRelevance,
+} from './glossary'
