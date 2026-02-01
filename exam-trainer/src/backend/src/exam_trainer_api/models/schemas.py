@@ -41,3 +41,23 @@ class RecommendResponse(BaseModel):
     weak_areas: list[str]
     recommended_topics: list[str]
     message: str
+
+
+class CardProgress(BaseModel):
+    lastSeen: str
+    nextReview: str
+    streak: int
+    totalSeen: int
+    totalCorrect: int
+
+
+class StudySession(BaseModel):
+    date: str
+    cardsReviewed: int
+    correctCount: int
+
+
+class StudyProgress(BaseModel):
+    lastUpdated: str
+    cards: dict[str, CardProgress]
+    sessions: list[StudySession]
