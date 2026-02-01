@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/DomTreeBuilderExercise.tsx
 import { useState, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -360,36 +360,36 @@ export function DomTreeBuilderExercise({ className }: DiagramProps) {
   }, [userNodes])
 
   return (
-    <Card className={`p-6 ${className ?? ''}`}>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-100">
-              DOM Tree Builder
-            </h3>
-            <p className="text-sm text-slate-400">
-              {exercise.title}: {exercise.description}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <select
-              value={currentExercise}
-              onChange={(e) => {
-                setCurrentExercise(Number(e.target.value))
-                reset()
-              }}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-600 text-sm"
-            >
-              {EXERCISES.map((ex, i) => (
-                <option key={ex.id} value={i}>{ex.title}</option>
-              ))}
-            </select>
-            <Button variant="ghost" size="sm" onClick={reset}>
-              Reset
-            </Button>
-          </div>
-        </div>
+    <DiagramShell
+      title="DOM Tree Builder"
+      subtitle={`${exercise.title}: ${exercise.description}`}
+      className={className}
+      actions={
+        <>
+          <select
+            value={currentExercise}
+            onChange={(e) => {
+              setCurrentExercise(Number(e.target.value))
+              reset()
+            }}
+            className="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-600 text-sm"
+          >
+            {EXERCISES.map((ex, i) => (
+              <option key={ex.id} value={i}>{ex.title}</option>
+            ))}
+          </select>
+          <Button variant="ghost" size="sm" onClick={reset}>
+            Reset
+          </Button>
+        </>
+      }
+      footer={
+        <>
+          <strong className="text-slate-400">Tipp:</strong> Wähle zuerst ein Parent-Element, dann klicke auf ein Tag um es als Kind hinzuzufügen.
+          Nutze den Step Mode um den Code Zeile für Zeile durchzugehen.
+        </>
+      }
+    >
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -604,12 +604,6 @@ export function DomTreeBuilderExercise({ className }: DiagramProps) {
           </div>
         </div>
 
-        {/* Tips */}
-        <div className="text-xs text-slate-500 pt-4 border-t border-slate-700">
-          <strong className="text-slate-400">Tipp:</strong> Wähle zuerst ein Parent-Element, dann klicke auf ein Tag um es als Kind hinzuzufügen.
-          Nutze den Step Mode um den Code Zeile für Zeile durchzugehen.
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }

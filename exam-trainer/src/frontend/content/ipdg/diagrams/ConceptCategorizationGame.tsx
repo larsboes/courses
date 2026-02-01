@@ -1,8 +1,8 @@
 // src/content/ipdg/diagrams/ConceptCategorizationGame.tsx
 import { useState, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
 import { Button } from '@/core/components/ui/Button'
+import { DiagramShell } from '@/core/components/diagrams'
 import type { DiagramProps } from '@/core/types/content'
 
 export interface Term {
@@ -297,13 +297,17 @@ export function ConceptCategorizationGame({
   }, [])
 
   return (
-    <Card className={`p-6 ${className}`}>
-      {/* Header */}
-      <div className="mb-6">
-        <h3 className="text-xl font-bold text-white mb-2">{config.title}</h3>
-        <p className="text-slate-400">{config.instruction}</p>
-      </div>
-
+    <DiagramShell
+      title={config.title}
+      subtitle={config.instruction}
+      className={className}
+      actions={
+        <Button onClick={handleReset} variant="secondary">
+          Zurücksetzen
+        </Button>
+      }
+      footer={!showResults && availableTerms.length > 0 ? "Ziehe die Begriffe per Drag & Drop in die passende Kategorie" : undefined}
+    >
       {/* Score Display (when results shown) */}
       <AnimatePresence>
         {showResults && (
@@ -390,18 +394,8 @@ export function ConceptCategorizationGame({
             Antworten prüfen
           </Button>
         )}
-        <Button onClick={handleReset} variant="secondary">
-          Zurücksetzen
-        </Button>
       </div>
-
-      {/* Instructions */}
-      {!showResults && availableTerms.length > 0 && (
-        <p className="text-xs text-slate-500 mt-4 text-center">
-          Ziehe die Begriffe per Drag & Drop in die passende Kategorie
-        </p>
-      )}
-    </Card>
+    </DiagramShell>
   )
 }
 

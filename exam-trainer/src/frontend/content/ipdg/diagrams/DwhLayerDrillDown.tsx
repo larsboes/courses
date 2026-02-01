@@ -1,6 +1,7 @@
 // src/content/ipdg/diagrams/DwhLayerDrillDown.tsx
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { DiagramShell } from '@/core/components/diagrams'
 
 interface DwhLayer {
   id: string
@@ -200,21 +201,21 @@ export function DwhLayerDrillDown({ className = '' }: DwhLayerDrillDownProps = {
   const selected = layers.find((l) => l.id === selectedLayer)
 
   return (
-    <div className={`p-4 ${className}`}>
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-slate-200">
-          Data Warehouse Architektur
-        </h3>
+    <DiagramShell
+      title="Data Warehouse Architektur"
+      className={className}
+      actions={
         <button
           onClick={startDataFlow}
           disabled={isAnimating}
           className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors flex items-center gap-2"
         >
-          <span>{isAnimating ? '...' : '▶'}</span>
+          <span>{isAnimating ? '...' : '>'}</span>
           Datenfluss starten
         </button>
-      </div>
-
+      }
+      footer="Klicke auf eine Schicht fuer Details oder starte den animierten Datenfluss"
+    >
       {/* Architecture Layers with Particles */}
       <div className="relative space-y-1">
         {layers.map((layer, index) => (
@@ -363,10 +364,10 @@ export function DwhLayerDrillDown({ className = '' }: DwhLayerDrillDownProps = {
             Datenquellen (OLTP)
           </h4>
           <ul className="text-xs text-slate-400 space-y-1">
-            <li>• Viele kleine Transaktionen</li>
-            <li>• INSERT, UPDATE, DELETE</li>
-            <li>• Normalisiert (3NF)</li>
-            <li>• Aktuelle Daten</li>
+            <li>* Viele kleine Transaktionen</li>
+            <li>* INSERT, UPDATE, DELETE</li>
+            <li>* Normalisiert (3NF)</li>
+            <li>* Aktuelle Daten</li>
           </ul>
         </div>
         <div className="p-3 bg-blue-900/30 rounded-lg border border-blue-700">
@@ -374,17 +375,13 @@ export function DwhLayerDrillDown({ className = '' }: DwhLayerDrillDownProps = {
             Data Warehouse (OLAP)
           </h4>
           <ul className="text-xs text-slate-400 space-y-1">
-            <li>• Wenige komplexe Abfragen</li>
-            <li>• Nur SELECT</li>
-            <li>• Sternschema (denormalisiert)</li>
-            <li>• Historische Daten</li>
+            <li>* Wenige komplexe Abfragen</li>
+            <li>* Nur SELECT</li>
+            <li>* Sternschema (denormalisiert)</li>
+            <li>* Historische Daten</li>
           </ul>
         </div>
       </div>
-
-      <p className="text-xs text-slate-500 mt-4 text-center">
-        Klicke auf eine Schicht fuer Details oder starte den animierten Datenfluss
-      </p>
-    </div>
+    </DiagramShell>
   )
 }

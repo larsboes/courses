@@ -1,7 +1,7 @@
 // exam-trainer/src/frontend/content/web-technologies/diagrams/PlaylistEvolutionTimeline.tsx
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import type { DiagramProps } from '@/core/types/content'
 
 interface Stage {
@@ -192,14 +192,31 @@ export function PlaylistEvolutionTimeline({ className }: DiagramProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   return (
-    <Card className={`p-6 ${className || ''}`}>
-      <h3 className="text-lg font-semibold text-slate-100 mb-2">
-        Playlist App Evolution
-      </h3>
-      <p className="text-sm text-slate-400 mb-6">
-        Von der statischen HTML-Seite zur Kubernetes-Anwendung
-      </p>
-
+    <DiagramShell
+      title="Playlist App Evolution"
+      subtitle="Von der statischen HTML-Seite zur Kubernetes-Anwendung"
+      className={className}
+      footer={
+        <div className="flex flex-wrap gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded bg-blue-500/30 border border-blue-500"></div>
+            <span>Frontend</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded bg-purple-500/30 border border-purple-500"></div>
+            <span>Backend</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded bg-green-500/30 border border-green-500"></div>
+            <span>Database</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded bg-amber-500/30 border border-amber-500"></div>
+            <span>Storage</span>
+          </div>
+        </div>
+      }
+    >
       <div className="flex flex-col lg:flex-row gap-6" ref={containerRef}>
         {/* Timeline Navigation */}
         <div className="lg:w-48 flex-shrink-0">
@@ -295,28 +312,6 @@ export function PlaylistEvolutionTimeline({ className }: DiagramProps) {
           </AnimatePresence>
         </div>
       </div>
-
-      {/* Legend */}
-      <div className="mt-6 pt-4 border-t border-slate-700">
-        <div className="flex flex-wrap gap-4 text-xs text-slate-400">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-blue-500/30 border border-blue-500"></div>
-            <span>Frontend</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-purple-500/30 border border-purple-500"></div>
-            <span>Backend</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-green-500/30 border border-green-500"></div>
-            <span>Database</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-amber-500/30 border border-amber-500"></div>
-            <span>Storage</span>
-          </div>
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }

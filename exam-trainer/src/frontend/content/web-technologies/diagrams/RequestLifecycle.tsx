@@ -1,6 +1,7 @@
 // src/content/web-technologies/diagrams/RequestLifecycle.tsx
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Card, Button } from '@/core/components/ui'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -173,10 +174,91 @@ export function RequestLifecycle({ className = '' }: DiagramProps) {
     return () => clearInterval(interval)
   }, [isPlaying, speed, next])
 
+  const controlsContent = (
+    <div className="flex items-center justify-between flex-wrap gap-4">
+      {/* Navigation Controls */}
+      <div className="flex items-center gap-2">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={previous}
+          disabled={isFirst}
+        >
+          Zurueck
+        </Button>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={togglePlay}
+        >
+          {isPlaying ? 'Pause' : isLast ? 'Replay' : 'Play'}
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={next}
+          disabled={isLast}
+        >
+          Weiter
+        </Button>
+      </div>
+
+      {/* Speed Controls */}
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-slate-400">Geschwindigkeit:</span>
+        <div className="flex gap-1">
+          {speedOptions.map((option) => (
+            <Button
+              key={option.value}
+              variant={speed === option.value ? 'primary' : 'ghost'}
+              size="sm"
+              onClick={() => setSpeed(option.value)}
+            >
+              {option.label}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* Reset */}
+      <Button variant="ghost" size="sm" onClick={reset}>
+        Reset
+      </Button>
+    </div>
+  )
+
+  const footerContent = (
+    <div className="flex justify-center gap-2">
+      {steps.map((s, index) => (
+        <button
+          key={s.id}
+          onClick={() => goTo(index)}
+          className={`
+            w-3 h-3 rounded-full transition-all duration-300 cursor-pointer
+            ${index === currentStep
+              ? 'bg-blue-500 scale-125'
+              : index < currentStep
+                ? 'bg-slate-500'
+                : 'bg-slate-700'
+            }
+          `}
+          title={s.title}
+        />
+      ))}
+    </div>
+  )
+
   return (
-    <div className={`flex flex-col gap-6 ${className}`}>
-      {/* Horizontal Flow Diagram */}
-      <Card className="p-6 overflow-x-auto">
+    <DiagramShell
+      title="Request Lifecycle"
+      subtitle={`Schritt ${currentStep + 1} von ${steps.length}: ${step.title}`}
+      className={className}
+      actions={controlsContent}
+      footer={footerContent}
+    >
+      <div className="space-y-6">
+        {/* Horizontal Flow Diagram */}
+        <div className="overflow-x-auto">
         <div className="flex items-center justify-start gap-2 min-w-max pb-4">
           {steps.map((s, index) => {
             const colors = colorVariants[s.color]
@@ -282,116 +364,43 @@ export function RequestLifecycle({ className = '' }: DiagramProps) {
             <span>Ende</span>
           </div>
         </div>
-      </Card>
-
-      {/* Step Details Panel */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
-        >
-          <Card className="p-6">
-            <div className="flex items-start gap-4">
-              <div
-                className={`
-                  flex items-center justify-center w-16 h-16 rounded-xl
-                  ${colorVariants[step.color].bg} ${colorVariants[step.color].border} border-2
-                `}
-              >
-                <span className="text-3xl">{step.icon}</span>
-              </div>
-              <div className="flex-1">
-                <div className="text-sm text-slate-400 mb-1">
-                  Schritt {currentStep + 1}: {step.title}
-                </div>
-                <div className="text-lg font-medium text-slate-100 mb-2">
-                  {step.title}
-                </div>
-                <div className="text-slate-400">
-                  {step.description}
-                </div>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Controls */}
-      <Card className="p-4">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          {/* Navigation Controls */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={previous}
-              disabled={isFirst}
-            >
-              ← Zurück
-            </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={togglePlay}
-            >
-              {isPlaying ? '⏸ Pause' : isLast ? '↻ Replay' : '▶ Play'}
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={next}
-              disabled={isLast}
-            >
-              Weiter →
-            </Button>
-          </div>
-
-          {/* Speed Controls */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-slate-400">Geschwindigkeit:</span>
-            <div className="flex gap-1">
-              {speedOptions.map((option) => (
-                <Button
-                  key={option.value}
-                  variant={speed === option.value ? 'primary' : 'ghost'}
-                  size="sm"
-                  onClick={() => setSpeed(option.value)}
-                >
-                  {option.label}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          {/* Reset */}
-          <Button variant="ghost" size="sm" onClick={reset}>
-            ↻ Reset
-          </Button>
         </div>
-      </Card>
 
-      {/* Step Indicators */}
-      <div className="flex justify-center gap-2">
-        {steps.map((s, index) => (
-          <button
-            key={s.id}
-            onClick={() => goTo(index)}
-            className={`
-              w-3 h-3 rounded-full transition-all duration-300 cursor-pointer
-              ${index === currentStep
-                ? 'bg-blue-500 scale-125'
-                : index < currentStep
-                  ? 'bg-slate-500'
-                  : 'bg-slate-700'
-              }
-            `}
-            title={s.title}
-          />
-        ))}
+        {/* Step Details Panel */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="p-6">
+              <div className="flex items-start gap-4">
+                <div
+                  className={`
+                    flex items-center justify-center w-16 h-16 rounded-xl
+                    ${colorVariants[step.color].bg} ${colorVariants[step.color].border} border-2
+                  `}
+                >
+                  <span className="text-3xl">{step.icon}</span>
+                </div>
+                <div className="flex-1">
+                  <div className="text-sm text-slate-400 mb-1">
+                    Schritt {currentStep + 1}: {step.title}
+                  </div>
+                  <div className="text-lg font-medium text-slate-100 mb-2">
+                    {step.title}
+                  </div>
+                  <div className="text-slate-400">
+                    {step.description}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        </AnimatePresence>
       </div>
-    </div>
+    </DiagramShell>
   )
 }

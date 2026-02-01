@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/RestResourceDesigner.tsx
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -236,35 +236,42 @@ export function RestResourceDesigner({ className }: DiagramProps) {
   }
 
   return (
-    <Card className={`p-6 ${className ?? ''}`}>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-100">
-              REST Resource Designer
-            </h3>
-            <p className="text-sm text-slate-400">
-              {quizMode ? 'Finde die REST-Designfehler' : 'Entwirf RESTful API Endpoints'}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant={quizMode ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => {
-                setQuizMode(!quizMode)
-                if (quizMode) {
-                  resetQuiz()
-                }
-              }}
-            >
-              {quizMode ? 'Designer-Modus' : "What's Wrong?"}
-            </Button>
-          </div>
+    <DiagramShell
+      title="REST Resource Designer"
+      subtitle={quizMode ? 'Finde die REST-Designfehler' : 'Entwirf RESTful API Endpoints'}
+      className={className}
+      actions={
+        <Button
+          variant={quizMode ? 'primary' : 'ghost'}
+          size="sm"
+          onClick={() => {
+            setQuizMode(!quizMode)
+            if (quizMode) {
+              resetQuiz()
+            }
+          }}
+        >
+          {quizMode ? 'Designer-Modus' : "What's Wrong?"}
+        </Button>
+      }
+      footer={
+        <div className="space-y-1">
+          <p><strong className="text-slate-400">REST-Prinzipien:</strong></p>
+          <p>
+            * <strong>Substantive</strong> fur URLs, <strong>Verben</strong> via HTTP-Methoden &nbsp;|&nbsp;
+            * Plural fur Collections (<code className="bg-slate-700 px-1 rounded">/playlists</code>)
+          </p>
+          <p>
+            * <strong>GET</strong> = Lesen &nbsp;|&nbsp;
+            <strong>POST</strong> = Erstellen &nbsp;|&nbsp;
+            <strong>PUT</strong> = Ersetzen &nbsp;|&nbsp;
+            <strong>PATCH</strong> = Teilupdate &nbsp;|&nbsp;
+            <strong>DELETE</strong> = Loschen
+          </p>
         </div>
-
-        {/* Quiz Mode */}
+      }
+    >
+      {/* Quiz Mode */}
         <AnimatePresence mode="wait">
           {quizMode ? (
             <motion.div
@@ -535,22 +542,6 @@ export function RestResourceDesigner({ className }: DiagramProps) {
           )}
         </AnimatePresence>
 
-        {/* REST Design Principles */}
-        <div className="text-xs text-slate-500 pt-4 border-t border-slate-700 space-y-1">
-          <p><strong className="text-slate-400">REST-Prinzipien:</strong></p>
-          <p>
-            • <strong>Substantive</strong> für URLs, <strong>Verben</strong> via HTTP-Methoden &nbsp;|&nbsp;
-            • Plural für Collections (<code className="bg-slate-700 px-1 rounded">/playlists</code>)
-          </p>
-          <p>
-            • <strong>GET</strong> = Lesen &nbsp;|&nbsp;
-            <strong>POST</strong> = Erstellen &nbsp;|&nbsp;
-            <strong>PUT</strong> = Ersetzen &nbsp;|&nbsp;
-            <strong>PATCH</strong> = Teilupdate &nbsp;|&nbsp;
-            <strong>DELETE</strong> = Löschen
-          </p>
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }

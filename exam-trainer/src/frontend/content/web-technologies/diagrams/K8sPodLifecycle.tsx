@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/K8sPodLifecycle.tsx
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -574,11 +574,29 @@ export function K8sPodLifecycle({ className }: DiagramProps) {
   const currentPhaseInfo = activePod ? phaseInfo[activePod.phase] : null
 
   return (
-    <Card className={`p-6 ${className || ''}`}>
-      <h3 className="text-lg font-semibold text-slate-100 mb-4">
-        Container Orchestration Timeline
-      </h3>
-
+    <DiagramShell
+      title="Container Orchestration Timeline"
+      className={className}
+      footer={
+        <div>
+          <div className="text-xs text-slate-400 mb-2">Pod Status:</div>
+          <div className="flex flex-wrap gap-3">
+            {(Object.keys(phaseColors) as PodPhase[]).map((phase) => (
+              <div key={phase} className="flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded"
+                  style={{
+                    backgroundColor: phaseColors[phase].bg,
+                    border: `2px solid ${phaseColors[phase].border}`,
+                  }}
+                />
+                <span className="text-xs text-slate-400">{phase}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      }
+    >
       {/* Scenario Selection */}
       <div className="mb-6">
         <div className="text-sm text-slate-400 mb-2">Szenario waehlen:</div>
@@ -709,25 +727,6 @@ export function K8sPodLifecycle({ className }: DiagramProps) {
           Zuruecksetzen
         </Button>
       </div>
-
-      {/* Legend */}
-      <div className="mt-6 pt-4 border-t border-slate-700">
-        <div className="text-xs text-slate-400 mb-2">Pod Status:</div>
-        <div className="flex flex-wrap gap-3">
-          {(Object.keys(phaseColors) as PodPhase[]).map((phase) => (
-            <div key={phase} className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded"
-                style={{
-                  backgroundColor: phaseColors[phase].bg,
-                  border: `2px solid ${phaseColors[phase].border}`,
-                }}
-              />
-              <span className="text-xs text-slate-400">{phase}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }

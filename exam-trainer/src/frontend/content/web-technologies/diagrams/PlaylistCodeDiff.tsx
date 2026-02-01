@@ -1,7 +1,7 @@
 // exam-trainer/src/frontend/content/web-technologies/diagrams/PlaylistCodeDiff.tsx
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import type { DiagramProps } from '@/core/types/content'
 
 type DiffType = 'u8-u9' | 'u9-u10' | 'u10-u12'
@@ -198,14 +198,11 @@ export function PlaylistCodeDiff({ className }: DiagramProps) {
   const diff = diffs[selectedDiff]
 
   return (
-    <Card className={`p-6 ${className || ''}`}>
-      <h3 className="text-lg font-semibold text-slate-100 mb-2">
-        Code-Vergleich
-      </h3>
-      <p className="text-sm text-slate-400 mb-6">
-        Wie sich der Code zwischen den Ubungen verandert
-      </p>
-
+    <DiagramShell
+      title="Code-Vergleich"
+      subtitle="Wie sich der Code zwischen den Ubungen verandert"
+      className={className}
+    >
       {/* Diff Selector */}
       <div className="flex flex-wrap gap-2 mb-4">
         {(['u8-u9', 'u9-u10', 'u10-u12'] as DiffType[]).map((type) => (
@@ -251,6 +248,6 @@ export function PlaylistCodeDiff({ className }: DiagramProps) {
           </div>
         </motion.div>
       </AnimatePresence>
-    </Card>
+    </DiagramShell>
   )
 }

@@ -1,6 +1,11 @@
 // src/content/ipdg/diagrams/OrderToCashDiagram.tsx
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { DiagramShell } from '@/core/components/diagrams'
+
+interface OrderToCashDiagramProps {
+  className?: string
+}
 
 const steps = [
   {
@@ -47,7 +52,7 @@ const steps = [
   },
 ]
 
-export function OrderToCashDiagram() {
+export function OrderToCashDiagram({ className = '' }: OrderToCashDiagramProps) {
   const [activeStep, setActiveStep] = useState<string | null>(null)
   const [animationStep, setAnimationStep] = useState(0)
 
@@ -65,17 +70,19 @@ export function OrderToCashDiagram() {
   }
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-slate-200">Order-to-Cash Prozess</h3>
+    <DiagramShell
+      title="Order-to-Cash Prozess"
+      className={className}
+      actions={
         <button
           onClick={startAnimation}
           className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 rounded transition-colors"
         >
-          ▶ Animation starten
+          Animation starten
         </button>
-      </div>
-
+      }
+      footer="Klicke auf einen Schritt für Details"
+    >
       {/* Process Flow */}
       <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
         {steps.map((step, index) => (
@@ -138,10 +145,6 @@ export function OrderToCashDiagram() {
           </p>
         </motion.div>
       )}
-
-      <p className="text-xs text-slate-500 mt-4 text-center">
-        Klicke auf einen Schritt für Details
-      </p>
-    </div>
+    </DiagramShell>
   )
 }

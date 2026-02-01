@@ -1,7 +1,7 @@
 // exam-trainer/src/frontend/content/web-technologies/diagrams/PlaylistApiExplorer.tsx
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -101,14 +101,16 @@ export function PlaylistApiExplorer({ className }: DiagramProps) {
   const endpoint = endpoints[selectedEndpoint]
 
   return (
-    <Card className={`p-6 ${className || ''}`}>
-      <h3 className="text-lg font-semibold text-slate-100 mb-2">
-        Playlist API Explorer
-      </h3>
-      <p className="text-sm text-slate-400 mb-6">
-        Basierend auf der OpenAPI-Spezifikation (Meta_Playlist_API.json)
-      </p>
-
+    <DiagramShell
+      title="Playlist API Explorer"
+      subtitle="Basierend auf der OpenAPI-Spezifikation (Meta_Playlist_API.json)"
+      className={className}
+      footer={
+        <span>
+          API-Spezifikation: <code className="text-slate-400">Meta_Playlist_API.json</code> (OpenAPI 3.0)
+        </span>
+      }
+    >
       {/* Endpoint List */}
       <div className="space-y-2 mb-6">
         {endpoints.map((ep, index) => (
@@ -212,13 +214,6 @@ export function PlaylistApiExplorer({ className }: DiagramProps) {
           </AnimatePresence>
         </motion.div>
       </AnimatePresence>
-
-      {/* OpenAPI Reference */}
-      <div className="mt-6 pt-4 border-t border-slate-700">
-        <div className="text-xs text-slate-500">
-          API-Spezifikation: <code className="text-slate-400">Meta_Playlist_API.json</code> (OpenAPI 3.0)
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }

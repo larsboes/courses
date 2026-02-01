@@ -1,7 +1,7 @@
 // exam-trainer/src/frontend/content/web-technologies/diagrams/StorageEvolutionComparison.tsx
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -148,14 +148,11 @@ export function StorageEvolutionComparison({ className }: DiagramProps) {
   const info = storageInfo[selectedType]
 
   return (
-    <Card className={`p-6 ${className || ''}`}>
-      <h3 className="text-lg font-semibold text-slate-100 mb-2">
-        Storage Evolution
-      </h3>
-      <p className="text-sm text-slate-400 mb-6">
-        Vergleich der Speicher-Strategien im Playlist-Projekt
-      </p>
-
+    <DiagramShell
+      title="Storage Evolution"
+      subtitle="Vergleich der Speicher-Strategien im Playlist-Projekt"
+      className={className}
+    >
       {/* Storage Type Buttons */}
       <div className="flex flex-wrap gap-2 mb-6">
         {(['localStorage', 'inMemory', 'couchdb'] as StorageType[]).map((type) => (
@@ -232,6 +229,6 @@ export function StorageEvolutionComparison({ className }: DiagramProps) {
           </div>
         </motion.div>
       </AnimatePresence>
-    </Card>
+    </DiagramShell>
   )
 }

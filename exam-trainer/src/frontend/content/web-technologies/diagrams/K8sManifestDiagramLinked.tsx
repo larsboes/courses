@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/K8sManifestDiagramLinked.tsx
 import { useState, useMemo, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -498,48 +498,48 @@ export function K8sManifestDiagramLinked({ className }: DiagramProps) {
   }
 
   return (
-    <Card className={`p-6 ${className ?? ''}`}>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-100">
-              K8s Manifest Explorer
-            </h3>
-            <p className="text-sm text-slate-400">
-              {manifest.title}: {manifest.description}
-            </p>
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            <select
-              value={currentManifest}
-              onChange={(e) => {
-                setCurrentManifest(Number(e.target.value))
-                setSelectedRegion(null)
-                setHoveredRegion(null)
-              }}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-600 text-sm"
-            >
-              {MANIFESTS.map((m, i) => (
-                <option key={m.id} value={i}>{m.title}</option>
-              ))}
-            </select>
-            <Button
-              variant={showAnnotations ? 'secondary' : 'ghost'}
-              size="sm"
-              onClick={() => setShowAnnotations(!showAnnotations)}
-            >
-              Annotationen
-            </Button>
-            <Button
-              variant={hideDiagram ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => setHideDiagram(!hideDiagram)}
-            >
-              {hideDiagram ? 'Diagramm zeigen' : 'Übungsmodus'}
-            </Button>
-          </div>
-        </div>
+    <DiagramShell
+      title="K8s Manifest Explorer"
+      subtitle={`${manifest.title}: ${manifest.description}`}
+      className={className}
+      actions={
+        <>
+          <select
+            value={currentManifest}
+            onChange={(e) => {
+              setCurrentManifest(Number(e.target.value))
+              setSelectedRegion(null)
+              setHoveredRegion(null)
+            }}
+            className="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-600 text-sm"
+          >
+            {MANIFESTS.map((m, i) => (
+              <option key={m.id} value={i}>{m.title}</option>
+            ))}
+          </select>
+          <Button
+            variant={showAnnotations ? 'secondary' : 'ghost'}
+            size="sm"
+            onClick={() => setShowAnnotations(!showAnnotations)}
+          >
+            Annotationen
+          </Button>
+          <Button
+            variant={hideDiagram ? 'primary' : 'ghost'}
+            size="sm"
+            onClick={() => setHideDiagram(!hideDiagram)}
+          >
+            {hideDiagram ? 'Diagramm zeigen' : 'Übungsmodus'}
+          </Button>
+        </>
+      }
+      footer={
+        <>
+          <strong className="text-slate-400">Tipp:</strong> Hover über YAML-Zeilen oder Diagramm-Elemente
+          um Verknüpfungen zu sehen. Der Übungsmodus hilft beim Lernen für die Klausur.
+        </>
+      }
+    >
 
         {/* Main Content */}
         <div className={`grid gap-6 ${hideDiagram ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
@@ -805,12 +805,6 @@ export function K8sManifestDiagramLinked({ className }: DiagramProps) {
           )}
         </AnimatePresence>
 
-        {/* Tips */}
-        <div className="text-xs text-slate-500 pt-4 border-t border-slate-700">
-          <strong className="text-slate-400">Tipp:</strong> Hover über YAML-Zeilen oder Diagramm-Elemente
-          um Verknüpfungen zu sehen. Der Übungsmodus hilft beim Lernen für die Klausur.
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }

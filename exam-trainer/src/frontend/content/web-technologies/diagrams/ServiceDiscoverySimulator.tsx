@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/ServiceDiscoverySimulator.tsx
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -243,24 +243,27 @@ export function ServiceDiscoverySimulator({ className }: DiagramProps) {
   }
 
   return (
-    <Card className={`p-6 ${className ?? ''}`}>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-100">
-              Service Discovery Simulator
-            </h3>
-            <p className="text-sm text-slate-400">
-              Wie erreichen Pods und externe Clients Services im Cluster?
-            </p>
-          </div>
-          <Button variant="ghost" size="sm" onClick={reset}>
-            Reset
-          </Button>
+    <DiagramShell
+      title="Service Discovery Simulator"
+      subtitle="Wie erreichen Pods und externe Clients Services im Cluster?"
+      className={className}
+      actions={
+        <Button variant="ghost" size="sm" onClick={reset}>
+          Reset
+        </Button>
+      }
+      footer={
+        <div className="space-y-1">
+          <p><strong className="text-slate-400">Service-Typen:</strong></p>
+          <p>
+            <span className="text-purple-400">ClusterIP</span> - Nur cluster-intern erreichbar &nbsp;|&nbsp;
+            <span className="text-amber-400">NodePort</span> - Offnet Port auf allen Nodes &nbsp;|&nbsp;
+            <span className="text-pink-400">LoadBalancer</span> - Externe IP vom Cloud-Provider
+          </p>
         </div>
-
-        {/* Controls */}
+      }
+    >
+      {/* Controls */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Service Type */}
           <div className="space-y-2">
@@ -589,16 +592,6 @@ export function ServiceDiscoverySimulator({ className }: DiagramProps) {
           )}
         </AnimatePresence>
 
-        {/* Service Type Info */}
-        <div className="text-xs text-slate-500 pt-4 border-t border-slate-700 space-y-1">
-          <p><strong className="text-slate-400">Service-Typen:</strong></p>
-          <p>
-            <span className="text-purple-400">ClusterIP</span> - Nur cluster-intern erreichbar &nbsp;|&nbsp;
-            <span className="text-amber-400">NodePort</span> - Öffnet Port auf allen Nodes &nbsp;|&nbsp;
-            <span className="text-pink-400">LoadBalancer</span> - Externe IP vom Cloud-Provider
-          </p>
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }

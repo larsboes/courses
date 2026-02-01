@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/HttpRequestComposer.tsx
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -325,34 +325,40 @@ export function HttpRequestComposer({ className }: DiagramProps) {
   }
 
   return (
-    <Card className={`p-6 ${className ?? ''}`}>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-100">
-              HTTP Request Composer
-            </h3>
-            <p className="text-sm text-slate-400">
-              Baue HTTP-Requests und lerne die Struktur
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant={challengeMode ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => {
-                setChallengeMode(!challengeMode)
-                resetForm()
-              }}
-            >
-              {challengeMode ? 'Freier Modus' : 'Challenge Mode'}
-            </Button>
-            <Button variant="ghost" size="sm" onClick={resetForm}>
-              Reset
-            </Button>
-          </div>
+    <DiagramShell
+      title="HTTP Request Composer"
+      subtitle="Baue HTTP-Requests und lerne die Struktur"
+      className={className}
+      actions={
+        <>
+          <Button
+            variant={challengeMode ? 'primary' : 'ghost'}
+            size="sm"
+            onClick={() => {
+              setChallengeMode(!challengeMode)
+              resetForm()
+            }}
+          >
+            {challengeMode ? 'Freier Modus' : 'Challenge Mode'}
+          </Button>
+          <Button variant="ghost" size="sm" onClick={resetForm}>
+            Reset
+          </Button>
+        </>
+      }
+      footer={
+        <div className="space-y-1">
+          <p>
+            <strong className="text-slate-400">HTTP/1.1:</strong> Host-Header ist Pflicht.
+            Content-Type bei Body-Requests setzen.
+          </p>
+          <p>
+            <strong className="text-slate-400">Body:</strong> Nur bei POST, PUT, PATCH erlaubt.
+            GET und DELETE haben keinen Body.
+          </p>
         </div>
+      }
+    >
 
         {/* Challenge Mode Banner */}
         <AnimatePresence>
@@ -756,18 +762,6 @@ export function HttpRequestComposer({ className }: DiagramProps) {
           </div>
         </div>
 
-        {/* Info Footer */}
-        <div className="text-xs text-slate-500 pt-4 border-t border-slate-700 space-y-1">
-          <p>
-            <strong className="text-slate-400">HTTP/1.1:</strong> Host-Header ist Pflicht.
-            Content-Type bei Body-Requests setzen.
-          </p>
-          <p>
-            <strong className="text-slate-400">Body:</strong> Nur bei POST, PUT, PATCH erlaubt.
-            GET und DELETE haben keinen Body.
-          </p>
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }

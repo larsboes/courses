@@ -1,6 +1,11 @@
 // src/content/ipdg/diagrams/BiArchitectureDiagram.tsx
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { DiagramShell } from '@/core/components/diagrams'
+
+interface BiArchitectureDiagramProps {
+  className?: string
+}
 
 const layers = [
   {
@@ -45,7 +50,7 @@ const layers = [
   },
 ]
 
-export function BiArchitectureDiagram() {
+export function BiArchitectureDiagram({ className = '' }: BiArchitectureDiagramProps) {
   const [activeLayer, setActiveLayer] = useState<string | null>(null)
   const [animating, setAnimating] = useState(false)
   const [flowStep, setFlowStep] = useState(-1)
@@ -67,18 +72,20 @@ export function BiArchitectureDiagram() {
   }
 
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-slate-200">BI-Architektur</h3>
+    <DiagramShell
+      title="BI-Architektur"
+      className={className}
+      actions={
         <button
           onClick={startFlow}
           disabled={animating}
           className="px-3 py-1 text-sm bg-purple-600 hover:bg-purple-700 disabled:opacity-50 rounded transition-colors"
         >
-          ▶ Datenfluss zeigen
+          Datenfluss zeigen
         </button>
-      </div>
-
+      }
+      footer="Klicke auf eine Schicht für Details oder starte den Datenfluss"
+    >
       {/* Architecture Stack */}
       <div className="space-y-2">
         {layers.map((layer, index) => (
@@ -137,26 +144,22 @@ export function BiArchitectureDiagram() {
         <div className="p-3 bg-green-900/30 rounded-lg border border-green-700">
           <h4 className="font-medium text-green-300 mb-2">OLTP</h4>
           <ul className="text-xs text-slate-400 space-y-1">
-            <li>• Operative Transaktionen</li>
-            <li>• Schreiben & Lesen</li>
-            <li>• Normalisierte DB</li>
-            <li>• Aktueller Zustand</li>
+            <li>* Operative Transaktionen</li>
+            <li>* Schreiben & Lesen</li>
+            <li>* Normalisierte DB</li>
+            <li>* Aktueller Zustand</li>
           </ul>
         </div>
         <div className="p-3 bg-purple-900/30 rounded-lg border border-purple-700">
           <h4 className="font-medium text-purple-300 mb-2">OLAP</h4>
           <ul className="text-xs text-slate-400 space-y-1">
-            <li>• Analytische Abfragen</li>
-            <li>• Nur Lesen</li>
-            <li>• Sternschema</li>
-            <li>• Historische Daten</li>
+            <li>* Analytische Abfragen</li>
+            <li>* Nur Lesen</li>
+            <li>* Sternschema</li>
+            <li>* Historische Daten</li>
           </ul>
         </div>
       </div>
-
-      <p className="text-xs text-slate-500 mt-4 text-center">
-        Klicke auf eine Schicht für Details oder starte den Datenfluss
-      </p>
-    </div>
+    </DiagramShell>
   )
 }

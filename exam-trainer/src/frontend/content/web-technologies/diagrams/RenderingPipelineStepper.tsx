@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/RenderingPipelineStepper.tsx
 import React, { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -398,40 +398,32 @@ export function RenderingPipelineStepper({ className }: DiagramProps) {
     }
   }
 
-  return (
-    <Card className={`p-6 ${className ?? ''}`}>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-100">
-              Browser Rendering Pipeline
-            </h3>
-            <p className="text-sm text-slate-400">
-              Schritt für Schritt vom HTML zum Paint
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <select
-              value={currentExample}
-              onChange={(e) => {
-                setCurrentExample(Number(e.target.value))
-                reset()
-              }}
-              disabled={isAnimating}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-600 text-sm"
-            >
-              {EXAMPLES.map((ex, i) => (
-                <option key={ex.id} value={i}>{ex.title}</option>
-              ))}
-            </select>
-            <Button variant="ghost" size="sm" onClick={reset}>
-              Reset
-            </Button>
-          </div>
-        </div>
+  const samples = EXAMPLES.map((ex, i) => ({ id: String(i), label: ex.title }))
 
-        {/* Pipeline Steps Progress */}
+  return (
+    <DiagramShell
+      title="Browser Rendering Pipeline"
+      subtitle="Schritt fur Schritt vom HTML zum Paint"
+      className={className}
+      samples={samples}
+      currentSample={String(currentExample)}
+      onSampleChange={(id) => {
+        setCurrentExample(Number(id))
+        reset()
+      }}
+      actions={
+        <Button variant="ghost" size="sm" onClick={reset}>
+          Reset
+        </Button>
+      }
+      footer={
+        <p>
+          <strong className="text-slate-400">Render-Blocking:</strong> CSS und sync Scripts blockieren das Rendering.
+          Async/defer fur Scripts, kritisches CSS inline laden.
+        </p>
+      }
+    >
+      {/* Pipeline Steps Progress */}
         <div className="flex items-center gap-2">
           {PIPELINE_STEPS.map((s, i) => (
             <div key={s.id} className="flex items-center">
@@ -623,14 +615,6 @@ export function RenderingPipelineStepper({ className }: DiagramProps) {
           </Button>
         </div>
 
-        {/* Info */}
-        <div className="text-xs text-slate-500 space-y-1">
-          <p>
-            <strong className="text-slate-400">Render-Blocking:</strong> CSS und sync Scripts blockieren das Rendering.
-            Async/defer für Scripts, kritisches CSS inline laden.
-          </p>
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }

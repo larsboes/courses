@@ -340,10 +340,10 @@ function ErrorSpanComponent({ span, isFound, onSelect }: ErrorSpanProps) {
           isFound
             ? 'bg-green-500/30 text-green-300 line-through decoration-green-400'
             : isClickable
-              ? 'hover:bg-red-500/20 rounded px-0.5 -mx-0.5 transition-colors'
+              ? 'underline decoration-dashed decoration-red-400/50 hover:decoration-red-400 hover:bg-red-500/20 rounded px-0.5 -mx-0.5 transition-colors'
               : ''
         }
-        ${isPlaceholder && !isFound ? 'text-red-400/60 italic text-xs' : ''}
+        ${isPlaceholder && !isFound ? 'text-red-400/60 italic text-xs bg-red-500/10 rounded px-1' : ''}
       `}
       whileHover={isClickable && !isFound ? { scale: 1.02 } : {}}
       whileTap={isClickable && !isFound ? { scale: 0.98 } : {}}

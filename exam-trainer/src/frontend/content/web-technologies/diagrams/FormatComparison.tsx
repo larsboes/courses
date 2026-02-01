@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/FormatComparison.tsx
 import { useState, useMemo, ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -339,20 +339,12 @@ export function FormatComparison({ className }: DiagramProps) {
   }, [formats])
 
   return (
-    <Card className={`p-6 ${className ?? ''}`}>
+    <DiagramShell
+      title="Format Comparison: JSON vs XML vs YAML"
+      subtitle="Click a panel to select it. Compare syntax and file sizes."
+      className={className}
+    >
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h3 className="text-lg font-semibold text-slate-100">
-              Format Comparison: JSON vs XML vs YAML
-            </h3>
-            <p className="text-sm text-slate-400 mt-1">
-              Click a panel to select it. Compare syntax and file sizes.
-            </p>
-          </div>
-        </div>
-
         {/* Preset buttons */}
         <div className="flex flex-wrap gap-2">
           <span className="text-sm text-slate-400 self-center mr-2">Load preset:</span>
@@ -490,6 +482,6 @@ export function FormatComparison({ className }: DiagramProps) {
           </motion.div>
         </AnimatePresence>
       </div>
-    </Card>
+    </DiagramShell>
   )
 }

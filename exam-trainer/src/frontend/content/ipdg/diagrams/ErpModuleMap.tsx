@@ -1,6 +1,7 @@
 // src/content/ipdg/diagrams/ErpModuleMap.tsx
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { DiagramShell } from '@/core/components/diagrams'
 
 interface ModuleData {
   id: string
@@ -218,11 +219,11 @@ export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
   const selectedModuleData = modules.find((m) => m.id === selectedModule)
 
   return (
-    <div className={`p-4 ${className}`}>
-      <h3 className="text-lg font-semibold text-slate-200 mb-2 text-center">
-        SAP ERP Module Map
-      </h3>
-
+    <DiagramShell
+      title="SAP ERP Module Map"
+      className={className}
+      footer="Klicke auf ein Modul um Details und Integrationen zu sehen"
+    >
       {/* Legend */}
       <div className="flex justify-center gap-4 mb-4">
         {Object.entries(categoryInfo).map(([key, info]) => (
@@ -463,11 +464,6 @@ export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Hint */}
-      <p className="text-xs text-slate-500 mt-4 text-center">
-        Klicke auf ein Modul um Details und Integrationen zu sehen
-      </p>
-    </div>
+    </DiagramShell>
   )
 }

@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/JsonValidatorPlayground.tsx
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -144,32 +144,28 @@ export function JsonValidatorPlayground({ className }: DiagramProps) {
 
   const lines = jsonInput.split('\n')
 
-  return (
-    <Card className={`p-6 ${className ?? ''}`}>
-      <div className="space-y-4">
-        {/* Header with status */}
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-100">
-            JSON Validator
-          </h3>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={validation.isValid ? 'valid' : 'invalid'}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
-                validation.isValid
-                  ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                  : 'bg-red-500/20 text-red-400 border border-red-500/30'
-              }`}
-            >
-              {validation.isValid ? 'Valid JSON' : 'Invalid JSON'}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+  const statusBadge = (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={validation.isValid ? 'valid' : 'invalid'}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.2 }}
+        className={`px-3 py-1 rounded-full text-sm font-medium ${
+          validation.isValid
+            ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+            : 'bg-red-500/20 text-red-400 border border-red-500/30'
+        }`}
+      >
+        {validation.isValid ? 'Valid JSON' : 'Invalid JSON'}
+      </motion.div>
+    </AnimatePresence>
+  )
 
+  return (
+    <DiagramShell title="JSON Validator" className={className} actions={statusBadge}>
+      <div className="space-y-4">
         {/* Sample buttons */}
         <div className="flex flex-wrap gap-2">
           <Button
@@ -319,6 +315,6 @@ export function JsonValidatorPlayground({ className }: DiagramProps) {
           )}
         </AnimatePresence>
       </div>
-    </Card>
+    </DiagramShell>
   )
 }

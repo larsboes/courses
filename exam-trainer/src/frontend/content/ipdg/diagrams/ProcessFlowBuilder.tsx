@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 import { Button } from '@/core/components/ui/Button'
 import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 
 interface ProcessStep {
   id: string
@@ -213,12 +214,11 @@ export function ProcessFlowBuilder({ className = '' }: ProcessFlowBuilderProps) 
   // Process Selection View
   if (!selectedProcess) {
     return (
-      <div className={`p-4 ${className}`}>
-        <h3 className="text-xl font-semibold text-slate-200 mb-2">Process Flow Builder</h3>
-        <p className="text-slate-400 mb-6">
-          Ordne die Prozessschritte in der richtigen Reihenfolge an.
-        </p>
-
+      <DiagramShell
+        title="Process Flow Builder"
+        subtitle="Ordne die Prozessschritte in der richtigen Reihenfolge an."
+        className={className}
+      >
         <div className="grid md:grid-cols-2 gap-4">
           {processes.map((process) => (
             <Card
@@ -242,7 +242,7 @@ export function ProcessFlowBuilder({ className = '' }: ProcessFlowBuilderProps) 
             </Card>
           ))}
         </div>
-      </div>
+      </DiagramShell>
     )
   }
 
@@ -253,26 +253,24 @@ export function ProcessFlowBuilder({ className = '' }: ProcessFlowBuilderProps) 
 
   // Exercise View
   return (
-    <div className={`p-4 ${className}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
+    <DiagramShell
+      title={selectedProcess.name}
+      subtitle="Ziehe die Blöcke in die richtige Reihenfolge."
+      className={className}
+      actions={
+        <>
           <button
             onClick={goBack}
-            className="text-sm text-slate-400 hover:text-slate-200 mb-1 flex items-center gap-1"
+            className="text-sm text-slate-400 hover:text-slate-200 flex items-center gap-1"
           >
-            <span>←</span> Zurück zur Auswahl
+            <span>←</span> Zurück
           </button>
-          <h3 className="text-xl font-semibold text-slate-200">{selectedProcess.name}</h3>
-        </div>
-        <div className="text-sm text-slate-400">
-          Versuche: <span className="text-slate-200 font-medium">{attempts}</span>
-        </div>
-      </div>
-
-      <p className="text-slate-400 mb-6">
-        Ziehe die Blöcke in die richtige Reihenfolge.
-      </p>
+          <div className="text-sm text-slate-400">
+            Versuche: <span className="text-slate-200 font-medium">{attempts}</span>
+          </div>
+        </>
+      }
+    >
 
       {/* Sortable Steps */}
       <div className="mb-6">
@@ -444,6 +442,6 @@ export function ProcessFlowBuilder({ className = '' }: ProcessFlowBuilderProps) 
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </DiagramShell>
   )
 }

@@ -1,6 +1,7 @@
 // src/content/ipdg/diagrams/ConceptConfusionBuster.tsx
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { DiagramShell } from '@/core/components/diagrams'
 
 export interface ConceptPair {
   id: string
@@ -307,21 +308,20 @@ export function ConceptConfusionBuster({
   const allFlipped = conceptPairs.every((p) => flippedCards.has(p.id))
 
   return (
-    <div className={`p-4 ${className}`}>
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-slate-200">{title}</h3>
+    <DiagramShell
+      title={title}
+      subtitle="Klicke auf eine Karte um die wichtigsten Unterschiede zu sehen"
+      className={className}
+      actions={
         <button
           onClick={flipAll}
           className="px-3 py-1 text-sm bg-indigo-600 hover:bg-indigo-700 rounded transition-colors"
         >
           {allFlipped ? 'Alle zurueckdrehen' : 'Alle umdrehen'}
         </button>
-      </div>
-
-      <p className="text-sm text-slate-400 mb-4">
-        Klicke auf eine Karte um die wichtigsten Unterschiede zu sehen
-      </p>
-
+      }
+      footer="Lerne die Unterschiede - diese werden gerne in Pruefungen abgefragt!"
+    >
       {/* Responsive Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {conceptPairs.map((pair) => (
@@ -333,10 +333,6 @@ export function ConceptConfusionBuster({
           />
         ))}
       </div>
-
-      <p className="text-xs text-slate-500 mt-4 text-center">
-        Lerne die Unterschiede - diese werden gerne in Pruefungen abgefragt!
-      </p>
-    </div>
+    </DiagramShell>
   )
 }

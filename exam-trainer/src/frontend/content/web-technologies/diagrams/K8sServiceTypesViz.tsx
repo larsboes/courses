@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/K8sServiceTypesViz.tsx
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -274,24 +274,46 @@ export function K8sServiceTypesViz({ className }: DiagramProps) {
   const showExternalAccess = selectedType !== 'ClusterIP'
 
   return (
-    <Card className={`p-6 ${className || ''}`}>
-      <h3 className="text-lg font-semibold text-slate-100 mb-4">
-        Kubernetes Service Types
-      </h3>
-
-      {/* Service Type Toggle Buttons */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {(['ClusterIP', 'NodePort', 'LoadBalancer'] as ServiceType[]).map((type) => (
-          <Button
-            key={type}
-            variant={selectedType === type ? 'primary' : 'secondary'}
-            size="sm"
-            onClick={() => setSelectedType(type)}
-          >
-            {type}
-          </Button>
-        ))}
-      </div>
+    <DiagramShell
+      title="Kubernetes Service Types"
+      className={className}
+      actions={
+        <div className="flex flex-wrap gap-2">
+          {(['ClusterIP', 'NodePort', 'LoadBalancer'] as ServiceType[]).map((type) => (
+            <Button
+              key={type}
+              variant={selectedType === type ? 'primary' : 'secondary'}
+              size="sm"
+              onClick={() => setSelectedType(type)}
+            >
+              {type}
+            </Button>
+          ))}
+        </div>
+      }
+      footer={
+        <div className="flex flex-wrap gap-4 text-xs text-slate-400">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-green-500/30 border border-green-500"></div>
+            <span>Pod</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded bg-blue-500/30 border border-blue-500"></div>
+            <span>Service</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded bg-purple-500/30 border border-purple-500"></div>
+            <span>Load Balancer</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <svg width="20" height="10">
+              <line x1="0" y1="5" x2="20" y2="5" stroke="#3b82f6" strokeWidth="2" strokeDasharray="4 2" />
+            </svg>
+            <span>Traffic Flow</span>
+          </div>
+        </div>
+      }
+    >
 
       {/* SVG Diagram */}
       <div className="bg-slate-900/50 rounded-lg p-4 mb-6 overflow-x-auto">
@@ -552,29 +574,6 @@ export function K8sServiceTypesViz({ className }: DiagramProps) {
         </div>
       </motion.div>
 
-      {/* Legend */}
-      <div className="mt-4 pt-4 border-t border-slate-700">
-        <div className="flex flex-wrap gap-4 text-xs text-slate-400">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-green-500/30 border border-green-500"></div>
-            <span>Pod</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-blue-500/30 border border-blue-500"></div>
-            <span>Service</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded bg-purple-500/30 border border-purple-500"></div>
-            <span>Load Balancer</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <svg width="20" height="10">
-              <line x1="0" y1="5" x2="20" y2="5" stroke="#3b82f6" strokeWidth="2" strokeDasharray="4 2" />
-            </svg>
-            <span>Traffic Flow</span>
-          </div>
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }

@@ -1,6 +1,11 @@
 // src/content/ipdg/diagrams/CrmTypesDiagram.tsx
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { DiagramShell } from '@/core/components/diagrams'
+
+interface CrmTypesDiagramProps {
+  className?: string
+}
 
 const crmTypes = [
   {
@@ -45,15 +50,15 @@ const crmTypes = [
   },
 ]
 
-export function CrmTypesDiagram() {
+export function CrmTypesDiagram({ className = '' }: CrmTypesDiagramProps) {
   const [selectedType, setSelectedType] = useState<string | null>(null)
 
   return (
-    <div className="p-4">
-      <h3 className="text-lg font-semibold text-slate-200 mb-4 text-center">
-        Die 4 CRM-Arten
-      </h3>
-
+    <DiagramShell
+      title="Die 4 CRM-Arten"
+      className={className}
+      footer="Klicke auf einen CRM-Typ für Details"
+    >
       {/* Circular Layout */}
       <div className="relative w-full max-w-md mx-auto aspect-square">
         {/* Center */}
@@ -159,10 +164,6 @@ export function CrmTypesDiagram() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <p className="text-xs text-slate-500 mt-4 text-center">
-        Klicke auf einen CRM-Typ für Details
-      </p>
-    </div>
+    </DiagramShell>
   )
 }
