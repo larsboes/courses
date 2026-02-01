@@ -1,6 +1,6 @@
 // src/content/web-technologies/topics/playlist-app.tsx
 import type { Topic } from '@/core/types/content'
-import { PlaylistEvolutionTimeline } from '../diagrams'
+import { PlaylistEvolutionTimeline, PlaylistApiExplorer, StorageEvolutionComparison } from '../diagrams'
 
 export const playlistAppTopic: Topic = {
   id: 'playlist-app',
@@ -322,6 +322,547 @@ function renderPlaylist() {
               Daten sind nur auf diesem einen Browser/Gerät verfügbar. Andere Benutzer
               oder Geräte sehen die Playlists nicht. Dafür brauchen wir ein Backend!
             </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'stage-rest',
+      title: 'Stage 3: REST API (Ü9)',
+      content: (
+        <div className="space-y-6">
+          <p>
+            In Stage 3 ersetzen wir localStorage durch eine <strong>REST API</strong>.
+            Das Backend mit Flask verwaltet die Daten zentral, sodass mehrere
+            Benutzer dieselben Playlists sehen können.
+          </p>
+
+          <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+            <div className="text-blue-300 font-medium mb-2">Übung 9: Flask REST API</div>
+            <div className="text-sm text-slate-300">
+              Implementiere einen Flask-Webserver mit REST-Endpoints für CRUD-Operationen
+              auf Playlists und verbinde das Frontend über fetch().
+            </div>
+          </div>
+
+          <PlaylistApiExplorer />
+
+          <div className="space-y-4">
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-green-400 mb-3">Flask Backend (webserver.py)</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`from flask import Flask, request, jsonify, send_from_directory
+
+webserver = Flask(__name__)
+
+# In-memory Storage für unsere Playlists
+playlists = {}
+
+@webserver.route('/')
+def home():
+    return send_from_directory('/pages', 'index.html')
+
+@webserver.route('/playlists', methods=['GET'])
+def get_playlists():
+    return_playlists = []
+    for name, plist in playlists.items():
+        return_playlists.append(name)
+    return jsonify(return_playlists)
+
+@webserver.route('/playlists/<string:playlist_name>', methods=['GET'])
+def get_playlist(playlist_name):
+    playlist = playlists.get(playlist_name)
+    if playlist is None:
+        return jsonify({"error": "Playlist not found"}), 404
+    return_playlist = {'name': playlist_name, 'tracks': playlist}
+    return jsonify(return_playlist)
+
+@webserver.route('/playlists', methods=['POST'])
+def add_playlist():
+    data = request.get_json()
+    if not data or 'name' not in data or 'tracks' not in data:
+        return jsonify({"error": "Invalid data"}), 400
+
+    playlist_name = data['name']
+    playlists[playlist_name] = data['tracks']
+    return jsonify({"message": f"Playlist '{playlist_name}' added/updated."}), 201
+
+@webserver.route('/playlists/<string:playlist_name>', methods=['DELETE'])
+def delete_playlist(playlist_name):
+    if playlist_name in playlists:
+        del playlists[playlist_name]
+        return jsonify({"message": f"Playlist '{playlist_name}' deleted."}), 200
+    return jsonify({"error": "Playlist not found"}), 404
+
+if __name__ == '__main__':
+    webserver.run(host='0.0.0.0', port=8000)`}</pre>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-purple-400 mb-3">Frontend: Von localStorage zu fetch()</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`const apiBaseUrl = "http://localhost:8001";
+
+// Fetch all playlists from the Flask server
+async function fetchPlaylists() {
+  try {
+    const response = await fetch(\`\${apiBaseUrl}/playlists\`);
+    if (!response.ok) throw new Error("Failed to fetch playlists");
+    const playlists = await response.json();
+
+    // Update playlist select dropdown
+    playlistSelect.innerHTML = '<option value="" disabled selected>Select a Playlist</option>';
+    playlists.forEach((playlist) => {
+      const option = document.createElement("option");
+      option.value = playlist;
+      option.textContent = playlist;
+      playlistSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error("Error fetching playlists:", error);
+  }
+}
+
+// Save the current playlist to the Flask server
+savePlaylistButton.addEventListener("click", async () => {
+  try {
+    const response = await fetch(\`\${apiBaseUrl}/playlists\`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(currentPlaylist),
+    });
+    if (!response.ok) throw new Error("Failed to save playlist");
+    alert("Playlist saved!");
+    fetchPlaylists();
+  } catch (error) {
+    console.error("Error saving playlist:", error);
+  }
+});`}</pre>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="bg-green-900/20 rounded-lg p-4 border border-green-800">
+              <div className="text-green-300 font-medium mb-2">Flask Decorators</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li><code className="bg-slate-700 px-1 rounded">@webserver.route()</code> - URL-Mapping</li>
+                <li><code className="bg-slate-700 px-1 rounded">methods=['GET']</code> - HTTP-Methode</li>
+                <li><code className="bg-slate-700 px-1 rounded">jsonify()</code> - Python dict zu JSON</li>
+                <li><code className="bg-slate-700 px-1 rounded">request.get_json()</code> - JSON parsen</li>
+              </ul>
+            </div>
+            <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+              <div className="text-blue-300 font-medium mb-2">fetch() API</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li><code className="bg-slate-700 px-1 rounded">fetch(url)</code> - GET Request</li>
+                <li><code className="bg-slate-700 px-1 rounded">method: "POST"</code> - Andere Methode</li>
+                <li><code className="bg-slate-700 px-1 rounded">headers</code> - Content-Type setzen</li>
+                <li><code className="bg-slate-700 px-1 rounded">body</code> - Request Body als JSON</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-800">
+            <div className="text-amber-300 font-medium mb-2">Wichtige Konzepte in Stage 3:</div>
+            <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
+              <li><strong>REST-Konventionen</strong> - Ressourcen als URLs, HTTP-Verben für Aktionen</li>
+              <li><strong>HTTP Status Codes</strong> - 200 OK, 201 Created, 404 Not Found, 400 Bad Request</li>
+              <li><strong>JSON Request/Response</strong> - Content-Type: application/json</li>
+              <li><strong>async/await</strong> - Asynchrone Programmierung mit Promises</li>
+            </ul>
+          </div>
+
+          <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+            <div className="text-slate-400 text-sm mb-2">Status nach Stage 3:</div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">HTML/CSS</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">JavaScript</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">Flask Backend</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">REST API</span>
+              <span className="px-3 py-1 bg-slate-700 text-slate-400 rounded-full text-sm">In-Memory (flüchtig)</span>
+            </div>
+          </div>
+
+          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-800">
+            <div className="text-purple-300 font-medium mb-2">Limitierung von In-Memory Storage:</div>
+            <p className="text-sm text-slate-300">
+              Daten gehen bei Server-Neustart verloren! Für persistente Daten brauchen
+              wir eine echte Datenbank wie CouchDB.
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'stage-microservices',
+      title: 'Stage 4: Microservices (Ü10)',
+      content: (
+        <div className="space-y-6">
+          <p>
+            In Stage 4 containerisieren wir die Anwendung und fügen <strong>CouchDB</strong>
+            als persistente Datenbank hinzu. Mit <strong>Docker Compose</strong> orchestrieren
+            wir beide Services.
+          </p>
+
+          <div className="bg-orange-900/20 rounded-lg p-4 border border-orange-800">
+            <div className="text-orange-300 font-medium mb-2">Übung 10: Docker Compose + CouchDB</div>
+            <div className="text-sm text-slate-300">
+              Definiere eine Multi-Container-Umgebung mit Flask und CouchDB.
+              Nutze Service-Dependencies und Healthchecks für zuverlässigen Start.
+            </div>
+          </div>
+
+          <StorageEvolutionComparison />
+
+          <div className="space-y-4">
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-blue-400 mb-3">docker-compose.yml</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`version: '3.8'
+services:
+  flask-webserver:
+    build: .
+    ports:
+      - "8001:8001"
+    depends_on:
+      couchdb:
+        condition: service_healthy
+    environment:
+      - COUCHDB_URL=http://\${COUCHDB_USER}:\${COUCHDB_PASSWORD}@couchdb:5984
+    env_file:
+      - .env
+
+  couchdb:
+    image: couchdb:latest
+    restart: always
+    ports:
+      - "5984:5984"
+    volumes:
+      - ./local.ini:/opt/couchdb/etc/local.d/10-admins.ini
+      - ./dbdata:/opt/couchdb/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5984"]
+      interval: 10s
+      timeout: 5s
+      retries: 5`}</pre>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-green-400 mb-3">Flask mit CouchDB (webserver.py)</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`from flask import Flask, request, jsonify
+import requests
+import os
+
+webserver = Flask(__name__)
+
+couchdb_user = os.environ["COUCHDB_USER"]
+couchdb_password = os.environ["COUCHDB_PASSWORD"]
+couchdb_url = os.environ["COUCHDB_URL"]
+
+def create_databases():
+    databases = ["_users", "playlists"]
+    for db in databases:
+        response = requests.put(couchdb_url+"/"+db)
+        if response.status_code == 201:
+            print(f"Database {db} created successfully.")
+
+@webserver.route('/playlists', methods=['GET'])
+def get_playlists():
+    response = requests.get(couchdb_url+"/playlists/_all_docs")
+    if response.status_code == 200:
+        playlists = [ row["id"].split(':')[1] for row in response.json()["rows"] ]
+        return jsonify(playlists)
+    return jsonify({"error": "Failed to retrieve playlists"}), response.status_code
+
+@webserver.route('/playlists', methods=['POST'])
+def add_playlist():
+    data = request.get_json()
+    doc_id = f"playlist:{data['name']}"
+    playlist_doc = {
+        "_id": doc_id,
+        "name": data["name"],
+        "tracks": data["tracks"]
+    }
+    response = requests.put(couchdb_url+"/playlists/"+doc_id, json=playlist_doc)
+    if response.status_code in [201, 202]:
+        return jsonify({"message": f"Playlist added/updated."}), 201
+    return jsonify({"error": "Failed to save playlist"}), response.status_code
+
+create_databases()
+
+if __name__ == '__main__':
+    webserver.run(host='0.0.0.0', port=8001)`}</pre>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+              <div className="text-blue-300 font-medium mb-2">Docker Compose Konzepte</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li><code className="bg-slate-700 px-1 rounded">depends_on</code> - Start-Reihenfolge</li>
+                <li><code className="bg-slate-700 px-1 rounded">condition: service_healthy</code> - Warten auf Health</li>
+                <li><code className="bg-slate-700 px-1 rounded">environment</code> - Env-Variablen</li>
+                <li><code className="bg-slate-700 px-1 rounded">volumes</code> - Persistente Daten</li>
+              </ul>
+            </div>
+            <div className="bg-green-900/20 rounded-lg p-4 border border-green-800">
+              <div className="text-green-300 font-medium mb-2">Healthcheck</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li><code className="bg-slate-700 px-1 rounded">test</code> - Check-Kommando</li>
+                <li><code className="bg-slate-700 px-1 rounded">interval</code> - Prüfintervall</li>
+                <li><code className="bg-slate-700 px-1 rounded">timeout</code> - Max. Wartezeit</li>
+                <li><code className="bg-slate-700 px-1 rounded">retries</code> - Wiederholungen</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-800">
+            <div className="text-amber-300 font-medium mb-2">Wichtige Konzepte in Stage 4:</div>
+            <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
+              <li><strong>Service Discovery</strong> - Services erreichen sich über Container-Namen (couchdb:5984)</li>
+              <li><strong>Environment Variables</strong> - Konfiguration über .env Files</li>
+              <li><strong>Healthchecks</strong> - Sicherstellen, dass Abhängigkeiten bereit sind</li>
+              <li><strong>Volumes</strong> - Daten überleben Container-Neustarts</li>
+            </ul>
+          </div>
+
+          <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+            <div className="text-slate-400 text-sm mb-2">Status nach Stage 4:</div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">Frontend</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">Flask API</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">CouchDB</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">Docker Compose</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">Persistenz</span>
+            </div>
+          </div>
+
+          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-800">
+            <div className="text-purple-300 font-medium mb-2">Von Docker zu Kubernetes:</div>
+            <p className="text-sm text-slate-300">
+              Docker Compose ist ideal für lokale Entwicklung. Für Production-Deployments
+              mit Skalierung, Rolling Updates und Self-Healing brauchen wir Kubernetes!
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'stage-kubernetes',
+      title: 'Stage 5: Kubernetes (Ü12)',
+      content: (
+        <div className="space-y-6">
+          <p>
+            In der finalen Stage deployen wir die Anwendung in <strong>Kubernetes</strong>.
+            Wir nutzen Deployments, Services und PersistentVolumeClaims für eine
+            produktionsreife Architektur.
+          </p>
+
+          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-800">
+            <div className="text-purple-300 font-medium mb-2">Übung 12: Kubernetes Deployment</div>
+            <div className="text-sm text-slate-300">
+              Übersetze die Docker-Compose-Konfiguration in Kubernetes-Manifeste.
+              Verstehe den Unterschied zwischen NodePort und ClusterIP Services.
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-blue-400 mb-3">Webserver Deployment</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webserver
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      containers:
+      - name: webserver
+        image: webserver:local
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: COUCHDB_URL
+          value: couchdb:5984
+        - name: COUCHDB_USER
+          value: admin
+        - name: COUCHDB_PASSWORD
+          value: admin123`}</pre>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-green-400 mb-3">Webserver NodePort Service</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`apiVersion: v1
+kind: Service
+metadata:
+  name: webserver
+spec:
+  selector:
+    app: webserver
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 32000
+  type: NodePort`}</pre>
+              </div>
+              <div className="mt-3 text-sm text-slate-400">
+                <strong>NodePort</strong>: Extern erreichbar auf Port 32000 aller Cluster-Nodes
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                <h4 className="font-medium text-orange-400 mb-3">CouchDB Deployment</h4>
+                <div className="bg-slate-900 rounded p-3 font-mono text-xs text-slate-300 overflow-x-auto">
+                  <pre>{`apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: couchdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: couchdb
+  template:
+    spec:
+      containers:
+      - name: couchdb
+        image: couchdb:latest
+        ports:
+        - containerPort: 5984
+        env:
+        - name: COUCHDB_USER
+          value: admin
+        - name: COUCHDB_PASSWORD
+          value: admin123
+        volumeMounts:
+        - name: couchdb-data
+          mountPath: /opt/couchdb/data
+      volumes:
+      - name: couchdb-data
+        persistentVolumeClaim:
+          claimName: couchdb-pvc`}</pre>
+                </div>
+              </div>
+
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                <h4 className="font-medium text-cyan-400 mb-3">CouchDB ClusterIP Service</h4>
+                <div className="bg-slate-900 rounded p-3 font-mono text-xs text-slate-300 overflow-x-auto">
+                  <pre>{`apiVersion: v1
+kind: Service
+metadata:
+  name: couchdb
+spec:
+  selector:
+    app: couchdb
+  ports:
+  - protocol: TCP
+    port: 5984
+    targetPort: 5984
+  type: ClusterIP`}</pre>
+                </div>
+                <div className="mt-3 text-sm text-slate-400">
+                  <strong>ClusterIP</strong>: Nur intern erreichbar, Webserver nutzt DNS-Namen "couchdb"
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-pink-400 mb-3">PersistentVolume + PersistentVolumeClaim</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: couchdb-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/couchdb
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: couchdb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi`}</pre>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+              <div className="text-blue-300 font-medium mb-2">NodePort vs ClusterIP</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li><strong>NodePort</strong>: Extern erreichbar</li>
+                <li><strong>ClusterIP</strong>: Nur intern</li>
+                <li>Port 30000-32767 für NodePort</li>
+              </ul>
+            </div>
+            <div className="bg-green-900/20 rounded-lg p-4 border border-green-800">
+              <div className="text-green-300 font-medium mb-2">Service Discovery</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li>DNS-Name = Service-Name</li>
+                <li><code className="bg-slate-700 px-1 rounded text-xs">couchdb:5984</code></li>
+                <li>Automatische Auflösung</li>
+              </ul>
+            </div>
+            <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-800">
+              <div className="text-purple-300 font-medium mb-2">Persistent Storage</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li>PV: Storage-Ressource</li>
+                <li>PVC: Storage-Anfrage</li>
+                <li>Daten überleben Pod-Tod</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-800">
+            <div className="text-amber-300 font-medium mb-2">Wichtige Konzepte in Stage 5:</div>
+            <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
+              <li><strong>Deployment</strong> - Verwaltet ReplicaSets, ermöglicht Rolling Updates</li>
+              <li><strong>Service</strong> - Stabile Netzwerk-Identität für Pods</li>
+              <li><strong>Labels &amp; Selectors</strong> - Verbinden Services mit Pods</li>
+              <li><strong>Environment Variables</strong> - Konfiguration im Container</li>
+              <li><strong>PersistentVolumeClaim</strong> - Anforderung von persistentem Storage</li>
+            </ul>
+          </div>
+
+          <div className="p-4 bg-gradient-to-r from-green-900/30 to-blue-900/30 rounded-lg border border-green-700">
+            <div className="text-green-300 font-medium mb-2">Finale Architektur:</div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">Frontend (HTML/CSS/JS)</span>
+              <span className="text-slate-500">→</span>
+              <span className="px-3 py-1 bg-blue-900/50 text-blue-400 rounded-full text-sm">Flask API (Deployment)</span>
+              <span className="text-slate-500">→</span>
+              <span className="px-3 py-1 bg-orange-900/50 text-orange-400 rounded-full text-sm">CouchDB (Deployment + PVC)</span>
+            </div>
+            <div className="mt-3 text-sm text-slate-300">
+              Vollständige Cloud-Native Anwendung mit Skalierbarkeit, Persistenz und Service Discovery!
+            </div>
           </div>
         </div>
       ),
