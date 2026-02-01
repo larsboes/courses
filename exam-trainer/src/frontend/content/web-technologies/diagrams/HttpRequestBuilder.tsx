@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/HttpRequestBuilder.tsx
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -113,19 +113,22 @@ export function HttpRequestBuilder({ className }: DiagramProps) {
   }
 
   return (
-    <Card className={`p-6 ${className ?? ''}`}>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-100">
-            HTTP Request Builder
-          </h3>
-          <Button variant="ghost" size="sm" onClick={resetToDefaults}>
-            Reset
-          </Button>
-        </div>
-
-        {/* Method and Path */}
+    <DiagramShell
+      title="HTTP Request Builder"
+      className={className}
+      actions={
+        <Button variant="ghost" size="sm" onClick={resetToDefaults}>
+          Reset
+        </Button>
+      }
+      footer={
+        <p>
+          <strong className="text-slate-400">Tip:</strong> The Host header is required in HTTP/1.1.
+          Content-Type is needed when sending a request body.
+        </p>
+      }
+    >
+      {/* Method and Path */}
         <div className="flex flex-col sm:flex-row gap-3">
           {/* Method selector */}
           <div className="relative">
@@ -415,14 +418,6 @@ export function HttpRequestBuilder({ className }: DiagramProps) {
           </motion.div>
         </div>
 
-        {/* Quick tips */}
-        <div className="text-xs text-slate-500 space-y-1">
-          <p>
-            <strong className="text-slate-400">Tip:</strong> The Host header is required in HTTP/1.1.
-            Content-Type is needed when sending a request body.
-          </p>
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }
