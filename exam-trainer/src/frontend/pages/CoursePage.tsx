@@ -102,6 +102,32 @@ export function CoursePage() {
           </div>
         )}
 
+        {/* Study Tools */}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <Link
+            to={`/course/${courseId}/glossary`}
+            className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg hover:border-blue-500/50 transition-colors group"
+          >
+            <div className="text-lg font-semibold text-blue-400 group-hover:text-blue-300">
+              K8s Glossar
+            </div>
+            <div className="text-sm text-slate-400 mt-1">
+              Begriffe nachschlagen
+            </div>
+          </Link>
+          <Link
+            to={`/course/${courseId}/flashcards`}
+            className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg hover:border-purple-500/50 transition-colors group"
+          >
+            <div className="text-lg font-semibold text-purple-400 group-hover:text-purple-300">
+              Flashcards
+            </div>
+            <div className="text-sm text-slate-400 mt-1">
+              Begriffe lernen
+            </div>
+          </Link>
+        </div>
+
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {course.topics.map((topic) => {
