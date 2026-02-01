@@ -1,6 +1,6 @@
 // src/App.tsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { HomePage, CoursePage, TopicPage, QuizPage, ExamPage, GlossaryPage, FlashcardsPage } from './pages'
+import { HomePage, CoursePage, TopicPage, QuizPage, ExamPage, GlossaryPage, FlashcardsPage, RequestTracerPage } from './pages'
 
 export function App() {
   return (
@@ -13,8 +13,10 @@ export function App() {
         <Route path="/course/:courseId/exam" element={<ExamPage />} />
         <Route path="/course/:courseId/glossary" element={<GlossaryPage />} />
         <Route path="/course/:courseId/flashcards" element={<FlashcardsPage />} />
+        <Route path="/course/:courseId/request-tracing" element={<RequestTracerPage />} />
         <Route path="/glossary" element={<GlossaryPage />} />
         <Route path="/flashcards" element={<FlashcardsPage />} />
+        <Route path="/request-tracing" element={<RequestTracerPage />} />
       </Routes>
     </BrowserRouter>
   )

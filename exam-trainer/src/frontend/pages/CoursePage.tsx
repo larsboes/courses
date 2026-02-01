@@ -103,7 +103,7 @@ export function CoursePage() {
         )}
 
         {/* Study Tools */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-3 gap-4 mb-8">
           <Link
             to={`/course/${courseId}/glossary`}
             className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg hover:border-blue-500/50 transition-colors group"
@@ -124,6 +124,17 @@ export function CoursePage() {
             </div>
             <div className="text-sm text-slate-400 mt-1">
               Begriffe lernen
+            </div>
+          </Link>
+          <Link
+            to={`/course/${courseId}/request-tracing`}
+            className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg hover:border-green-500/50 transition-colors group"
+          >
+            <div className="text-lg font-semibold text-green-400 group-hover:text-green-300">
+              Request Tracing
+            </div>
+            <div className="text-sm text-slate-400 mt-1">
+              Request-Flows visualisieren
             </div>
           </Link>
         </div>
