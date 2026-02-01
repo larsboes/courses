@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/CssSelectorPlayground.tsx
 import { useState, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import type { DiagramProps } from '@/core/types/content'
 
@@ -393,32 +393,43 @@ export function CssSelectorPlayground({ className }: DiagramProps) {
   }, [])
 
   return (
-    <Card className={`p-6 ${className ?? ''}`}>
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-slate-100">
-            CSS Selector Playground
-          </h3>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={matchedNodes.size}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
-                matchedNodes.size > 0
-                  ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                  : 'bg-slate-700/50 text-slate-400 border border-slate-600'
-              }`}
-            >
-              {matchedNodes.size} {matchedNodes.size === 1 ? 'element' : 'elements'} match
-            </motion.div>
-          </AnimatePresence>
+    <DiagramShell
+      title="CSS Selector Playground"
+      className={className}
+      actions={
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={matchedNodes.size}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            className={`px-3 py-1 rounded-full text-sm font-medium ${
+              matchedNodes.size > 0
+                ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                : 'bg-slate-700/50 text-slate-400 border border-slate-600'
+            }`}
+          >
+            {matchedNodes.size} {matchedNodes.size === 1 ? 'element' : 'elements'} match
+          </motion.div>
+        </AnimatePresence>
+      }
+      footer={
+        <div className="text-sm text-slate-400">
+          <span className="text-slate-300 font-medium">Supported selectors:</span>
+          <ul className="mt-2 space-y-1 list-disc list-inside">
+            <li><code className="bg-slate-700 px-1 rounded">tag</code> - Element type (div, p, a)</li>
+            <li><code className="bg-slate-700 px-1 rounded">.class</code> - Class selector</li>
+            <li><code className="bg-slate-700 px-1 rounded">#id</code> - ID selector</li>
+            <li><code className="bg-slate-700 px-1 rounded">parent child</code> - Descendant combinator</li>
+            <li><code className="bg-slate-700 px-1 rounded">{'parent > child'}</code> - Direct child combinator</li>
+            <li><code className="bg-slate-700 px-1 rounded">.class1.class2</code> - Multiple classes</li>
+            <li><code className="bg-slate-700 px-1 rounded">:first-child</code>, <code className="bg-slate-700 px-1 rounded">:last-child</code> - Pseudo-classes</li>
+          </ul>
         </div>
-
-        {/* Selector Input */}
+      }
+    >
+      {/* Selector Input */}
         <div className="space-y-2">
           <label className="text-sm text-slate-400">Enter CSS Selector:</label>
           <input
@@ -467,22 +478,6 @@ export function CssSelectorPlayground({ className }: DiagramProps) {
           </div>
         </div>
 
-        {/* Tips */}
-        <div className="bg-slate-800/50 rounded-lg border border-slate-700 p-4">
-          <div className="text-sm text-slate-400">
-            <span className="text-slate-300 font-medium">Supported selectors:</span>
-            <ul className="mt-2 space-y-1 list-disc list-inside">
-              <li><code className="bg-slate-700 px-1 rounded">tag</code> - Element type (div, p, a)</li>
-              <li><code className="bg-slate-700 px-1 rounded">.class</code> - Class selector</li>
-              <li><code className="bg-slate-700 px-1 rounded">#id</code> - ID selector</li>
-              <li><code className="bg-slate-700 px-1 rounded">parent child</code> - Descendant combinator</li>
-              <li><code className="bg-slate-700 px-1 rounded">{'parent > child'}</code> - Direct child combinator</li>
-              <li><code className="bg-slate-700 px-1 rounded">.class1.class2</code> - Multiple classes</li>
-              <li><code className="bg-slate-700 px-1 rounded">:first-child</code>, <code className="bg-slate-700 px-1 rounded">:last-child</code> - Pseudo-classes</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </Card>
+    </DiagramShell>
   )
 }
