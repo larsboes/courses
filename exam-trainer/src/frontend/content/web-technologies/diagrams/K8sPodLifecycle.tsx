@@ -1,5 +1,5 @@
 // src/content/web-technologies/diagrams/K8sPodLifecycle.tsx
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Card } from '@/core/components/ui/Card'
 import { Button } from '@/core/components/ui/Button'
@@ -304,6 +304,7 @@ export function K8sPodLifecycle({ className }: DiagramProps) {
   const [pods, setPods] = useState<PodState[]>([])
   const [events, setEvents] = useState<TimelineEvent[]>([])
   const [currentTime, setCurrentTime] = useState(0)
+  const currentTimeRef = useRef(0)
   const [failedNode, setFailedNode] = useState<string | null>(null)
 
   // Add event to timeline
@@ -311,14 +312,14 @@ export function K8sPodLifecycle({ className }: DiagramProps) {
     setEvents((prev) => [
       {
         id: `${Date.now()}-${Math.random()}`,
-        timestamp: currentTime,
+        timestamp: currentTimeRef.current,
         message,
         type,
         podId,
       },
       ...prev.slice(0, 9), // Keep last 10 events
     ])
-  }, [currentTime])
+  }, [])
 
   // Update pod phase
   const updatePod = useCallback((id: string, updates: Partial<PodState>) => {
@@ -352,6 +353,7 @@ export function K8sPodLifecycle({ className }: DiagramProps) {
     setPods([])
     setEvents([])
     setCurrentTime(0)
+    currentTimeRef.current = 0
     setFailedNode(null)
     setIsRunning(false)
   }, [])
@@ -366,7 +368,11 @@ export function K8sPodLifecycle({ className }: DiagramProps) {
     const runScenario = async () => {
       // Update time
       intervalId = setInterval(() => {
-        setCurrentTime((t) => t + 0.1)
+        setCurrentTime((t) => {
+          const next = t + 0.1
+          currentTimeRef.current = next
+          return next
+        })
       }, 100)
 
       if (scenario === 'normal') {
