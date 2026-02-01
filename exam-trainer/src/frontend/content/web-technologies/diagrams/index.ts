@@ -39,3 +39,4 @@ export { CodeSnippetExplainer } from './CodeSnippetExplainer'
 // Playlist Evolution Components
 export { PlaylistEvolutionTimeline } from './PlaylistEvolutionTimeline'
 export { StorageEvolutionComparison } from './StorageEvolutionComparison'
+export { PlaylistCodeDiff } from './PlaylistCodeDiff'
