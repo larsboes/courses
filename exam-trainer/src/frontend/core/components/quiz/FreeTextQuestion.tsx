@@ -94,6 +94,7 @@ export function FreeTextQuestion({
   const [evaluation, setEvaluation] = useState<EvaluateResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [checkedConcepts, setCheckedConcepts] = useState<Set<number>>(new Set())
+  const [hintsUsed, setHintsUsed] = useState(0)
 
   const handleSubmit = async () => {
     if (!answer.trim()) return
@@ -118,7 +119,7 @@ export function FreeTextQuestion({
         question_type: 'free-text',
         score: result.score,
         user_answer: answer,
-        hints_used: 0, // TODO: Track hints from HintButton
+        hints_used: hintsUsed,
       }).catch((err) => {
         if (import.meta.env.DEV) {
           console.warn('[saveProgress] Failed:', err.message)
@@ -168,6 +169,7 @@ export function FreeTextQuestion({
             question={question.question}
             modelAnswer={question.modelAnswer}
             disabled={isLoading}
+            onHintUsed={setHintsUsed}
           />
           <Button
             onClick={handleSubmit}

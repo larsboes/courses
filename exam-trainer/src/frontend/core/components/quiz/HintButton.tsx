@@ -8,9 +8,10 @@ interface HintButtonProps {
   question: string
   modelAnswer: string
   disabled?: boolean
+  onHintUsed?: (level: number) => void
 }
 
-export function HintButton({ question, modelAnswer, disabled }: HintButtonProps) {
+export function HintButton({ question, modelAnswer, disabled, onHintUsed }: HintButtonProps) {
   const [hints, setHints] = useState<string[]>([])
   const [currentLevel, setCurrentLevel] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
@@ -31,6 +32,7 @@ export function HintButton({ question, modelAnswer, disabled }: HintButtonProps)
       })
       setHints([...hints, result.hint])
       setCurrentLevel(result.hint_level)
+      onHintUsed?.(result.hint_level)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to get hint')
     } finally {
