@@ -1,6 +1,6 @@
 // src/content/web-technologies/topics/playlist-app.tsx
 import type { Topic } from '@/core/types/content'
-import { PlaylistEvolutionTimeline, PlaylistApiExplorer, StorageEvolutionComparison } from '../diagrams'
+import { PlaylistEvolutionTimeline, PlaylistApiExplorer, StorageEvolutionComparison, PlaylistCodeDiff } from '../diagrams'
 
 export const playlistAppTopic: Topic = {
   id: 'playlist-app',
@@ -1185,6 +1185,188 @@ spec:
         </div>
       ),
     },
+    {
+      id: 'code-comparison',
+      title: 'Code-Vergleich',
+      content: (
+        <div className="space-y-6">
+          <p>
+            Der interaktive <strong>Code-Vergleich</strong> zeigt dir, wie sich der Code
+            der Playlist-App von Stage zu Stage verändert. Du kannst die Unterschiede
+            zwischen localStorage und REST API, zwischen einzelnen Services und Docker Compose,
+            sowie zwischen Docker Compose und Kubernetes sehen.
+          </p>
+
+          <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+            <div className="text-blue-300 font-medium mb-2">So nutzt du den Diff-Viewer:</div>
+            <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
+              <li>Wähle zwei Stages aus den Dropdown-Menüs</li>
+              <li><span className="text-red-400">Rot markierte</span> Zeilen wurden entfernt</li>
+              <li><span className="text-green-400">Grün markierte</span> Zeilen wurden hinzugefügt</li>
+              <li>Achte auf Muster: Was ändert sich bei jedem Übergang?</li>
+            </ul>
+          </div>
+
+          <PlaylistCodeDiff />
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <div className="text-green-400 font-medium mb-2">localStorage → REST</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li>• <code className="bg-slate-700 px-1 rounded text-xs">localStorage.getItem()</code> → <code className="bg-slate-700 px-1 rounded text-xs">fetch()</code></li>
+                <li>• Synchron → Asynchron (async/await)</li>
+                <li>• Keine Error-Handling → try/catch nötig</li>
+                <li>• Lokal → Netzwerk-Kommunikation</li>
+              </ul>
+            </div>
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <div className="text-purple-400 font-medium mb-2">Docker → Kubernetes</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li>• <code className="bg-slate-700 px-1 rounded text-xs">services:</code> → <code className="bg-slate-700 px-1 rounded text-xs">kind: Deployment</code></li>
+                <li>• <code className="bg-slate-700 px-1 rounded text-xs">depends_on:</code> → Labels + Selectors</li>
+                <li>• <code className="bg-slate-700 px-1 rounded text-xs">volumes:</code> → PV + PVC</li>
+                <li>• <code className="bg-slate-700 px-1 rounded text-xs">ports:</code> → Service (NodePort/ClusterIP)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-800">
+            <div className="text-amber-300 font-medium mb-2">Lernstrategie:</div>
+            <p className="text-sm text-slate-300">
+              Versuche, die Änderungen zu verstehen, bevor du sie anschaust. Frage dich:
+              "Was müsste ich ändern, um von Stage X zu Stage Y zu kommen?" Dann überprüfe
+              deine Vermutung mit dem Diff-Viewer.
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'exam-practice',
+      title: 'Prüfungsvorbereitung',
+      content: (
+        <div className="space-y-6">
+          <p>
+            Diese Sektion fasst die wichtigsten <strong>Prüfungsthemen</strong> zusammen
+            und gibt dir konkrete Übungsaufgaben, um dich optimal vorzubereiten.
+          </p>
+
+          <div className="bg-gradient-to-r from-purple-900/30 to-blue-900/30 rounded-lg p-4 border border-purple-700">
+            <div className="text-purple-300 font-medium mb-3">Was du können solltest:</div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <div className="text-blue-400 font-medium text-sm">HTTP-Requests von Hand schreiben</div>
+                <ul className="text-sm text-slate-300 space-y-1">
+                  <li>• Request-Line: <code className="bg-slate-700 px-1 rounded text-xs">GET /path HTTP/1.1</code></li>
+                  <li>• Header korrekt formatieren</li>
+                  <li>• JSON-Body für POST/PUT</li>
+                  <li>• Content-Type nicht vergessen</li>
+                </ul>
+              </div>
+              <div className="space-y-2">
+                <div className="text-green-400 font-medium text-sm">localStorage/JSON nachvollziehen</div>
+                <ul className="text-sm text-slate-300 space-y-1">
+                  <li>• Was gibt <code className="bg-slate-700 px-1 rounded text-xs">getItem()</code> zurück?</li>
+                  <li>• Wann <code className="bg-slate-700 px-1 rounded text-xs">JSON.parse()</code> nötig?</li>
+                  <li>• Was passiert bei fehlendem Key?</li>
+                  <li>• Datentypen nach parse/stringify</li>
+                </ul>
+              </div>
+              <div className="space-y-2">
+                <div className="text-orange-400 font-medium text-sm">K8s Manifeste lesen und zeichnen</div>
+                <ul className="text-sm text-slate-300 space-y-1">
+                  <li>• Deployment → Pods identifizieren</li>
+                  <li>• Service-Typen unterscheiden</li>
+                  <li>• Labels und Selectors verbinden</li>
+                  <li>• Architektur-Diagramm skizzieren</li>
+                </ul>
+              </div>
+              <div className="space-y-2">
+                <div className="text-pink-400 font-medium text-sm">Evolution erklären</div>
+                <ul className="text-sm text-slate-300 space-y-1">
+                  <li>• Warum von localStorage zu REST?</li>
+                  <li>• Warum Docker Compose?</li>
+                  <li>• Warum Kubernetes?</li>
+                  <li>• Trade-offs jeder Stage</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+            <div className="text-blue-300 font-medium mb-3">Typische Prüfungsaufgaben:</div>
+            <div className="space-y-4">
+              <div className="p-3 bg-slate-900/50 rounded border border-slate-600">
+                <div className="text-amber-400 font-medium text-sm mb-2">Aufgabe 1: HTTP Request schreiben</div>
+                <p className="text-sm text-slate-300">
+                  "Schreibe einen vollständigen HTTP-Request, um einen neuen Track zur Playlist 'workout' hinzuzufügen.
+                  Der Track hat den Titel 'Running Song' und die URL 'https://spotify.com/track/123'."
+                </p>
+              </div>
+              <div className="p-3 bg-slate-900/50 rounded border border-slate-600">
+                <div className="text-amber-400 font-medium text-sm mb-2">Aufgabe 2: Code-Analyse</div>
+                <p className="text-sm text-slate-300">
+                  "Was gibt der folgende Code aus? <code className="bg-slate-700 px-1 rounded">JSON.parse(localStorage.getItem('nonexistent'))</code>"
+                </p>
+              </div>
+              <div className="p-3 bg-slate-900/50 rounded border border-slate-600">
+                <div className="text-amber-400 font-medium text-sm mb-2">Aufgabe 3: K8s Manifest verstehen</div>
+                <p className="text-sm text-slate-300">
+                  "Gegeben ist ein Deployment mit <code className="bg-slate-700 px-1 rounded">selector: matchLabels: app: webserver</code>.
+                  Welche Zeile muss im Service stehen, damit er die Pods findet?"
+                </p>
+              </div>
+              <div className="p-3 bg-slate-900/50 rounded border border-slate-600">
+                <div className="text-amber-400 font-medium text-sm mb-2">Aufgabe 4: Architektur erklären</div>
+                <p className="text-sm text-slate-300">
+                  "Erkläre, warum wir von localStorage (Ü8) zu einer REST API (Ü9) gewechselt sind.
+                  Nenne mindestens zwei Vorteile und einen Nachteil."
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="bg-red-900/20 rounded-lg p-4 border border-red-800">
+              <div className="text-red-400 font-medium mb-2">Häufige Fehler</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li>• HTTP Header ohne Doppelpunkt</li>
+                <li>• JSON.stringify() vergessen bei fetch body</li>
+                <li>• ClusterIP vs NodePort verwechseln</li>
+                <li>• Labels und Selectors nicht matching</li>
+              </ul>
+            </div>
+            <div className="bg-green-900/20 rounded-lg p-4 border border-green-800">
+              <div className="text-green-400 font-medium mb-2">Prüfungstipps</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li>• Lies Aufgaben genau - oft Hinweise drin</li>
+                <li>• Bei K8s: Labels zuerst prüfen</li>
+                <li>• HTTP Status Codes auswendig lernen</li>
+                <li>• docker-compose vs k8s Syntax unterscheiden</li>
+              </ul>
+            </div>
+            <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+              <div className="text-blue-400 font-medium mb-2">Zeitmanagement</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li>• Code-Fragen: schnell, aber genau</li>
+                <li>• Architektur-Fragen: mehr Zeit einplanen</li>
+                <li>• Bei Unsicherheit: erst andere Aufgaben</li>
+                <li>• Diagramme beschriften nicht vergessen</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-800">
+            <div className="text-amber-300 font-medium mb-2">Selbsttest vor der Prüfung:</div>
+            <p className="text-sm text-slate-300">
+              Kannst du ohne nachzuschauen erklären, warum wir in Stage 4 (Docker Compose) einen
+              Healthcheck für CouchDB brauchen, aber in Stage 5 (Kubernetes) nicht explizit?
+              Wenn ja, bist du gut vorbereitet!
+            </p>
+          </div>
+        </div>
+      ),
+    },
   ],
 
   relatedTopics: [
@@ -1233,8 +1415,195 @@ flowchart TB
 
   quiz: {
     questions: [
+      // === Ü7 (HTML/CSS) - 4 Questions ===
       {
-        id: 'playlist-api-endpoints',
+        id: 'html-form-element',
+        type: 'multiple-choice',
+        question: 'Welches HTML-Attribut verhindert, dass ein Formular abgesendet wird, wenn das Feld leer ist?',
+        options: [
+          'mandatory',
+          'required',
+          'validate',
+          'notempty',
+        ],
+        correctAnswer: 'required',
+        explanation:
+          'Das required-Attribut ist ein HTML5-Feature für Client-seitige Validierung. Der Browser verhindert das Absenden des Formulars, wenn ein required-Feld leer ist.',
+      },
+      {
+        id: 'html-input-type-url',
+        type: 'multiple-choice',
+        question: 'Warum verwenden wir type="url" für das Link-Eingabefeld statt type="text"?',
+        options: [
+          'Es sieht anders aus',
+          'Der Browser validiert automatisch das URL-Format',
+          'Es ist schneller zu laden',
+          'Es gibt keinen Unterschied',
+        ],
+        correctAnswer: 'Der Browser validiert automatisch das URL-Format',
+        explanation:
+          'Mit type="url" prüft der Browser, ob der eingegebene Wert ein gültiges URL-Format hat (z.B. mit http:// oder https://). Dies ist Teil der HTML5 Form Validation.',
+      },
+      {
+        id: 'html-select-element',
+        type: 'multiple-choice',
+        question: 'Welches HTML-Element wird für die Playlist-Auswahl (Dropdown) verwendet?',
+        options: [
+          '<dropdown>',
+          '<select>',
+          '<choice>',
+          '<list>',
+        ],
+        correctAnswer: '<select>',
+        explanation:
+          'Das <select>-Element erstellt ein Dropdown-Menü. Es enthält <option>-Elemente für die einzelnen Auswahlmöglichkeiten. Dies ist das Standard-HTML-Element für Auswahlfelder.',
+      },
+      {
+        id: 'css-selector-id',
+        type: 'multiple-choice',
+        question: 'Mit welchem CSS-Selektor spricht man ein Element mit id="playlist" an?',
+        options: [
+          '.playlist',
+          '#playlist',
+          'playlist',
+          '@playlist',
+        ],
+        correctAnswer: '#playlist',
+        explanation:
+          'In CSS werden IDs mit dem Hash-Symbol (#) selektiert, Klassen mit dem Punkt (.). Also #playlist für id="playlist" und .playlist für class="playlist".',
+      },
+
+      // === Ü8 (JavaScript/localStorage) - 5 Questions ===
+      {
+        id: 'localstorage-getitem-null',
+        type: 'multiple-choice',
+        question: 'Was gibt localStorage.getItem("nichtExistent") zurück, wenn der Key nicht existiert?',
+        options: [
+          'undefined',
+          'null',
+          'Ein leerer String ""',
+          'Es wirft einen Error',
+        ],
+        correctAnswer: 'null',
+        explanation:
+          'localStorage.getItem() gibt null zurück, wenn der Key nicht existiert. Wichtig: null ist nicht das gleiche wie undefined oder ein leerer String!',
+      },
+      {
+        id: 'json-parse-null',
+        type: 'multiple-choice',
+        question: 'Was passiert bei JSON.parse(null)?',
+        options: [
+          'Es gibt null zurück',
+          'Es gibt undefined zurück',
+          'Es wirft einen SyntaxError',
+          'Es gibt ein leeres Objekt {} zurück',
+        ],
+        correctAnswer: 'Es gibt null zurück',
+        explanation:
+          'JSON.parse(null) gibt tatsächlich null zurück, weil null ein gültiger JSON-Wert ist. Aber JSON.parse(undefined) würde einen SyntaxError werfen!',
+      },
+      {
+        id: 'localstorage-stringify',
+        type: 'multiple-choice',
+        question: 'Warum müssen wir JSON.stringify() verwenden, bevor wir ein Objekt in localStorage speichern?',
+        options: [
+          'localStorage kann nur Strings speichern',
+          'Es macht die Daten kleiner',
+          'Es verschlüsselt die Daten',
+          'Es ist optional, aber empfohlen',
+        ],
+        correctAnswer: 'localStorage kann nur Strings speichern',
+        explanation:
+          'localStorage speichert alle Werte als Strings. Ohne JSON.stringify() würde ein Objekt zu "[object Object]" konvertiert werden und die Daten wären verloren.',
+      },
+      {
+        id: 'dom-getelementbyid',
+        type: 'multiple-choice',
+        question: 'Was gibt document.getElementById("nichtExistent") zurück?',
+        options: [
+          'undefined',
+          'null',
+          'Ein leeres Element',
+          'Es wirft einen Error',
+        ],
+        correctAnswer: 'null',
+        explanation:
+          'getElementById() gibt null zurück, wenn kein Element mit der ID gefunden wird. Daher sollte man vor der Verwendung prüfen, ob das Element existiert.',
+      },
+      {
+        id: 'dom-innerhtml-vs-appendchild',
+        type: 'multiple-choice',
+        question: 'Was ist der Hauptunterschied zwischen innerHTML = "" und removeChild()?',
+        options: [
+          'innerHTML ist schneller',
+          'innerHTML entfernt ALLE Kinder auf einmal, removeChild nur eines',
+          'removeChild funktioniert nur mit IDs',
+          'Es gibt keinen Unterschied',
+        ],
+        correctAnswer: 'innerHTML entfernt ALLE Kinder auf einmal, removeChild nur eines',
+        explanation:
+          'innerHTML = "" löscht alle Kind-Elemente auf einmal. removeChild() entfernt nur ein spezifisches Kind. In der Playlist-App nutzen wir innerHTML = "" um die Liste komplett neu zu rendern.',
+      },
+
+      // === Ü9 (REST/HTTP) - 5 Questions ===
+      {
+        id: 'http-method-create',
+        type: 'multiple-choice',
+        question: 'Welche HTTP-Methode wird verwendet, um eine neue Playlist zu erstellen?',
+        options: [
+          'GET',
+          'POST',
+          'PUT',
+          'CREATE',
+        ],
+        correctAnswer: 'POST',
+        explanation:
+          'POST wird verwendet, um neue Ressourcen zu erstellen. Der Server weist dann eine ID zu. PUT würde verwendet, wenn der Client die ID selbst bestimmt.',
+      },
+      {
+        id: 'http-status-201',
+        type: 'multiple-choice',
+        question: 'Welcher HTTP-Status Code wird nach erfolgreicher Erstellung einer Ressource zurückgegeben?',
+        options: [
+          '200 OK',
+          '201 Created',
+          '204 No Content',
+          '301 Moved Permanently',
+        ],
+        correctAnswer: '201 Created',
+        explanation:
+          '201 Created zeigt an, dass die Anfrage erfolgreich war und eine neue Ressource erstellt wurde. 200 OK ist für erfolgreiche Anfragen ohne Erstellung, 204 für erfolgreiche Anfragen ohne Response-Body.',
+      },
+      {
+        id: 'http-request-format',
+        type: 'multiple-choice',
+        question: 'Wie sieht die erste Zeile (Request-Line) eines HTTP POST-Requests an /playlists aus?',
+        options: [
+          'POST /playlists HTTP/1.1',
+          'HTTP/1.1 POST /playlists',
+          '/playlists POST HTTP/1.1',
+          'POST HTTP/1.1 /playlists',
+        ],
+        correctAnswer: 'POST /playlists HTTP/1.1',
+        explanation:
+          'Die Request-Line hat das Format: METHODE PFAD HTTP-VERSION. Also zuerst die Methode, dann der Pfad, dann die HTTP-Version.',
+      },
+      {
+        id: 'fetch-content-type',
+        type: 'multiple-choice',
+        question: 'Welcher Header muss gesetzt werden, wenn man JSON-Daten mit fetch() sendet?',
+        options: [
+          'Accept: application/json',
+          'Content-Type: application/json',
+          'Data-Format: json',
+          'Body-Type: json',
+        ],
+        correctAnswer: 'Content-Type: application/json',
+        explanation:
+          'Content-Type teilt dem Server mit, in welchem Format der Request-Body ist. Accept sagt dem Server, welches Format wir in der Response erwarten.',
+      },
+      {
+        id: 'rest-endpoint-design',
         type: 'multiple-choice',
         question: 'Welcher Endpoint wird verwendet, um einen neuen Song zu einer Playlist hinzuzufügen?',
         options: [
@@ -1245,10 +1614,170 @@ flowchart TB
         ],
         correctAnswer: 'POST /api/v1/playlists/:id/songs',
         explanation:
-          'Songs sind eine verschachtelte Ressource unter Playlists. POST erstellt eine neue Ressource, und der Pfad /playlists/:id/songs zeigt die Zugehörigkeit zur Playlist. Dies folgt REST-Konventionen für hierarchische Ressourcen.',
+          'Songs sind eine verschachtelte Ressource unter Playlists. POST erstellt eine neue Ressource, und der Pfad /playlists/:id/songs zeigt die Zugehörigkeit zur Playlist.',
+      },
+
+      // === Ü10 (Docker Compose) - 4 Questions ===
+      {
+        id: 'docker-depends-on',
+        type: 'multiple-choice',
+        question: 'Was bewirkt "depends_on: couchdb: condition: service_healthy" in docker-compose.yml?',
+        options: [
+          'CouchDB wird nach dem Webserver gestartet',
+          'Der Webserver wartet, bis CouchDB healthy ist, bevor er startet',
+          'CouchDB und Webserver starten gleichzeitig',
+          'Es erstellt eine Netzwerkverbindung zwischen den Services',
+        ],
+        correctAnswer: 'Der Webserver wartet, bis CouchDB healthy ist, bevor er startet',
+        explanation:
+          'Mit condition: service_healthy wartet Docker Compose, bis der Healthcheck des abhängigen Services erfolgreich ist. Ohne condition würde nur auf den Container-Start gewartet, nicht auf die Anwendungsbereitschaft.',
       },
       {
-        id: 'playlist-frontend-backend',
+        id: 'docker-healthcheck',
+        type: 'multiple-choice',
+        question: 'Was macht der Healthcheck "test: [CMD, curl, -f, http://localhost:5984]"?',
+        options: [
+          'Er testet die Netzwerkgeschwindigkeit',
+          'Er prüft, ob CouchDB auf Port 5984 antwortet',
+          'Er startet CouchDB neu',
+          'Er loggt Fehlermeldungen',
+        ],
+        correctAnswer: 'Er prüft, ob CouchDB auf Port 5984 antwortet',
+        explanation:
+          'Der Healthcheck führt curl aus und prüft, ob CouchDB erreichbar ist. curl -f schlägt fehl, wenn der HTTP-Status nicht 2xx ist. So weiß Docker Compose, wann die Datenbank wirklich bereit ist.',
+      },
+      {
+        id: 'docker-env-variables',
+        type: 'multiple-choice',
+        question: 'Wie werden Umgebungsvariablen aus einer .env-Datei in docker-compose.yml referenziert?',
+        options: [
+          '{{VARIABLE}}',
+          '${VARIABLE}',
+          '$VARIABLE$',
+          '%VARIABLE%',
+        ],
+        correctAnswer: '${VARIABLE}',
+        explanation:
+          'In docker-compose.yml werden Umgebungsvariablen mit ${VARIABLE} referenziert. Die Werte werden aus der .env-Datei oder der Shell-Umgebung gelesen.',
+      },
+      {
+        id: 'docker-service-communication',
+        type: 'multiple-choice',
+        question: 'Wie erreicht der Flask-Webserver die CouchDB in Docker Compose?',
+        options: [
+          'Über localhost:5984',
+          'Über die IP-Adresse des Containers',
+          'Über den Service-Namen couchdb:5984',
+          'Über eine externe URL',
+        ],
+        correctAnswer: 'Über den Service-Namen couchdb:5984',
+        explanation:
+          'In Docker Compose können Services sich über ihre Namen erreichen. Docker erstellt automatisch DNS-Einträge für jeden Service im gleichen Netzwerk.',
+      },
+
+      // === Ü12 (Kubernetes) - 5 Questions ===
+      {
+        id: 'k8s-nodeport-vs-clusterip',
+        type: 'multiple-choice',
+        question: 'Wann verwendet man NodePort statt ClusterIP?',
+        options: [
+          'Wenn der Service schneller sein soll',
+          'Wenn der Service von außerhalb des Clusters erreichbar sein soll',
+          'Wenn der Service mehr Speicher braucht',
+          'Wenn der Service repliziert werden soll',
+        ],
+        correctAnswer: 'Wenn der Service von außerhalb des Clusters erreichbar sein soll',
+        explanation:
+          'NodePort öffnet einen Port (30000-32767) auf allen Cluster-Nodes, über den der Service von außen erreichbar ist. ClusterIP ist nur cluster-intern erreichbar.',
+      },
+      {
+        id: 'k8s-pv-pvc',
+        type: 'multiple-choice',
+        question: 'Was ist der Unterschied zwischen PersistentVolume (PV) und PersistentVolumeClaim (PVC)?',
+        options: [
+          'PV ist für Datenbanken, PVC für Dateien',
+          'PV definiert den verfügbaren Storage, PVC ist die Anforderung danach',
+          'PVC ist größer als PV',
+          'Es gibt keinen Unterschied',
+        ],
+        correctAnswer: 'PV definiert den verfügbaren Storage, PVC ist die Anforderung danach',
+        explanation:
+          'Ein PV ist eine Storage-Ressource im Cluster (z.B. eine Festplatte). Ein PVC ist eine Anforderung eines Pods nach Storage. Kubernetes bindet PVCs an passende PVs.',
+      },
+      {
+        id: 'k8s-label-selector',
+        type: 'multiple-choice',
+        question: 'Wie findet ein K8s Service die zugehörigen Pods?',
+        options: [
+          'Über den Pod-Namen',
+          'Über die IP-Adresse',
+          'Über Label-Selektoren',
+          'Über die Container-ID',
+        ],
+        correctAnswer: 'Über Label-Selektoren',
+        explanation:
+          'Services verwenden selector, um Pods mit passenden Labels zu finden. Z.B. selector: app: webserver findet alle Pods mit dem Label app: webserver.',
+      },
+      {
+        id: 'k8s-service-dns',
+        type: 'multiple-choice',
+        question: 'Unter welchem DNS-Namen ist ein Service "couchdb" im gleichen Namespace erreichbar?',
+        options: [
+          'couchdb.cluster.local',
+          'couchdb',
+          'service-couchdb',
+          'pod-couchdb',
+        ],
+        correctAnswer: 'couchdb',
+        explanation:
+          'Im gleichen Namespace reicht der Service-Name als DNS-Name. Der vollständige Name wäre couchdb.<namespace>.svc.cluster.local, aber innerhalb des Namespaces genügt "couchdb".',
+      },
+      {
+        id: 'k8s-deployment-replicas',
+        type: 'multiple-choice',
+        question: 'Was passiert, wenn man replicas: 3 im Deployment setzt?',
+        options: [
+          'Der Container wird 3x so schnell',
+          'Kubernetes startet 3 identische Pods',
+          'Der Service hat 3 Ports',
+          'Die Datenbank wird 3x repliziert',
+        ],
+        correctAnswer: 'Kubernetes startet 3 identische Pods',
+        explanation:
+          'replicas bestimmt, wie viele Pod-Instanzen laufen sollen. Bei 3 Replicas laufen 3 identische Pods, und der Service verteilt Traffic automatisch zwischen ihnen (Load Balancing).',
+      },
+
+      // === Synthesis Questions - 4 Questions ===
+      {
+        id: 'evolution-localstorage-to-rest',
+        type: 'multiple-choice',
+        question: 'Warum haben wir von localStorage (Ü8) zu REST API (Ü9) gewechselt?',
+        options: [
+          'REST ist schneller als localStorage',
+          'Damit mehrere Benutzer/Geräte dieselben Daten sehen können',
+          'localStorage funktioniert nicht in allen Browsern',
+          'REST braucht weniger Code',
+        ],
+        correctAnswer: 'Damit mehrere Benutzer/Geräte dieselben Daten sehen können',
+        explanation:
+          'localStorage speichert Daten nur lokal im Browser. Mit einer REST API werden Daten zentral auf einem Server gespeichert und sind für alle Clients zugänglich.',
+      },
+      {
+        id: 'evolution-docker-to-k8s',
+        type: 'multiple-choice',
+        question: 'Was bietet Kubernetes, das Docker Compose nicht hat?',
+        options: [
+          'Container-Images',
+          'Automatische Skalierung, Self-Healing und Rolling Updates',
+          'Netzwerk zwischen Services',
+          'Umgebungsvariablen',
+        ],
+        correctAnswer: 'Automatische Skalierung, Self-Healing und Rolling Updates',
+        explanation:
+          'Kubernetes bietet Production-Features wie automatische Skalierung basierend auf Last, Self-Healing bei Pod-Ausfällen, und Rolling Updates für Zero-Downtime Deployments. Docker Compose ist primär für lokale Entwicklung.',
+      },
+      {
+        id: 'architecture-frontend-backend',
         type: 'multiple-choice',
         question: 'Wie kommuniziert das Frontend mit dem Backend in der Playlist-App?',
         options: [
@@ -1259,21 +1788,21 @@ flowchart TB
         ],
         correctAnswer: 'Über HTTP-Requests mit fetch() und JSON-Daten',
         explanation:
-          'Das Frontend nutzt die fetch()-API für asynchrone HTTP-Requests. Daten werden im JSON-Format ausgetauscht (Content-Type: application/json). Dies ist das Standard-Pattern für moderne Webanwendungen mit REST-APIs.',
+          'Das Frontend nutzt die fetch()-API für asynchrone HTTP-Requests. Daten werden im JSON-Format ausgetauscht. Dies ist das Standard-Pattern für moderne Webanwendungen.',
       },
       {
-        id: 'playlist-k8s-services',
+        id: 'architecture-k8s-services',
         type: 'multiple-choice',
-        question: 'Warum hat das Backend einen ClusterIP-Service und das Frontend einen LoadBalancer-Service?',
+        question: 'In der K8s-Architektur: Warum hat CouchDB einen ClusterIP-Service und der Webserver einen NodePort-Service?',
         options: [
-          'ClusterIP ist schneller als LoadBalancer',
-          'Das Backend braucht nur interne Erreichbarkeit, das Frontend muss extern erreichbar sein',
-          'LoadBalancer funktioniert nur mit statischen Dateien',
-          'Es gibt keinen technischen Grund, beide könnten LoadBalancer sein',
+          'ClusterIP ist sicherer',
+          'CouchDB braucht nur interne Erreichbarkeit, der Webserver muss extern erreichbar sein',
+          'NodePort ist schneller',
+          'Es ist Zufall, beide könnten vertauscht werden',
         ],
-        correctAnswer: 'Das Backend braucht nur interne Erreichbarkeit, das Frontend muss extern erreichbar sein',
+        correctAnswer: 'CouchDB braucht nur interne Erreichbarkeit, der Webserver muss extern erreichbar sein',
         explanation:
-          'ClusterIP macht Services nur cluster-intern erreichbar - ideal für Backends, die nur von anderen Services angesprochen werden. LoadBalancer erstellt einen externen Endpunkt für Benutzer. Das Frontend ist der Einstiegspunkt und muss daher extern erreichbar sein.',
+          'Die Datenbank sollte nicht direkt von außen erreichbar sein (Sicherheit). Der Webserver ist der Einstiegspunkt und muss für Benutzer erreichbar sein, daher NodePort.',
       },
     ],
   },
