@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/StatusCodeQuiz.tsx
 import { useState, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card } from '@/core/components/ui'
+import { DiagramShell } from '@/core/components/diagrams'
 import type { DiagramProps } from '@/core/types/content'
 
 interface QuizQuestion {
@@ -224,14 +224,12 @@ export function StatusCodeQuiz({ className }: DiagramProps) {
 
   if (quizState === 'finished') {
     return (
-      <Card className={`p-6 ${className}`}>
+      <DiagramShell title="HTTP Status Code Quiz" subtitle="Quiz beendet!" className={className}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <h2 className="text-2xl font-bold text-white mb-2">Quiz beendet!</h2>
-
           <div className="my-8">
             <motion.div
               initial={{ scale: 0 }}
@@ -270,22 +268,21 @@ export function StatusCodeQuiz({ className }: DiagramProps) {
             Nochmal spielen
           </motion.button>
         </motion.div>
-      </Card>
+      </DiagramShell>
     )
   }
 
   return (
-    <Card className={`p-6 ${className}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="text-sm text-slate-400">
-          Frage {currentIndex + 1} von {QUESTIONS_PER_ROUND}
-        </div>
+    <DiagramShell
+      title="HTTP Status Code Quiz"
+      subtitle={`Frage ${currentIndex + 1} von ${QUESTIONS_PER_ROUND}`}
+      className={className}
+      actions={
         <div className="text-sm font-medium text-white">
           Punkte: {score}
         </div>
-      </div>
-
+      }
+    >
       {/* Progress bar */}
       <div className="h-2 bg-slate-700 rounded-full overflow-hidden mb-6">
         <motion.div
@@ -359,6 +356,6 @@ export function StatusCodeQuiz({ className }: DiagramProps) {
           </AnimatePresence>
         </motion.div>
       </AnimatePresence>
-    </Card>
+    </DiagramShell>
   )
 }
