@@ -1,5 +1,6 @@
 // src/content/web-technologies/topics/playlist-app.tsx
 import type { Topic } from '@/core/types/content'
+import { PlaylistEvolutionTimeline } from '../diagrams'
 
 export const playlistAppTopic: Topic = {
   id: 'playlist-app',
@@ -9,42 +10,319 @@ export const playlistAppTopic: Topic = {
 
   sections: [
     {
-      id: 'overview',
-      title: 'Überblick',
+      id: 'evolution-overview',
+      title: 'Evolution der Playlist App',
       content: (
-        <div className="space-y-4">
+        <div className="space-y-6">
           <p>
-            Das Exam-Projekt ist eine vollständige <strong>Playlist-App</strong>,
-            die alle gelernten Web-Technologien kombiniert: HTML/CSS/JS Frontend,
-            REST API Backend und Kubernetes Deployment.
+            Die Playlist-App ist das zentrale <strong>Exam-Projekt</strong>, das alle
+            Konzepte des Kurses vereint. Anstatt sie als fertiges Produkt zu betrachten,
+            werden wir ihre <strong>Evolution</strong> verstehen - von einer einfachen
+            HTML-Seite bis zur vollständigen Cloud-Anwendung.
           </p>
-          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
-            <div className="text-sm text-slate-400 mb-3">Projektanforderungen:</div>
-            <div className="grid gap-3">
-              <div className="p-3 bg-blue-900/20 rounded border border-blue-800">
-                <div className="text-blue-400 font-medium mb-1">Frontend</div>
-                <div className="text-sm text-slate-300">
-                  HTML5-Struktur, CSS-Styling, JavaScript für DOM-Manipulation und API-Kommunikation
-                </div>
+
+          <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 rounded-lg p-4 border border-blue-700">
+            <div className="text-blue-300 font-medium mb-3">Lernreise durch die Übungen:</div>
+            <div className="text-sm text-slate-300">
+              Jede Übung baut auf der vorherigen auf und führt neue Technologien ein.
+              Diese schrittweise Entwicklung zeigt, wie moderne Webanwendungen entstehen.
+            </div>
+          </div>
+
+          <PlaylistEvolutionTimeline />
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+              <div className="text-2xl font-bold text-blue-400 mb-1">4</div>
+              <div className="text-sm text-slate-300">Entwicklungsstufen</div>
+            </div>
+            <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+              <div className="text-2xl font-bold text-green-400 mb-1">8+</div>
+              <div className="text-sm text-slate-300">Technologien</div>
+            </div>
+            <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+              <div className="text-2xl font-bold text-purple-400 mb-1">1</div>
+              <div className="text-sm text-slate-300">Vollständige App</div>
+            </div>
+          </div>
+
+          <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-800">
+            <div className="text-amber-300 font-medium mb-2">Was du lernen wirst:</div>
+            <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
+              <li>HTML/CSS für Struktur und Styling (Ü7)</li>
+              <li>JavaScript und localStorage für Interaktivität (Ü8)</li>
+              <li>REST API mit Backend-Kommunikation (Ü10)</li>
+              <li>Kubernetes Deployment für Production (Ü11)</li>
+            </ul>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'stage-ui',
+      title: 'Stage 1: UI Foundation (Ü7)',
+      content: (
+        <div className="space-y-6">
+          <p>
+            In der ersten Stage bauen wir die <strong>Benutzeroberfläche</strong> mit
+            HTML und CSS. Diese bildet das Fundament der gesamten Anwendung - die
+            Struktur bleibt durch alle weiteren Stages erhalten.
+          </p>
+
+          <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+            <div className="text-blue-300 font-medium mb-2">Übung 7: HTML/CSS Grundlagen</div>
+            <div className="text-sm text-slate-300">
+              Erstelle eine responsive Playlist-Manager-Oberfläche mit Formular,
+              Playlist-Auswahl und Track-Liste.
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-blue-400 mb-3">HTML-Struktur (index.html)</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Playlist Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Meta Playlist Manager</h1>
+
+        <!-- Playlist Selection and Creation -->
+        <div class="playlist-controls">
+            <input type="text" id="playlist-name" placeholder="New Playlist Name" required>
+            <button id="create-playlist">Create Playlist</button>
+            <select id="playlist-select">
+                <option value="" disabled selected>Select a Playlist</option>
+            </select>
+            <button id="delete-playlist">Delete Playlist</button>
+        </div>
+
+        <!-- Track Input Form -->
+        <form id="track-form">
+            <input type="text" id="title" placeholder="Track Title" required>
+            <input type="url" id="link" placeholder="Track URL (Streaming Service Link)" required>
+            <input type="text" id="duration" placeholder="Duration (mm:ss)">
+            <button type="submit">Add Track</button>
+        </form>
+
+        <!-- Playlist Display -->
+        <div class="playlist">
+            <h2>Playlist Details</h2>
+            <ul id="playlist"></ul>
+            <div id="total-duration">Total Duration: 0:00</div>
+            <button id="save-playlist">Save Playlist</button>
+        </div>
+    </div>
+</body>
+</html>`}</pre>
               </div>
-              <div className="p-3 bg-green-900/20 rounded border border-green-800">
-                <div className="text-green-400 font-medium mb-1">Backend</div>
-                <div className="text-sm text-slate-300">
-                  REST API mit CRUD-Operationen für Playlists und Songs
-                </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                <h4 className="font-medium text-green-400 mb-3">Semantische Elemente</h4>
+                <ul className="text-sm text-slate-300 space-y-2">
+                  <li><code className="bg-slate-700 px-1 rounded">&lt;form&gt;</code> - Gruppiert Eingabefelder</li>
+                  <li><code className="bg-slate-700 px-1 rounded">&lt;input&gt;</code> - Verschiedene Typen (text, url)</li>
+                  <li><code className="bg-slate-700 px-1 rounded">&lt;select&gt;</code> - Dropdown für Playlist-Auswahl</li>
+                  <li><code className="bg-slate-700 px-1 rounded">&lt;ul&gt;/&lt;li&gt;</code> - Liste für Tracks</li>
+                </ul>
               </div>
-              <div className="p-3 bg-purple-900/20 rounded border border-purple-800">
-                <div className="text-purple-400 font-medium mb-1">Deployment</div>
-                <div className="text-sm text-slate-300">
-                  Kubernetes Manifeste für Frontend und Backend Services
-                </div>
+              <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                <h4 className="font-medium text-purple-400 mb-3">ID-Attribute</h4>
+                <ul className="text-sm text-slate-300 space-y-2">
+                  <li><code className="bg-slate-700 px-1 rounded">id="playlist-name"</code> - Für JS-Zugriff</li>
+                  <li><code className="bg-slate-700 px-1 rounded">id="track-form"</code> - Form-Handler</li>
+                  <li><code className="bg-slate-700 px-1 rounded">id="playlist"</code> - Dynamische Liste</li>
+                  <li><code className="bg-slate-700 px-1 rounded">id="total-duration"</code> - Display-Element</li>
+                </ul>
               </div>
             </div>
           </div>
+
+          <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-800">
+            <div className="text-amber-300 font-medium mb-2">Wichtige Konzepte in Stage 1:</div>
+            <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
+              <li><strong>Viewport Meta Tag</strong> - Responsive Design auf Mobile</li>
+              <li><strong>Semantische HTML5</strong> - Struktur durch bedeutungsvolle Tags</li>
+              <li><strong>Form Elements</strong> - Input-Typen mit Validierung (required, type="url")</li>
+              <li><strong>CSS-Verlinkung</strong> - Externe Stylesheet für Styling</li>
+            </ul>
+          </div>
+
+          <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+            <div className="text-slate-400 text-sm mb-2">Status nach Stage 1:</div>
+            <div className="flex items-center gap-4">
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">HTML Struktur</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">CSS Styling</span>
+              <span className="px-3 py-1 bg-slate-700 text-slate-400 rounded-full text-sm">Keine Funktionalität</span>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'stage-javascript',
+      title: 'Stage 2: JavaScript + localStorage (Ü8)',
+      content: (
+        <div className="space-y-6">
           <p>
-            Die App ermöglicht es Nutzern, <strong>Playlists zu erstellen</strong>,
-            <strong>Songs hinzuzufügen</strong> und <strong>Playlists zu verwalten</strong>.
+            In Stage 2 erwecken wir die App zum Leben. Mit <strong>JavaScript</strong>
+            fügen wir Interaktivität hinzu und nutzen <strong>localStorage</strong>,
+            um Daten im Browser zu speichern.
           </p>
+
+          <div className="bg-green-900/20 rounded-lg p-4 border border-green-800">
+            <div className="text-green-300 font-medium mb-2">Übung 8: JavaScript & localStorage</div>
+            <div className="text-sm text-slate-300">
+              Implementiere CRUD-Operationen für Playlists und Tracks mit Persistenz
+              im Browser-Storage.
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-blue-400 mb-3">DOM-Element-Referenzen</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`// DOM elements
+const playlistNameInput = document.getElementById('playlist-name');
+const playlistSelect = document.getElementById('playlist-select');
+const createPlaylistButton = document.getElementById('create-playlist');
+const deletePlaylistButton = document.getElementById('delete-playlist');
+const trackForm = document.getElementById('track-form');
+const titleInput = document.getElementById('title');
+const linkInput = document.getElementById('link');
+const durationInput = document.getElementById('duration');
+const playlistContainer = document.getElementById('playlist');
+const savePlaylistButton = document.getElementById('save-playlist');
+const totalDurationDisplay = document.getElementById('total-duration');
+
+// Initialize playlists object to store multiple playlists
+let playlists = {};
+let currentPlaylist = null;`}</pre>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-green-400 mb-3">localStorage: Laden und Speichern</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`// Load playlists from localStorage
+window.onload = function() {
+    const savedPlaylists = localStorage.getItem('playlists');
+    if (savedPlaylists) {
+        playlists = JSON.parse(savedPlaylists);
+        updatePlaylistSelect();
+    }
+};
+
+// Save all playlists to localStorage
+savePlaylistButton.addEventListener('click', function() {
+    const playlistsJSON = JSON.stringify(playlists);
+    localStorage.setItem('playlists', playlistsJSON);
+    alert('All playlists saved!');
+});`}</pre>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-purple-400 mb-3">Event Handling: Playlist erstellen</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`// Create a new playlist
+createPlaylistButton.addEventListener('click', function() {
+    const playlistName = playlistNameInput.value.trim();
+    if (playlistName && !playlists[playlistName]) {
+        playlists[playlistName] = [];
+        currentPlaylist = playlistName;
+        updatePlaylistSelect();
+        renderPlaylist();
+        playlistNameInput.value = '';
+        alert(\`Playlist "\${playlistName}" created!\`);
+    } else {
+        alert('Playlist name is required or already exists.');
+    }
+});`}</pre>
+              </div>
+            </div>
+
+            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+              <h4 className="font-medium text-amber-400 mb-3">DOM-Manipulation: Playlist rendern</h4>
+              <div className="bg-slate-900 rounded p-3 font-mono text-sm text-slate-300 overflow-x-auto">
+                <pre>{`// Render the current playlist
+function renderPlaylist() {
+    playlistContainer.innerHTML = '';
+    if (currentPlaylist && playlists[currentPlaylist]) {
+        playlists[currentPlaylist].forEach((track, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = \`
+                <a href="\${track.link}" target="_blank">
+                  \${track.title} (\${track.duration})
+                </a>
+                <button onclick="removeTrack(\${index})">Remove</button>
+            \`;
+            playlistContainer.appendChild(li);
+        });
+        updateTotalDuration();
+    }
+}`}</pre>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+              <div className="text-blue-300 font-medium mb-2">localStorage API</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li><code className="bg-slate-700 px-1 rounded">getItem(key)</code> - Wert lesen</li>
+                <li><code className="bg-slate-700 px-1 rounded">setItem(key, value)</code> - Wert speichern</li>
+                <li><code className="bg-slate-700 px-1 rounded">removeItem(key)</code> - Wert löschen</li>
+                <li>Nur Strings - JSON.parse/stringify nötig!</li>
+              </ul>
+            </div>
+            <div className="bg-green-900/20 rounded-lg p-4 border border-green-800">
+              <div className="text-green-300 font-medium mb-2">DOM API</div>
+              <ul className="text-sm text-slate-300 space-y-1">
+                <li><code className="bg-slate-700 px-1 rounded">getElementById()</code> - Element finden</li>
+                <li><code className="bg-slate-700 px-1 rounded">createElement()</code> - Element erstellen</li>
+                <li><code className="bg-slate-700 px-1 rounded">appendChild()</code> - Element einfügen</li>
+                <li><code className="bg-slate-700 px-1 rounded">innerHTML</code> - HTML setzen</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-800">
+            <div className="text-amber-300 font-medium mb-2">Wichtige Konzepte in Stage 2:</div>
+            <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
+              <li><strong>JSON.stringify/parse</strong> - Objekte zu/von Strings konvertieren</li>
+              <li><strong>Event Listeners</strong> - Auf Benutzeraktionen reagieren</li>
+              <li><strong>DOM Manipulation</strong> - Seite dynamisch aktualisieren</li>
+              <li><strong>Closure</strong> - Zugriff auf äußere Variablen in Callbacks</li>
+            </ul>
+          </div>
+
+          <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+            <div className="text-slate-400 text-sm mb-2">Status nach Stage 2:</div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">HTML Struktur</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">CSS Styling</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">JavaScript Logic</span>
+              <span className="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm">Browser Storage</span>
+              <span className="px-3 py-1 bg-slate-700 text-slate-400 rounded-full text-sm">Kein Backend</span>
+            </div>
+          </div>
+
+          <div className="bg-purple-900/20 rounded-lg p-4 border border-purple-800">
+            <div className="text-purple-300 font-medium mb-2">Limitierung von localStorage:</div>
+            <p className="text-sm text-slate-300">
+              Daten sind nur auf diesem einen Browser/Gerät verfügbar. Andere Benutzer
+              oder Geräte sehen die Playlists nicht. Dafür brauchen wir ein Backend!
+            </p>
+          </div>
         </div>
       ),
     },
