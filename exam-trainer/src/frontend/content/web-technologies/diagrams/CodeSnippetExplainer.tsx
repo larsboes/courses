@@ -1,7 +1,7 @@
 // src/content/web-technologies/diagrams/CodeSnippetExplainer.tsx
 import { useState, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { DiagramShell, StepNavigator } from '@/core/components/diagrams'
+import { DiagramShell, StepNavigator, ExplanationPanel } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import { useStepNavigator } from '@/core/hooks'
 import { highlightColors, type HighlightColor } from '@/core/styles'
@@ -632,30 +632,17 @@ export function CodeSnippetExplainer({ className }: DiagramProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className={`
-              p-4 rounded-lg border-l-4
-              ${highlightColors[currentExplanation.color].bg}
-              ${highlightColors[currentExplanation.color].border}
-            `}
           >
-            <div className="flex items-center gap-2 mb-2">
-              <span className={`
-                px-2 py-0.5 rounded text-xs font-semibold
-                ${highlightColors[currentExplanation.color].text}
-                bg-slate-800
-              `}>
-                {currentExplanation.label}
-              </span>
-              <span className="text-slate-500 text-xs">
-                Zeile {currentExplanation.lineStart}
-                {currentExplanation.lineEnd !== currentExplanation.lineStart &&
-                  ` - ${currentExplanation.lineEnd}`
-                }
-              </span>
-            </div>
-            <p className="text-slate-300 leading-relaxed">
-              {currentExplanation.explanation}
-            </p>
+            <ExplanationPanel
+              label={currentExplanation.label}
+              explanation={currentExplanation.explanation}
+              color={currentExplanation.color}
+              meta={
+                currentExplanation.lineEnd !== currentExplanation.lineStart
+                  ? `Zeile ${currentExplanation.lineStart} - ${currentExplanation.lineEnd}`
+                  : `Zeile ${currentExplanation.lineStart}`
+              }
+            />
           </motion.div>
         )}
       </AnimatePresence>
