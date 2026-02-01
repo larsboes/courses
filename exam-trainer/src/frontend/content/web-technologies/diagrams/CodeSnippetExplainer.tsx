@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { DiagramShell, StepNavigator } from '@/core/components/diagrams'
 import { Button } from '@/core/components/ui/Button'
 import { useStepNavigator } from '@/core/hooks'
+import { highlightColors, type HighlightColor } from '@/core/styles'
 import type { DiagramProps } from '@/core/types/content'
 
 // ─────────────────────────────────────────────────
@@ -15,7 +16,7 @@ interface CodeAnnotation {
   lineEnd: number
   label: string
   explanation: string
-  color: 'blue' | 'green' | 'purple' | 'amber' | 'cyan' | 'red'
+  color: HighlightColor
 }
 
 interface CodeSnippet {
@@ -399,49 +400,6 @@ spec:
 const SAMPLES = CODE_SNIPPETS.map((s, i) => ({ id: String(i), label: s.title }))
 
 // ─────────────────────────────────────────────────
-// Color mappings
-// ─────────────────────────────────────────────────
-
-const ANNOTATION_COLORS = {
-  blue: {
-    bg: 'bg-blue-500/20',
-    border: 'border-blue-500',
-    text: 'text-blue-400',
-    highlight: 'bg-blue-500/30',
-  },
-  green: {
-    bg: 'bg-green-500/20',
-    border: 'border-green-500',
-    text: 'text-green-400',
-    highlight: 'bg-green-500/30',
-  },
-  purple: {
-    bg: 'bg-purple-500/20',
-    border: 'border-purple-500',
-    text: 'text-purple-400',
-    highlight: 'bg-purple-500/30',
-  },
-  amber: {
-    bg: 'bg-amber-500/20',
-    border: 'border-amber-500',
-    text: 'text-amber-400',
-    highlight: 'bg-amber-500/30',
-  },
-  cyan: {
-    bg: 'bg-cyan-500/20',
-    border: 'border-cyan-500',
-    text: 'text-cyan-400',
-    highlight: 'bg-cyan-500/30',
-  },
-  red: {
-    bg: 'bg-red-500/20',
-    border: 'border-red-500',
-    text: 'text-red-400',
-    highlight: 'bg-red-500/30',
-  },
-}
-
-// ─────────────────────────────────────────────────
 // Code Line Component
 // ─────────────────────────────────────────────────
 
@@ -490,7 +448,7 @@ function CodeLine({
       {annotation && (
         <span className={`
           px-2 py-0.5 text-xs flex items-center
-          ${ANNOTATION_COLORS[annotation.color].text}
+          ${highlightColors[annotation.color].text}
         `}>
           ●
         </span>
@@ -552,19 +510,19 @@ export function CodeSnippetExplainer({ className }: DiagramProps) {
     if (stepMode) {
       const stepAnnotation = snippet.annotations[stepper.currentStep]
       if (lineNumber >= stepAnnotation?.lineStart && lineNumber <= stepAnnotation?.lineEnd) {
-        return ANNOTATION_COLORS[stepAnnotation.color].highlight
+        return highlightColors[stepAnnotation.color].highlight
       }
     }
     if (activeAnnotation !== null) {
       const annotation = snippet.annotations[activeAnnotation]
       if (lineNumber >= annotation.lineStart && lineNumber <= annotation.lineEnd) {
-        return ANNOTATION_COLORS[annotation.color].highlight
+        return highlightColors[annotation.color].highlight
       }
     }
     if (hoveredLine !== null) {
       const annotation = getAnnotationForLine(hoveredLine)
       if (annotation && lineNumber >= annotation.lineStart && lineNumber <= annotation.lineEnd) {
-        return ANNOTATION_COLORS[annotation.color].highlight
+        return highlightColors[annotation.color].highlight
       }
     }
     return undefined
@@ -676,14 +634,14 @@ export function CodeSnippetExplainer({ className }: DiagramProps) {
             exit={{ opacity: 0, y: -10 }}
             className={`
               p-4 rounded-lg border-l-4
-              ${ANNOTATION_COLORS[currentExplanation.color].bg}
-              ${ANNOTATION_COLORS[currentExplanation.color].border}
+              ${highlightColors[currentExplanation.color].bg}
+              ${highlightColors[currentExplanation.color].border}
             `}
           >
             <div className="flex items-center gap-2 mb-2">
               <span className={`
                 px-2 py-0.5 rounded text-xs font-semibold
-                ${ANNOTATION_COLORS[currentExplanation.color].text}
+                ${highlightColors[currentExplanation.color].text}
                 bg-slate-800
               `}>
                 {currentExplanation.label}
@@ -725,7 +683,7 @@ export function CodeSnippetExplainer({ className }: DiagramProps) {
                   px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
                   border
                   ${activeAnnotation === i
-                    ? `${ANNOTATION_COLORS[annotation.color].bg} ${ANNOTATION_COLORS[annotation.color].border} ${ANNOTATION_COLORS[annotation.color].text}`
+                    ? `${highlightColors[annotation.color].bg} ${highlightColors[annotation.color].border} ${highlightColors[annotation.color].text}`
                     : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-500'}
                 `}
               >
