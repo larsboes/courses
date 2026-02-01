@@ -25,3 +25,16 @@ export { DebugRequestChallenge } from './DebugRequestChallenge'
 export { CssCascadeSimulator } from './CssCascadeSimulator'
 export { K8sPodLifecycle } from './K8sPodLifecycle'
 export { RequestLatencyBreakdown } from './RequestLatencyBreakdown'
+
+// Session 2 Interactive Components
+export { DomTreeBuilderExercise } from './DomTreeBuilderExercise'
+export { HttpRequestComposer } from './HttpRequestComposer'
+export { K8sManifestDiagramLinked } from './K8sManifestDiagramLinked'
+export { JsonPathExplorer } from './JsonPathExplorer'
+export { RestResourceDesigner } from './RestResourceDesigner'
+export { ServiceDiscoverySimulator } from './ServiceDiscoverySimulator'
+export { RenderingPipelineStepper } from './RenderingPipelineStepper'
+export { CodeSnippetExplainer } from './CodeSnippetExplainer'
+
+// Playlist Evolution Components
+export { PlaylistEvolutionTimeline } from './PlaylistEvolutionTimeline'
