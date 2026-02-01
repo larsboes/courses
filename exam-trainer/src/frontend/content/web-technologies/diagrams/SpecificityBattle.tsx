@@ -1,6 +1,7 @@
 // src/content/web-technologies/diagrams/SpecificityBattle.tsx
 import { Button } from '@/core/components/ui/Button'
 import { Card } from '@/core/components/ui/Card'
+import { DiagramShell } from '@/core/components/diagrams'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useMemo } from 'react'
 
@@ -255,13 +256,12 @@ export function SpecificityBattle() {
 
   if (gameOver) {
     return (
-      <Card className="p-8 max-w-2xl mx-auto">
+      <DiagramShell title="Specificity Battle" subtitle="Spiel beendet!">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="text-center"
         >
-          <h2 className="text-3xl font-bold mb-4">Spiel beendet!</h2>
           <div className="mb-6">
             <motion.div
               initial={{ scale: 0 }}
@@ -285,22 +285,40 @@ export function SpecificityBattle() {
             Nochmal spielen
           </Button>
         </motion.div>
-      </Card>
+      </DiagramShell>
     )
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div className="text-slate-400">
-          Runde <span className="text-white font-bold">{currentRound + 1}</span>/10
-        </div>
+    <DiagramShell
+      title="Specificity Battle"
+      subtitle={`Runde ${currentRound + 1}/10`}
+      actions={
         <div className="text-slate-400">
           Punkte: <span className="text-white font-bold">{score}</span>
         </div>
-      </div>
-
+      }
+      footer={
+        <div className="flex flex-wrap gap-4 text-xs">
+          <span className="flex items-center gap-1">
+            <span className="w-3 h-3 bg-blue-900/50 rounded" />
+            <span className="text-slate-400">Inline (1,0,0,0)</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-3 h-3 bg-red-900/50 rounded" />
+            <span className="text-slate-400">IDs (0,1,0,0)</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-3 h-3 bg-amber-900/50 rounded" />
+            <span className="text-slate-400">Klassen (0,0,1,0)</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="w-3 h-3 bg-purple-900/50 rounded" />
+            <span className="text-slate-400">Elemente (0,0,0,1)</span>
+          </span>
+        </div>
+      }
+    >
       {/* Progress Bar */}
       <div className="h-2 bg-slate-700 rounded-full mb-8 overflow-hidden">
         <motion.div
@@ -383,29 +401,6 @@ export function SpecificityBattle() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Legend */}
-      <div className="mt-8 p-4 bg-slate-800/50 rounded-lg">
-        <h4 className="text-sm font-medium text-slate-400 mb-2">Spezifitäts-Legende:</h4>
-        <div className="flex flex-wrap gap-4 text-xs">
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 bg-blue-900/50 rounded" />
-            <span className="text-slate-400">Inline (1,0,0,0)</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 bg-red-900/50 rounded" />
-            <span className="text-slate-400">IDs (0,1,0,0)</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 bg-amber-900/50 rounded" />
-            <span className="text-slate-400">Klassen (0,0,1,0)</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="w-3 h-3 bg-purple-900/50 rounded" />
-            <span className="text-slate-400">Elemente (0,0,0,1)</span>
-          </span>
-        </div>
-      </div>
-    </div>
+    </DiagramShell>
   )
 }
