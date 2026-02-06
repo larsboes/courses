@@ -1,0 +1,27 @@
+{
+  "lastUpdated": "2026-02-01T20:57:11.957920",
+  "cards": {
+    "term-def-loadbalancer": {
+      "lastSeen": "2026-02-01T20:56:36.784Z",
+      "nextReview": "2026-02-02",
+      "streak": 0,
+      "totalSeen": 1,
+      "totalCorrect": 0
+    },
+    "def-term-node-ip": {
+      "lastSeen": "2026-02-01T20:57:00.434Z",
+      "nextReview": "2026-02-02",
+      "streak": 0,
+      "totalSeen": 1,
+      "totalCorrect": 0
+    },
+    "comparison-pod-vs-container": {
+      "lastSeen": "2026-02-01T20:57:11.951Z",
+      "nextReview": "2026-02-02",
+      "streak": 0,
+      "totalSeen": 1,
+      "totalCorrect": 0
+    }
+  },
+  "sessions": []
+}
