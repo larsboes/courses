@@ -30,7 +30,7 @@ const defaultConceptPairs: ConceptPair[] = [
       term: 'Konfiguration',
       definition: 'Einstellung von Parametern innerhalb vorgesehener Optionen',
       keyPoints: [
-        'Keine Programmierung noetig',
+        'Keine Programmierung nötig',
         'Tabellen/Parameter anpassen',
         'Update-sicher',
         'Schnell umsetzbar',
@@ -77,8 +77,8 @@ const defaultConceptPairs: ConceptPair[] = [
       ],
       icon: '📊',
     },
-    keyDifference: 'OLTP = Tagesgeschaeft speichern | OLAP = Daten analysieren',
-    examTip: 'OLTP ist fuer ERP-Systeme (Buchungen), OLAP fuer BI/Data Warehouse (Auswertungen)!',
+    keyDifference: 'OLTP = Tagesgeschäft speichern | OLAP = Daten analysieren',
+    examTip: 'OLTP ist für ERP-Systeme (Buchungen), OLAP für BI/Data Warehouse (Auswertungen)!',
     colorA: 'from-green-500 to-green-700',
     colorB: 'from-purple-500 to-purple-700',
   },
@@ -106,7 +106,7 @@ const defaultConceptPairs: ConceptPair[] = [
       ],
       icon: '⚡',
     },
-    keyDifference: 'Analytisch = Daten auswerten | Operativ = Massnahmen umsetzen',
+    keyDifference: 'Analytisch = Daten auswerten | Operativ = Maßnahmen umsetzen',
     examTip: 'Analytisch nutzt BI-Methoden, Operativ ist die praktische Umsetzung in Salesforce & Co.!',
     colorA: 'from-cyan-500 to-cyan-700',
     colorB: 'from-amber-500 to-amber-700',
@@ -115,28 +115,28 @@ const defaultConceptPairs: ConceptPair[] = [
     id: 'dw-dl',
     conceptA: {
       term: 'Data Warehouse',
-      definition: 'Strukturierte, aufbereitete Daten fuer Analysen',
+      definition: 'Strukturierte, aufbereitete Daten für Analysen',
       keyPoints: [
         'Schema-on-Write',
         'ETL vor Speicherung',
         'Strukturierte Daten',
-        'Hohe Datenqualitaet',
+        'Hohe Datenqualität',
       ],
       icon: '🏢',
     },
     conceptB: {
       term: 'Data Lake',
-      definition: 'Rohdaten aller Art in urspruenglichem Format',
+      definition: 'Rohdaten aller Art in ursprünglichem Format',
       keyPoints: [
         'Schema-on-Read',
         'ELT - erst bei Abfrage',
         'Alle Datenformate',
-        'Flexibel & guenstig',
+        'Flexibel & günstig',
       ],
       icon: '🌊',
     },
     keyDifference: 'Warehouse = sauberes Lager | Lake = Rohdaten-See',
-    examTip: 'Data Warehouse: Daten VOR dem Speichern aufbereiten. Data Lake: Rohdaten rein, spaeter aufbereiten!',
+    examTip: 'Data Warehouse: Daten VOR dem Speichern aufbereiten. Data Lake: Rohdaten rein, später aufbereiten!',
     colorA: 'from-blue-500 to-blue-700',
     colorB: 'from-teal-500 to-teal-700',
   },
@@ -254,13 +254,13 @@ function FlipCard({ pair, isFlipped, onFlip }: FlipCardProps) {
             {/* Exam Tip */}
             <div className="mt-2 p-2 bg-amber-900/40 rounded-lg border border-amber-700">
               <p className="text-xs text-amber-200">
-                <span className="font-bold">Pruefungstipp:</span> {pair.examTip}
+                <span className="font-bold">Prüfungstipp:</span> {pair.examTip}
               </p>
             </div>
 
             {/* Tap hint */}
             <div className="absolute bottom-2 right-2 text-xs text-slate-500">
-              Tippen zum Zurueck
+              Tippen zum Zurück
             </div>
           </div>
         </div>
@@ -280,7 +280,9 @@ export function ConceptConfusionBuster({
   title = 'Concept Confusion Buster',
   className = '',
 }: ConceptConfusionBusterProps = {}) {
-  const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set())
+  const [flippedCards, setFlippedCards] = useState<Set<string>>(
+    () => new Set(conceptPairs.map((p) => p.id))
+  )
 
   const toggleFlip = (id: string) => {
     setFlippedCards((prev) => {
@@ -317,10 +319,10 @@ export function ConceptConfusionBuster({
           onClick={flipAll}
           className="px-3 py-1 text-sm bg-indigo-600 hover:bg-indigo-700 rounded transition-colors"
         >
-          {allFlipped ? 'Alle zurueckdrehen' : 'Alle umdrehen'}
+          {allFlipped ? 'Alle zurückdrehen' : 'Alle umdrehen'}
         </button>
       }
-      footer="Lerne die Unterschiede - diese werden gerne in Pruefungen abgefragt!"
+      footer="Lerne die Unterschiede - diese werden gerne in Prüfungen abgefragt!"
     >
       {/* Responsive Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -39,3 +39,27 @@ services:
       - no_proxy=${NO_PROXY}
     command: >
       bash -c "pip install uv -q && uv sync --frozen && uv run uvicorn exam_trainer_api.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  dataloader:
+    build:
+      context: ./src/dataloader
+      dockerfile: Dockerfile
+    volumes:
+      - ./src/dataloader/configs:/app/configs
+      - ./src/dataloader/resources:/app/resources
+      - ./src/dataloader/output:/app/output
+      - /home/lars/Developer/personal/courses/resources:/resources:ro
+      - ~/.config/gcloud:/root/.config/gcloud:ro
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - VERTEX_PROJECT_ID=de0360-sbx-lars
+      - VERTEX_LOCATION=global
+      - GEMINI_MODEL=gemini-3-flash-preview
+      - GOOGLE_CLOUD_PROJECT=de0360-sbx-lars
+      - HTTP_PROXY=${HTTP_PROXY}
+      - HTTPS_PROXY=${HTTPS_PROXY}
+      - NO_PROXY=${NO_PROXY}
+      - http_proxy=${HTTP_PROXY}
+      - https_proxy=${HTTPS_PROXY}
+      - no_proxy=${NO_PROXY}
+    profiles: ["tools"]

@@ -1,5 +1,6 @@
 // src/core/components/glossary/TermTooltip.tsx
 import { useState, useRef, useEffect, type ReactNode } from 'react'
+import { useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGlossary } from '@/core/hooks'
 
@@ -12,7 +13,8 @@ export function TermTooltip({ term, children }: TermTooltipProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [position, setPosition] = useState<'top' | 'bottom'>('top')
   const triggerRef = useRef<HTMLSpanElement>(null)
-  const { getTerm, getComparisons } = useGlossary()
+  const { courseId } = useParams<{ courseId: string }>()
+  const { getTerm, getComparisons } = useGlossary({ courseId: courseId ?? '' })
 
   const glossaryTerm = getTerm(term)
   const comparisons = getComparisons(term)

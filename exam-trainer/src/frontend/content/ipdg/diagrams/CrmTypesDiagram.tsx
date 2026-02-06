@@ -1,57 +1,82 @@
 // src/content/ipdg/diagrams/CrmTypesDiagram.tsx
-import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DiagramShell } from '@/core/components/diagrams'
+import { useHighlightState } from '@/core/hooks'
+import { highlightColors } from '@/core/styles'
+import type { HighlightColor } from '@/core/styles'
 
-interface CrmTypesDiagramProps {
-  className?: string
+// ─────────────────────────────────────────────────
+// Types & Data
+// ─────────────────────────────────────────────────
+
+interface CrmType {
+  id: string
+  color: HighlightColor
+  label: string
+  icon: string
+  shortDesc: string
+  fullDesc: string
+  keywords: string[]
+  notConfuseWith: string
 }
 
-const crmTypes = [
+const crmTypes: CrmType[] = [
   {
     id: 'strategic',
+    color: 'purple',
     label: 'Strategisches CRM',
     icon: '🎯',
-    color: 'from-indigo-500 to-indigo-700',
     shortDesc: 'Ziele & Planung',
-    fullDesc: 'Leitet sich aus der Unternehmensstrategie ab. Definiert welche Ziele mit welchen Kundengruppen durch welche Maßnahmen erreicht werden sollen.',
+    fullDesc:
+      'Leitet sich aus der Unternehmensstrategie ab. Definiert welche Ziele mit welchen Kundengruppen durch welche Maßnahmen erreicht werden sollen.',
     keywords: ['Unternehmensstrategie', 'Zielgruppen', 'CLV maximieren', 'Langfristige Planung'],
     notConfuseWith: 'Nutzt KEINE BI-Methoden direkt - das ist analytisches CRM!',
   },
   {
     id: 'analytical',
+    color: 'cyan',
     label: 'Analytisches CRM',
     icon: '📊',
-    color: 'from-cyan-500 to-cyan-700',
     shortDesc: 'Datenanalyse',
-    fullDesc: 'Nutzt Business Intelligence Methoden wie Data Warehouse, Data Mining und OLAP zur Kundenanalyse und Zielgruppenidentifikation.',
+    fullDesc:
+      'Nutzt Business Intelligence Methoden wie Data Warehouse, Data Mining und OLAP zur Kundenanalyse und Zielgruppenidentifikation.',
     keywords: ['Data Mining', 'OLAP', 'Data Warehouse', 'Share of Wallet'],
     notConfuseWith: 'Das ist der BI-Teil des CRM!',
   },
   {
     id: 'operative',
+    color: 'green',
     label: 'Operatives CRM',
     icon: '⚙️',
-    color: 'from-green-500 to-green-700',
     shortDesc: 'Umsetzung',
-    fullDesc: 'Setzt die identifizierten Maßnahmen in automatisierten Lösungen für Marketing, Sales und Service um.',
+    fullDesc:
+      'Setzt die identifizierten Maßnahmen in automatisierten Lösungen für Marketing, Sales und Service um.',
     keywords: ['Front-Office', 'Kampagnenmanagement', 'Salesforce', 'Automatisierung'],
     notConfuseWith: 'Die praktische Umsetzung in Systemen und Prozessen.',
   },
   {
     id: 'communicative',
+    color: 'amber',
     label: 'Kommunikatives CRM',
     icon: '📱',
-    color: 'from-amber-500 to-amber-700',
     shortDesc: 'Multi-Channel',
-    fullDesc: 'Management aller Kommunikationskanäle (Telefon, E-Mail, Web). Synchronisierung für bidirektionale Kommunikation.',
+    fullDesc:
+      'Management aller Kommunikationskanäle (Telefon, E-Mail, Web). Synchronisierung für bidirektionale Kommunikation.',
     keywords: ['Multi-Channel', 'Telefonie', 'E-Mail', 'Social Media'],
     notConfuseWith: 'Auch bekannt als Multi-Channel Management.',
   },
 ]
 
+// ─────────────────────────────────────────────────
+// Component
+// ─────────────────────────────────────────────────
+
+interface CrmTypesDiagramProps {
+  className?: string
+}
+
 export function CrmTypesDiagram({ className = '' }: CrmTypesDiagramProps) {
-  const [selectedType, setSelectedType] = useState<string | null>(null)
+  const highlight = useHighlightState({ items: crmTypes, defaultColor: 'blue' })
 
   return (
     <DiagramShell
@@ -59,108 +84,81 @@ export function CrmTypesDiagram({ className = '' }: CrmTypesDiagramProps) {
       className={className}
       footer="Klicke auf einen CRM-Typ für Details"
     >
-      {/* Circular Layout */}
-      <div className="relative w-full max-w-md mx-auto aspect-square">
-        {/* Center */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center border-2 border-slate-600">
-          <div className="text-center">
-            <div className="text-2xl">👥</div>
-            <div className="text-xs text-slate-400">CRM</div>
-          </div>
-        </div>
-
-        {/* CRM Type Nodes */}
-        {crmTypes.map((type, index) => {
-          const angle = (index * 90 - 45) * (Math.PI / 180)
-          const radius = 120
-          const x = Math.cos(angle) * radius
-          const y = Math.sin(angle) * radius
+      {/* 2x2 Grid */}
+      <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
+        {crmTypes.map((type) => {
+          const tokens = highlightColors[type.color]
+          const active = highlight.isHighlighted(type.id)
 
           return (
             <motion.div
               key={type.id}
-              className={`absolute w-24 cursor-pointer`}
-              style={{
-                top: `calc(50% + ${y}px)`,
-                left: `calc(50% + ${x}px)`,
-                transform: 'translate(-50%, -50%)',
-              }}
-              whileHover={{ scale: 1.1 }}
-              onClick={() => setSelectedType(selectedType === type.id ? null : type.id)}
+              className={`relative cursor-pointer rounded-xl border p-4 transition-colors ${tokens.bg} ${tokens.border} ${
+                active ? 'ring-2 ring-white/60' : ''
+              }`}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              {...highlight.handlers(type.id)}
             >
-              <div
-                className={`p-3 rounded-xl bg-gradient-to-br ${type.color} ${
-                  selectedType === type.id ? 'ring-2 ring-white' : ''
-                }`}
-              >
-                <div className="text-2xl text-center">{type.icon}</div>
-                <div className="text-xs text-center text-white font-medium mt-1">
-                  {type.shortDesc}
-                </div>
-              </div>
+              <div className="text-3xl mb-2">{type.icon}</div>
+              <h4 className={`text-sm font-semibold ${tokens.text}`}>{type.label}</h4>
+              <p className="text-xs text-slate-400 mt-1">{type.shortDesc}</p>
             </motion.div>
           )
         })}
-
-        {/* Connection Lines */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none">
-          {crmTypes.map((type, index) => {
-            const angle = (index * 90 - 45) * (Math.PI / 180)
-            const radius = 70
-            const x = Math.cos(angle) * radius + 200
-            const y = Math.sin(angle) * radius + 200
-
-            return (
-              <line
-                key={type.id}
-                x1="50%"
-                y1="50%"
-                x2={x}
-                y2={y}
-                stroke={selectedType === type.id ? '#fff' : '#475569'}
-                strokeWidth="2"
-                strokeDasharray="4"
-              />
-            )
-          })}
-        </svg>
       </div>
 
       {/* Detail Panel */}
-      <AnimatePresence>
-        {selectedType && (
+      <AnimatePresence mode="wait">
+        {highlight.activeItem && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            key={highlight.activeItem.id}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="mt-6 p-4 bg-slate-800 rounded-lg border border-slate-700"
+            exit={{ opacity: 0, y: 16 }}
+            transition={{ duration: 0.2 }}
+            className={`mt-6 rounded-xl border p-5 ${
+              highlightColors[highlight.activeItem.color].bg
+            } ${highlightColors[highlight.activeItem.color].border}`}
           >
-            {(() => {
-              const type = crmTypes.find((t) => t.id === selectedType)!
-              return (
-                <>
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-3xl">{type.icon}</span>
-                    <h4 className="font-semibold text-lg">{type.label}</h4>
-                  </div>
-                  <p className="text-slate-300 mb-3">{type.fullDesc}</p>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {type.keywords.map((kw) => (
-                      <span
-                        key={kw}
-                        className="px-2 py-1 text-xs bg-slate-700 rounded"
-                      >
-                        {kw}
-                      </span>
-                    ))}
-                  </div>
-                  <div className="p-2 bg-amber-900/30 rounded border border-amber-800 text-sm">
-                    <span className="text-amber-400">💡 Merke: </span>
-                    <span className="text-slate-300">{type.notConfuseWith}</span>
-                  </div>
-                </>
-              )
-            })()}
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-3xl">{highlight.activeItem.icon}</span>
+              <h4
+                className={`font-semibold text-lg ${
+                  highlightColors[highlight.activeItem.color].text
+                }`}
+              >
+                {highlight.activeItem.label}
+              </h4>
+            </div>
+
+            {/* Description */}
+            <p className="text-slate-300 mb-4 leading-relaxed">
+              {highlight.activeItem.fullDesc}
+            </p>
+
+            {/* Keywords */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {highlight.activeItem.keywords.map((kw) => (
+                <span
+                  key={kw}
+                  className={`px-2.5 py-1 text-xs font-medium rounded-full ${
+                    highlightColors[highlight.activeItem!.color].solid
+                  } text-white`}
+                >
+                  {kw}
+                </span>
+              ))}
+            </div>
+
+            {/* Exam tip */}
+            <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/40 text-sm">
+              <span className="font-semibold text-amber-400">Merke: </span>
+              <span className="text-slate-300">
+                {highlight.activeItem.notConfuseWith}
+              </span>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

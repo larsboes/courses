@@ -3,14 +3,6 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useGlossary } from '@/core/hooks'
 import { ComparisonCard } from '@/core/components/glossary'
-import type { TermCategory } from '@/core/types/glossary'
-
-const categories: { id: TermCategory; label: string }[] = [
-  { id: 'core', label: 'Core' },
-  { id: 'networking', label: 'Networking' },
-  { id: 'storage', label: 'Storage' },
-  { id: 'workloads', label: 'Workloads' },
-]
 
 export function GlossaryPage() {
   const { courseId } = useParams<{ courseId: string }>()
@@ -18,11 +10,12 @@ export function GlossaryPage() {
   const {
     filteredTerms,
     comparisons,
+    categories,
     searchQuery,
     selectedCategory,
     setSearchQuery,
     setSelectedCategory,
-  } = useGlossary()
+  } = useGlossary({ courseId: courseId ?? '' })
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -36,7 +29,7 @@ export function GlossaryPage() {
             >
               ← Zurück
             </Link>
-            <h1 className="text-xl font-bold">K8s Glossar</h1>
+            <h1 className="text-xl font-bold">Glossar</h1>
           </div>
         </div>
       </header>

@@ -1,28 +1,30 @@
 // src/core/hooks/useFlashcards.ts
 import { useMemo, useCallback } from 'react'
-import { k8sGlossary } from '@/core/data/k8s-glossary'
+import { getGlossaryForCourse } from '@/core/data/glossary-registry'
 import { useStudyProgress } from './useStudyProgress'
 import type { FlashcardData } from '@/core/components/flashcards'
-import type { TermCategory } from '@/core/types/glossary'
 
 export type StudyMode = 'due' | 'weak' | 'all' | 'category'
 
 export interface UseFlashcardsOptions {
+  courseId: string
   mode?: StudyMode
-  category?: TermCategory
+  category?: string
   limit?: number
 }
 
-export function useFlashcards(options: UseFlashcardsOptions = {}) {
-  const { mode = 'all', category, limit } = options
+export function useFlashcards(options: UseFlashcardsOptions) {
+  const { courseId, mode = 'all', category, limit } = options
   const { getCardsDue, getWeakCards, getCardProgress, recordCardReview } = useStudyProgress()
+
+  const glossary = useMemo(() => getGlossaryForCourse(courseId), [courseId])
 
   // Generate all possible cards from glossary
   const allCards = useMemo((): FlashcardData[] => {
     const cards: FlashcardData[] = []
 
     // Term → Definition cards
-    for (const term of k8sGlossary.terms) {
+    for (const term of glossary.terms) {
       cards.push({
         id: `term-def-${term.id}`,
         type: 'term-to-definition',
@@ -42,9 +44,9 @@ export function useFlashcards(options: UseFlashcardsOptions = {}) {
     }
 
     // Comparison cards
-    for (const comparison of k8sGlossary.comparisons) {
+    for (const comparison of glossary.comparisons) {
       const [term1, term2] = comparison.items.map(id =>
-        k8sGlossary.terms.find(t => t.id === id)
+        glossary.terms.find(t => t.id === id)
       )
       if (term1 && term2) {
         cards.push({
@@ -58,18 +60,18 @@ export function useFlashcards(options: UseFlashcardsOptions = {}) {
     }
 
     // Scenario cards
-    for (const scenario of k8sGlossary.scenarios) {
+    for (const scenario of glossary.scenarios) {
       cards.push({
         id: `scenario-${scenario.id}`,
         type: 'scenario',
         front: scenario.description,
         back: scenario.steps.map((s, i) => `${i + 1}. ${s.description}`).join('\n'),
-        category: 'networking',
+        category: 'scenario',
       })
     }
 
     return cards
-  }, [])
+  }, [glossary])
 
   // Filter cards based on mode
   const filteredCards = useMemo((): FlashcardData[] => {
@@ -127,6 +129,7 @@ export function useFlashcards(options: UseFlashcardsOptions = {}) {
   return {
     cards: shuffledCards,
     totalCards: allCards.length,
+    categories: glossary.categories,
     reviewCard,
     getCardProgress,
   }

@@ -2,6 +2,12 @@
 import type { K8sGlossary, TermCategory, GlossaryTerm, Comparison, RequestScenario } from '@/core/types/glossary'
 
 export const k8sGlossary: K8sGlossary = {
+  categories: [
+    { id: 'core', label: 'Core' },
+    { id: 'networking', label: 'Networking' },
+    { id: 'storage', label: 'Storage' },
+    { id: 'workloads', label: 'Workloads' },
+  ],
   terms: [
     // Core
     {

@@ -9,7 +9,7 @@ import { TermTooltip } from '@/core/components/glossary'
 
 export function RequestTracerPage() {
   const { courseId } = useParams<{ courseId: string }>()
-  const { scenarios, getScenario, getTerm } = useGlossary()
+  const { scenarios, getScenario, getTerm } = useGlossary({ courseId: courseId ?? '' })
   const [selectedScenarioId, setSelectedScenarioId] = useState(scenarios[0]?.id ?? 'external-to-pod')
 
   const scenario = getScenario(selectedScenarioId)

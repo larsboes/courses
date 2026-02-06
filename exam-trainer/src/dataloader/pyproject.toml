@@ -1,0 +1,18 @@
+[project]
+name = "dataloader"
+version = "0.1.0"
+description = "PDF slide extraction and enrichment pipeline"
+requires-python = ">=3.12"
+dependencies = [
+    "pymupdf>=1.25.0",
+    "google-genai>=1.0.0",
+    "pyyaml>=6.0",
+    "click>=8.0",
+]
+
+[project.scripts]
+dataloader = "dataloader.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

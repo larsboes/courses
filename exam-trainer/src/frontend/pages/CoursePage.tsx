@@ -109,7 +109,7 @@ export function CoursePage() {
             className="p-4 bg-slate-800/50 border border-slate-700 rounded-lg hover:border-blue-500/50 transition-colors group"
           >
             <div className="text-lg font-semibold text-blue-400 group-hover:text-blue-300">
-              K8s Glossar
+              Glossar
             </div>
             <div className="text-sm text-slate-400 mt-1">
               Begriffe nachschlagen

@@ -1,4 +1,5 @@
 // src/core/components/glossary/ComparisonCard.tsx
+import { useParams } from 'react-router-dom'
 import { useGlossary } from '@/core/hooks'
 import type { Comparison } from '@/core/types/glossary'
 
@@ -8,7 +9,8 @@ interface ComparisonCardProps {
 }
 
 export function ComparisonCard({ comparison, className = '' }: ComparisonCardProps) {
-  const { getTerm } = useGlossary()
+  const { courseId } = useParams<{ courseId: string }>()
+  const { getTerm } = useGlossary({ courseId: courseId ?? '' })
 
   const [term1, term2] = comparison.items.map(id => getTerm(id))
 

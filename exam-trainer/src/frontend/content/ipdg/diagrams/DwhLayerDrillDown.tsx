@@ -2,12 +2,15 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DiagramShell } from '@/core/components/diagrams'
+import { useHighlightState } from '@/core/hooks'
+import type { HighlightColor } from '@/core/styles/highlightColors'
 
 interface DwhLayer {
   id: string
   label: string
   icon: string
-  color: string
+  color: HighlightColor
+  bgColor: string
   hoverColor: string
   description: string
   whatHappens: string
@@ -20,10 +23,11 @@ const layers: DwhLayer[] = [
     id: 'sources',
     label: 'Datenquellen',
     icon: '🗄️',
-    color: 'bg-slate-600',
+    color: 'red',
+    bgColor: 'bg-slate-600',
     hoverColor: 'hover:bg-slate-500',
     description: 'Operative Systeme liefern Rohdaten',
-    whatHappens: 'Daten entstehen in operativen Systemen durch taegliche Geschaeftsprozesse. Jedes System hat eigene Formate und Strukturen.',
+    whatHappens: 'Daten entstehen in operativen Systemen durch tägliche Geschäftsprozesse. Jedes System hat eigene Formate und Strukturen.',
     exampleTransformation: 'ERP: Bestellung #12345 -> CRM: Kunde "Meier GmbH" -> Excel: Umsatzzahlen Q3',
     characteristics: [
       'Heterogene Datenformate',
@@ -36,31 +40,33 @@ const layers: DwhLayer[] = [
     id: 'etl',
     label: 'ETL-Prozess',
     icon: '🔄',
-    color: 'bg-amber-600',
+    color: 'amber',
+    bgColor: 'bg-amber-600',
     hoverColor: 'hover:bg-amber-500',
     description: 'Extract, Transform, Load',
-    whatHappens: 'Daten werden aus Quellsystemen extrahiert, bereinigt, vereinheitlicht und in das Zielsystem geladen. Laeuft meist naechtlich.',
+    whatHappens: 'Daten werden aus Quellsystemen extrahiert, bereinigt, vereinheitlicht und in das Zielsystem geladen. Läuft meist nächtlich.',
     exampleTransformation: 'Kunde "MEIER GMBH" + "Meier GmbH" + "meier gmbh" -> vereinheitlicht zu "Meier GmbH" (Kunden-ID: K001)',
     characteristics: [
       'Extract: Daten aus Quellen lesen',
       'Transform: Bereinigen, Harmonisieren',
       'Load: In Zielsystem laden',
-      'Batch-Verarbeitung (oft naechtlich)',
+      'Batch-Verarbeitung (oft nächtlich)',
     ],
   },
   {
     id: 'staging',
     label: 'Staging Area',
     icon: '📦',
-    color: 'bg-cyan-600',
+    color: 'cyan',
+    bgColor: 'bg-cyan-600',
     hoverColor: 'hover:bg-cyan-500',
-    description: 'Temporaerer Zwischenspeicher',
-    whatHappens: 'Rohdaten werden unbearbeitet zwischengespeichert. Ermoeglicht Fehlerbehandlung und erneutes Laden ohne erneute Extraktion.',
-    exampleTransformation: 'Rohdaten 1:1 kopiert, keine Transformation. Bei Fehler: Rollback moeglich.',
+    description: 'Temporärer Zwischenspeicher',
+    whatHappens: 'Rohdaten werden unbearbeitet zwischengespeichert. Ermöglicht Fehlerbehandlung und erneutes Laden ohne erneute Extraktion.',
+    exampleTransformation: 'Rohdaten 1:1 kopiert, keine Transformation. Bei Fehler: Rollback möglich.',
     characteristics: [
-      'Temporaere Speicherung',
+      'Temporäre Speicherung',
       'Keine Transformation',
-      'Ermoeglicht Wiederherstellung',
+      'Ermöglicht Wiederherstellung',
       'Entkopplung von Quelle',
     ],
   },
@@ -68,10 +74,11 @@ const layers: DwhLayer[] = [
     id: 'warehouse',
     label: 'Data Warehouse',
     icon: '🏢',
-    color: 'bg-blue-600',
+    color: 'blue',
+    bgColor: 'bg-blue-600',
     hoverColor: 'hover:bg-blue-500',
     description: 'Zentrale Datenhaltung',
-    whatHappens: 'Alle Unternehmensdaten werden zentral, integriert und historisiert gespeichert. Optimiert fuer analytische Abfragen.',
+    whatHappens: 'Alle Unternehmensdaten werden zentral, integriert und historisiert gespeichert. Optimiert für analytische Abfragen.',
     exampleTransformation: 'Faktentabelle: Umsatz (Betrag, Datum_FK, Produkt_FK, Kunde_FK) + Dimensionstabellen (Zeit, Produkt, Kunde)',
     characteristics: [
       'Sternschema / Snowflake',
@@ -84,11 +91,12 @@ const layers: DwhLayer[] = [
     id: 'datamarts',
     label: 'Data Marts',
     icon: '🏬',
-    color: 'bg-purple-600',
+    color: 'purple',
+    bgColor: 'bg-purple-600',
     hoverColor: 'hover:bg-purple-500',
     description: 'Abteilungsspezifische Sichten',
-    whatHappens: 'Abteilungen erhalten vorkonfigurierte Datenauszuege. Schneller Zugriff auf relevante Daten ohne komplexe Queries.',
-    exampleTransformation: 'Vertriebsmart: Nur Umsatz, Kunden, Produkte | HR-Mart: Nur Mitarbeiter, Gehaelter, Abteilungen',
+    whatHappens: 'Abteilungen erhalten vorkonfigurierte Datenauszüge. Schneller Zugriff auf relevante Daten ohne komplexe Queries.',
+    exampleTransformation: 'Vertriebsmart: Nur Umsatz, Kunden, Produkte | HR-Mart: Nur Mitarbeiter, Gehälter, Abteilungen',
     characteristics: [
       'Abteilungsspezifisch',
       'Schnellerer Zugriff',
@@ -100,10 +108,11 @@ const layers: DwhLayer[] = [
     id: 'olap',
     label: 'OLAP Cubes',
     icon: '🎲',
-    color: 'bg-indigo-600',
+    color: 'blue',
+    bgColor: 'bg-indigo-600',
     hoverColor: 'hover:bg-indigo-500',
     description: 'Multidimensionale Analyse',
-    whatHappens: 'Daten werden in Wuerfeln organisiert fuer schnelle multidimensionale Analysen mit Drill-Down, Roll-Up, Slice & Dice.',
+    whatHappens: 'Daten werden in Würfeln organisiert für schnelle multidimensionale Analysen mit Drill-Down, Roll-Up, Slice & Dice.',
     exampleTransformation: 'Umsatz nach: Zeit (Jahr->Quartal->Monat) x Produkt (Kategorie->Gruppe->Artikel) x Region (Land->Stadt)',
     characteristics: [
       'Multidimensionale Struktur',
@@ -114,12 +123,13 @@ const layers: DwhLayer[] = [
   },
   {
     id: 'presentation',
-    label: 'Praesentation',
+    label: 'Präsentation',
     icon: '📊',
-    color: 'bg-green-600',
+    color: 'green',
+    bgColor: 'bg-green-600',
     hoverColor: 'hover:bg-green-500',
     description: 'Reports, Dashboards, KPIs',
-    whatHappens: 'Endnutzer greifen ueber intuitive Oberflaechen auf die Daten zu. Management-Entscheidungen werden unterstuetzt.',
+    whatHappens: 'Endnutzer greifen über intuitive Oberflächen auf die Daten zu. Management-Entscheidungen werden unterstützt.',
     exampleTransformation: 'Dashboard: Umsatz Q3 +15%, Top 10 Kunden, Regionen-Heatmap, KPI-Ampeln',
     characteristics: [
       'Self-Service BI',
@@ -141,7 +151,7 @@ interface DwhLayerDrillDownProps {
 }
 
 export function DwhLayerDrillDown({ className = '' }: DwhLayerDrillDownProps = {}) {
-  const [selectedLayer, setSelectedLayer] = useState<string | null>(null)
+  const highlight = useHighlightState({ items: layers, defaultColor: 'blue' })
   const [isAnimating, setIsAnimating] = useState(false)
   const [particles, setParticles] = useState<DataParticle[]>([])
   const [highlightedLayer, setHighlightedLayer] = useState(-1)
@@ -149,7 +159,7 @@ export function DwhLayerDrillDown({ className = '' }: DwhLayerDrillDownProps = {
   const startDataFlow = useCallback(() => {
     if (isAnimating) return
     setIsAnimating(true)
-    setSelectedLayer(null)
+    highlight.clearSelection()
     setParticles([])
     setHighlightedLayer(0)
 
@@ -160,7 +170,7 @@ export function DwhLayerDrillDown({ className = '' }: DwhLayerDrillDownProps = {
       progress: i * 0.15,
     }))
     setParticles(initialParticles)
-  }, [isAnimating])
+  }, [isAnimating, highlight.clearSelection])
 
   // Animation loop for particles
   useEffect(() => {
@@ -198,7 +208,7 @@ export function DwhLayerDrillDown({ className = '' }: DwhLayerDrillDownProps = {
     return () => clearInterval(interval)
   }, [isAnimating])
 
-  const selected = layers.find((l) => l.id === selectedLayer)
+  const selected = layers.find((l) => l.id === highlight.activeId)
 
   return (
     <DiagramShell
@@ -214,7 +224,7 @@ export function DwhLayerDrillDown({ className = '' }: DwhLayerDrillDownProps = {
           Datenfluss starten
         </button>
       }
-      footer="Klicke auf eine Schicht fuer Details oder starte den animierten Datenfluss"
+      footer="Klicke auf eine Schicht für Details oder starte den animierten Datenfluss"
     >
       {/* Architecture Layers with Particles */}
       <div className="relative space-y-1">
@@ -222,10 +232,10 @@ export function DwhLayerDrillDown({ className = '' }: DwhLayerDrillDownProps = {
           <div key={layer.id} className="relative">
             {/* Layer Box */}
             <motion.div
-              className={`relative p-4 rounded-lg cursor-pointer transition-all ${layer.color} ${layer.hoverColor} ${
-                selectedLayer === layer.id ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-900' : ''
+              className={`relative p-4 rounded-lg cursor-pointer transition-all ${layer.bgColor} ${layer.hoverColor} ${
+                highlight.isSelected(layer.id) ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-900' : ''
               }`}
-              onClick={() => setSelectedLayer(selectedLayer === layer.id ? null : layer.id)}
+              onClick={highlight.handlers(layer.id).onClick}
               animate={{
                 scale: highlightedLayer === index ? 1.02 : 1,
                 boxShadow: highlightedLayer === index
@@ -244,7 +254,7 @@ export function DwhLayerDrillDown({ className = '' }: DwhLayerDrillDownProps = {
                 </div>
                 <motion.div
                   className="text-white/50"
-                  animate={{ rotate: selectedLayer === layer.id ? 180 : 0 }}
+                  animate={{ rotate: highlight.isSelected(layer.id) ? 180 : 0 }}
                 >
                   ▼
                 </motion.div>

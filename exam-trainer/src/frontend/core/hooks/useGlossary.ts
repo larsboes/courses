@@ -1,17 +1,18 @@
 // src/core/hooks/useGlossary.ts
 import { useMemo, useState, useCallback } from 'react'
 import {
-  k8sGlossary,
+  getGlossaryForCourse,
   getTermById,
   getTermsByCategory,
   getComparisonsForTerm,
   getComparisonById,
   getScenarioById,
-} from '@/core/data/k8s-glossary'
-import type { GlossaryTerm, Comparison, RequestScenario, TermCategory } from '@/core/types/glossary'
+} from '@/core/data/glossary-registry'
+import type { GlossaryTerm, Comparison, RequestScenario } from '@/core/types/glossary'
 
 export interface UseGlossaryOptions {
-  category?: TermCategory
+  courseId: string
+  category?: string
 }
 
 export interface GlossaryState {
@@ -20,21 +21,24 @@ export interface GlossaryState {
   comparisons: Comparison[]
   scenarios: RequestScenario[]
   searchQuery: string
-  selectedCategory: TermCategory | null
+  selectedCategory: string | null
 }
 
-export function useGlossary(options: UseGlossaryOptions = {}) {
+export function useGlossary(options: UseGlossaryOptions) {
+  const { courseId } = options
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<TermCategory | null>(
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(
     options.category ?? null
   )
 
+  const glossary = useMemo(() => getGlossaryForCourse(courseId), [courseId])
+
   const terms = useMemo(() => {
     if (selectedCategory) {
-      return getTermsByCategory(selectedCategory)
+      return getTermsByCategory(courseId, selectedCategory)
     }
-    return k8sGlossary.terms
-  }, [selectedCategory])
+    return glossary.terms
+  }, [courseId, glossary, selectedCategory])
 
   const filteredTerms = useMemo(() => {
     if (!searchQuery.trim()) {
@@ -48,29 +52,30 @@ export function useGlossary(options: UseGlossaryOptions = {}) {
     )
   }, [terms, searchQuery])
 
-  const getTerm = useCallback((id: string) => getTermById(id), [])
+  const getTerm = useCallback((id: string) => getTermById(courseId, id), [courseId])
 
   const getComparisons = useCallback(
-    (termId: string) => getComparisonsForTerm(termId),
-    []
+    (termId: string) => getComparisonsForTerm(courseId, termId),
+    [courseId]
   )
 
   const getComparison = useCallback(
-    (id: string) => getComparisonById(id),
-    []
+    (id: string) => getComparisonById(courseId, id),
+    [courseId]
   )
 
   const getScenario = useCallback(
-    (id: string) => getScenarioById(id),
-    []
+    (id: string) => getScenarioById(courseId, id),
+    [courseId]
   )
 
   return {
     // Data
     terms,
     filteredTerms,
-    comparisons: k8sGlossary.comparisons,
-    scenarios: k8sGlossary.scenarios,
+    comparisons: glossary.comparisons,
+    scenarios: glossary.scenarios,
+    categories: glossary.categories,
 
     // State
     searchQuery,

@@ -5,25 +5,16 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useFlashcards, useStudyProgress } from '@/core/hooks'
 import { FlashcardCard } from '@/core/components/flashcards'
 import type { StudyMode } from '@/core/hooks'
-import type { TermCategory } from '@/core/types/glossary'
-
 const modes: { id: StudyMode; label: string; description: string }[] = [
   { id: 'due', label: 'Fällig heute', description: 'Karten zur Wiederholung' },
   { id: 'weak', label: 'Schwache Karten', description: 'Karten mit < 70% Erfolg' },
   { id: 'all', label: 'Alle Karten', description: 'Alle verfügbaren Karten' },
 ]
 
-const categories: { id: TermCategory; label: string }[] = [
-  { id: 'core', label: 'Core' },
-  { id: 'networking', label: 'Networking' },
-  { id: 'storage', label: 'Storage' },
-  { id: 'workloads', label: 'Workloads' },
-]
-
 export function FlashcardsPage() {
   const { courseId } = useParams<{ courseId: string }>()
   const [mode, setMode] = useState<StudyMode>('due')
-  const [category, setCategory] = useState<TermCategory | undefined>()
+  const [category, setCategory] = useState<string | undefined>()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [sessionStats, setSessionStats] = useState({ reviewed: 0, correct: 0 })
   const [isComplete, setIsComplete] = useState(false)
@@ -31,7 +22,7 @@ export function FlashcardsPage() {
   const [timeLeft, setTimeLeft] = useState(10)
   const timerRef = useRef<number | null>(null)
 
-  const { cards, reviewCard } = useFlashcards({ mode, category })
+  const { cards, categories, reviewCard } = useFlashcards({ courseId: courseId ?? '', mode, category })
   const { recordSession } = useStudyProgress()
 
   const currentCard = cards[currentIndex]

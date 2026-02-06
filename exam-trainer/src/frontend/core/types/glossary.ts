@@ -1,6 +1,6 @@
 // src/core/types/glossary.ts
 
-export type TermCategory = 'core' | 'networking' | 'storage' | 'workloads'
+export type TermCategory = string
 export type ExamRelevance = 'high' | 'medium' | 'low'
 
 export interface GlossaryTerm {
@@ -33,8 +33,12 @@ export interface RequestScenario {
   steps: ScenarioStep[]
 }
 
-export interface K8sGlossary {
+export interface CourseGlossary {
   terms: GlossaryTerm[]
   comparisons: Comparison[]
   scenarios: RequestScenario[]
+  categories: { id: string; label: string }[]
 }
+
+/** @deprecated Use CourseGlossary */
+export type K8sGlossary = CourseGlossary

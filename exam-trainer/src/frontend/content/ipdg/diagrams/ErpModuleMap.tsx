@@ -1,13 +1,14 @@
 // src/content/ipdg/diagrams/ErpModuleMap.tsx
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DiagramShell } from '@/core/components/diagrams'
+import { useHighlightState } from '@/core/hooks'
 
 interface ModuleData {
   id: string
   label: string
   fullName: string
-  color: string
+  bgColor: string
   borderColor: string
   textColor: string
   glowColor: string
@@ -22,7 +23,7 @@ const modules: ModuleData[] = [
     id: 'fi',
     label: 'FI',
     fullName: 'Finanzwesen',
-    color: 'bg-emerald-900/60',
+    bgColor: 'bg-emerald-900/60',
     borderColor: 'border-emerald-500',
     textColor: 'text-emerald-300',
     glowColor: 'shadow-emerald-500/50',
@@ -45,7 +46,7 @@ const modules: ModuleData[] = [
     id: 'co',
     label: 'CO',
     fullName: 'Controlling',
-    color: 'bg-teal-900/60',
+    bgColor: 'bg-teal-900/60',
     borderColor: 'border-teal-500',
     textColor: 'text-teal-300',
     glowColor: 'shadow-teal-500/50',
@@ -68,7 +69,7 @@ const modules: ModuleData[] = [
     id: 'mm',
     label: 'MM',
     fullName: 'Materialwirtschaft',
-    color: 'bg-blue-900/60',
+    bgColor: 'bg-blue-900/60',
     borderColor: 'border-blue-500',
     textColor: 'text-blue-300',
     glowColor: 'shadow-blue-500/50',
@@ -91,7 +92,7 @@ const modules: ModuleData[] = [
     id: 'sd',
     label: 'SD',
     fullName: 'Vertrieb',
-    color: 'bg-violet-900/60',
+    bgColor: 'bg-violet-900/60',
     borderColor: 'border-violet-500',
     textColor: 'text-violet-300',
     glowColor: 'shadow-violet-500/50',
@@ -115,7 +116,7 @@ const modules: ModuleData[] = [
     id: 'pp',
     label: 'PP',
     fullName: 'Produktionsplanung',
-    color: 'bg-amber-900/60',
+    bgColor: 'bg-amber-900/60',
     borderColor: 'border-amber-500',
     textColor: 'text-amber-300',
     glowColor: 'shadow-amber-500/50',
@@ -138,7 +139,7 @@ const modules: ModuleData[] = [
     id: 'hr',
     label: 'HR/HCM',
     fullName: 'Human Capital Management',
-    color: 'bg-rose-900/60',
+    bgColor: 'bg-rose-900/60',
     borderColor: 'border-rose-500',
     textColor: 'text-rose-300',
     glowColor: 'shadow-rose-500/50',
@@ -180,13 +181,12 @@ interface ErpModuleMapProps {
 }
 
 export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
-  const [selectedModule, setSelectedModule] = useState<string | null>(null)
-  const [hoveredModule, setHoveredModule] = useState<string | null>(null)
+  const highlight = useHighlightState({ items: modules, defaultColor: 'blue' })
 
   // Calculate which connections to highlight
   const activeConnections = useMemo(() => {
-    if (!selectedModule && !hoveredModule) return new Set<string>()
-    const activeId = selectedModule || hoveredModule
+    const activeId = highlight.activeId
+    if (!activeId) return new Set<string>()
     const module = modules.find((m) => m.id === activeId)
     if (!module) return new Set<string>()
 
@@ -197,7 +197,7 @@ export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
       connections.add(key)
     })
     return connections
-  }, [selectedModule, hoveredModule])
+  }, [highlight.activeId])
 
   // Generate all unique connections
   const allConnections = useMemo(() => {
@@ -216,7 +216,10 @@ export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
     return connections
   }, [])
 
-  const selectedModuleData = modules.find((m) => m.id === selectedModule)
+  const selectedId = highlight.selectedIds.size === 1 ? [...highlight.selectedIds][0] : null
+  const selectedModuleData = selectedId
+    ? modules.find((m) => m.id === selectedId) ?? null
+    : null
 
   return (
     <DiagramShell
@@ -286,12 +289,12 @@ export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
         {/* Module Hexagons */}
         {modules.map((module) => {
           const pos = hexPositions[module.id]
-          const isSelected = selectedModule === module.id
-          const isHovered = hoveredModule === module.id
+          const isSelected = highlight.isSelected(module.id)
+          const isHovered = highlight.isHovered(module.id)
           const isConnected =
-            selectedModule &&
+            selectedId &&
             modules
-              .find((m) => m.id === selectedModule)
+              .find((m) => m.id === selectedId)
               ?.integrations.includes(module.id)
 
           return (
@@ -320,7 +323,7 @@ export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
                   relative w-20 h-20 cursor-pointer
                   flex items-center justify-center
                   rounded-2xl border-2 transition-colors
-                  ${module.color} ${module.borderColor}
+                  ${module.bgColor} ${module.borderColor}
                   ${isSelected ? `ring-2 ring-white shadow-lg ${module.glowColor}` : ''}
                   ${isConnected ? 'ring-2 ring-blue-400' : ''}
                 `}
@@ -332,11 +335,9 @@ export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
                       ? '0 0 20px rgba(255,255,255,0.2)'
                       : 'none',
                 }}
-                onClick={() =>
-                  setSelectedModule(isSelected ? null : module.id)
-                }
-                onHoverStart={() => setHoveredModule(module.id)}
-                onHoverEnd={() => setHoveredModule(null)}
+                onClick={highlight.handlers(module.id).onClick}
+                onMouseEnter={highlight.handlers(module.id).onMouseEnter}
+                onMouseLeave={highlight.handlers(module.id).onMouseLeave}
               >
                 <div className="text-center">
                   <div className={`text-lg font-bold ${module.textColor}`}>
@@ -375,7 +376,7 @@ export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
             className="mt-6 overflow-hidden"
           >
             <div
-              className={`p-4 rounded-lg border-2 ${selectedModuleData.color} ${selectedModuleData.borderColor}`}
+              className={`p-4 rounded-lg border-2 ${selectedModuleData.bgColor} ${selectedModuleData.borderColor}`}
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-4">
@@ -392,7 +393,7 @@ export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
                   </span>
                 </div>
                 <button
-                  onClick={() => setSelectedModule(null)}
+                  onClick={() => highlight.clearSelection()}
                   className="text-slate-400 hover:text-white transition-colors"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -437,8 +438,8 @@ export function ErpModuleMap({ className = '' }: ErpModuleMapProps = {}) {
                         <motion.div
                           key={targetId}
                           className={`p-2 rounded border cursor-pointer transition-colors
-                            ${target.color} border-slate-600 hover:border-slate-400`}
-                          onClick={() => setSelectedModule(targetId)}
+                            ${target.bgColor} border-slate-600 hover:border-slate-400`}
+                          onClick={() => highlight.setSelected(targetId)}
                           whileHover={{ x: 4 }}
                         >
                           <div className="flex items-center gap-2 mb-1">

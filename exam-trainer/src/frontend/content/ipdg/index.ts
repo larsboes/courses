@@ -1,22 +1,25 @@
 // src/content/ipdg/index.ts
 import type { Course } from '@/core/types/content'
-import { erpGrundlagenTopic } from './topics/erp-grundlagen'
-import { enterpriseArchitectureTopic } from './topics/enterprise-architecture'
+import { erpSystemeTopic } from './topics/erp-systeme'
+import { projektChangeManagementTopic } from './topics/projekt-change-management'
+import { sapPlattformTopic } from './topics/sap-plattform'
+import { sapSdVertriebTopic } from './topics/sap-sd-vertrieb'
 import { crmTopic } from './topics/crm'
 import { businessIntelligenceTopic } from './topics/business-intelligence'
 import { bigDataTopic } from './topics/big-data'
-import { sapS4HanaTopic } from './topics/sap-s4hana'
 
 export const ipdgCourse: Course = {
   id: 'ipdg',
   title: 'Implementierung digitaler Geschäftsprozesse',
-  description: 'ERP, Enterprise Architecture, CRM, Business Intelligence, Big Data, SAP S/4HANA',
+  description:
+    'Geschäftsprozesse, ERP, Change Management, SAP S/4HANA, CRM, Business Intelligence, Big Data',
   topics: [
-    erpGrundlagenTopic,
-    enterpriseArchitectureTopic,
+    erpSystemeTopic,
+    projektChangeManagementTopic,
+    sapPlattformTopic,
+    sapSdVertriebTopic,
     crmTopic,
     businessIntelligenceTopic,
     bigDataTopic,
-    sapS4HanaTopic,
   ],
 }
