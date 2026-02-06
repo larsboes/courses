@@ -3,6 +3,7 @@ import type { Topic } from '@/core/types/content'
 import { MermaidDiagram } from '@/core/components/diagrams'
 import { CrmTypesDiagram } from '../diagrams/CrmTypesDiagram'
 import { CrmTypesGame } from '../diagrams/ConceptCategorizationGame'
+import { CustomerJourneyDiagram } from '../diagrams/CustomerJourneyDiagram'
 
 // ─────────────────────────────────────────────────
 // Mermaid Diagrams
@@ -134,6 +135,10 @@ export const crmTopic: Topic = {
           </div>
         </div>
       ),
+      diagram: {
+        type: 'animated',
+        component: CustomerJourneyDiagram,
+      },
     },
 
     // ──── 3. Die 4 CRM-Arten ────
@@ -216,10 +221,10 @@ export const crmTopic: Topic = {
       },
     },
 
-    // ──── 5. Customer Lifetime Value (CLV) ────
+    // ──── 5. Customer Lifetime Value (CLV) & Share of Wallet ────
     {
       id: 'clv',
-      title: 'Customer Lifetime Value (CLV)',
+      title: 'Customer Lifetime Value (CLV) & Share of Wallet',
       content: (
         <div className="space-y-4">
           <div className="p-4 bg-green-900/30 rounded-lg border border-green-700">
@@ -229,17 +234,71 @@ export const crmTopic: Topic = {
             </p>
           </div>
 
-          <div className="p-3 bg-slate-800 rounded">
-            <p className="font-mono text-sm text-center">
-              CLV = (Umsatz pro Jahr x Beziehungsdauer) - Kundenpflegekosten
+          <div className="p-4 bg-slate-800 rounded-lg">
+            <p className="text-sm text-slate-400 mb-2">Vereinfachte Formel:</p>
+            <p className="font-mono text-sm text-center text-slate-200">
+              CLV = (Umsatz pro Periode × Anzahl Perioden) − Gesamtkosten
+            </p>
+            <p className="text-xs text-slate-500 mt-2 text-center">
+              Gesamtkosten = Akquisitionskosten (CAC) + Kundenpflegekosten über die Beziehungsdauer
+            </p>
+          </div>
+
+          {/* CLV Rechenbeispiel 1 */}
+          <div className="p-4 bg-blue-900/20 rounded-lg border border-blue-800">
+            <h4 className="font-medium text-blue-300 mb-2">Rechenbeispiel 1: Telekom-Vertrag</h4>
+            <div className="text-sm text-slate-300 space-y-1">
+              <p>Monatsbeitrag: 40 EUR → <strong>480 EUR/Jahr</strong></p>
+              <p>Durchschnittliche Vertragsdauer: <strong>5 Jahre</strong></p>
+              <p>Akquisitionskosten: <strong>200 EUR</strong> (Werbung, Beratung)</p>
+              <p>Servicekosten: <strong>60 EUR/Jahr</strong></p>
+            </div>
+            <div className="mt-2 p-2 bg-slate-800 rounded font-mono text-sm text-green-300">
+              CLV = (480 × 5) − 200 − (60 × 5) = 2.400 − 200 − 300 = <strong>1.900 EUR</strong>
+            </div>
+          </div>
+
+          {/* CLV Rechenbeispiel 2 */}
+          <div className="p-4 bg-purple-900/20 rounded-lg border border-purple-800">
+            <h4 className="font-medium text-purple-300 mb-2">Rechenbeispiel 2: Gaming-Konsolen (Klausurformat)</h4>
+            <div className="text-sm text-slate-300 space-y-1">
+              <p>Geschäftsbeziehung: <strong>10 Jahre</strong></p>
+              <p>Konsole alle 2 Jahre: <strong>500 EUR</strong> → 5 Käufe</p>
+              <p>Kundenpflege: <strong>50 EUR/Jahr</strong></p>
+            </div>
+            <div className="mt-2 p-2 bg-slate-800 rounded font-mono text-sm text-green-300">
+              CLV = (5 × 500) − (10 × 50) = 2.500 − 500 = <strong>2.000 EUR</strong>
+            </div>
+          </div>
+
+          {/* Share of Wallet */}
+          <div className="p-4 bg-cyan-900/30 rounded-lg border border-cyan-700">
+            <h4 className="font-bold text-cyan-300 mb-2">Share of Wallet</h4>
+            <p className="text-sm text-slate-300">
+              Der <strong>Anteil der Ausgaben eines Kunden in einer Produktkategorie</strong>,
+              der an das eigene Unternehmen geht.
+            </p>
+            <div className="mt-2 p-2 bg-slate-800 rounded font-mono text-sm text-center text-slate-200">
+              Share of Wallet = Eigener Umsatz beim Kunden / Gesamtausgaben des Kunden in der Kategorie
+            </div>
+            <p className="text-xs text-cyan-400 mt-2">
+              Ein Kunde gibt 200 EUR/Monat für Mobilfunk aus, davon 80 EUR bei der Telekom → Share of Wallet = 40%.
+              Ziel: diesen Anteil erhöhen (z.B. durch Cross-Selling von Internet, TV, Festnetz).
             </p>
           </div>
 
           <div className="p-3 bg-amber-900/20 rounded border border-amber-800 text-sm">
             <strong>Klausur-Tipp:</strong> CLV-Berechnung kommt häufig als Rechenaufgabe!
-            Achte auf: Kaufhäufigkeit, Beziehungsdauer, Kosten pro Jahr.
+            Achte auf: Kaufhäufigkeit × Preis × Dauer − Kosten. Share of Wallet zeigt Wachstumspotenzial
+            bei bestehenden Kunden.
           </div>
 
+          <div className="p-3 bg-red-900/20 rounded border border-red-800 text-sm">
+            <strong>Klausur-Falle:</strong> CLV ist NICHT der einmalige Umsatz eines Kaufs,
+            sondern der <em>gesamte Wert über die komplette Geschäftsbeziehung</em>.
+            Share of Wallet ist NICHT dasselbe wie Marktanteil (Marktanteil = Anteil am Gesamtmarkt,
+            Share of Wallet = Anteil bei einem einzelnen Kunden).
+          </div>
         </div>
       ),
     },
@@ -352,38 +411,87 @@ export const crmTopic: Topic = {
       content: (
         <div className="space-y-4">
           <p className="text-slate-300 text-sm">
-            Fünf zentrale Maßnahmen, die ein CRM-System unterstützt:
+            Fünf zentrale Maßnahmen, die ein CRM-System unterstützt. Jede Maßnahme wird
+            durch das Zusammenspiel verschiedener CRM-Typen ermöglicht und wirkt an
+            unterschiedlichen Punkten der Customer Journey.
           </p>
+
           <div className="p-4 bg-blue-900/30 rounded-lg border border-blue-700">
-            <h4 className="font-bold text-blue-300 mb-2">E-Mail-Kampagnen</h4>
-            <p className="text-sm text-slate-300">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-bold text-blue-300">E-Mail-Kampagnen</h4>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-blue-800/50 text-blue-300">Awareness → Retention</span>
+            </div>
+            <p className="text-sm text-slate-300 mb-2">
               Personalisierte E-Mails basierend auf Kundendaten (Kaufhistorie, Interessen, Verhalten).
             </p>
-          </div>
-          <div className="p-4 bg-green-900/30 rounded-lg border border-green-700">
-            <h4 className="font-bold text-green-300 mb-2">Up-/Cross-Selling</h4>
-            <p className="text-sm text-slate-300">
-              <strong>Upselling:</strong> Verkauf eines höherwertigen Produkts.{' '}
-              <strong>Cross-Selling:</strong> Verkauf eines ergänzenden Produkts.
+            <p className="text-xs text-slate-400">
+              <span className="text-cyan-400">Analytisches CRM</span> segmentiert die Zielgruppe,{' '}
+              <span className="text-green-400">Operatives CRM</span> steuert den Versand,{' '}
+              <span className="text-amber-400">Kommunikatives CRM</span> wählt den Kanal.
             </p>
           </div>
+
+          <div className="p-4 bg-green-900/30 rounded-lg border border-green-700">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-bold text-green-300">Up-/Cross-Selling</h4>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-green-800/50 text-green-300">Purchase → Retention</span>
+            </div>
+            <p className="text-sm text-slate-300 mb-2">
+              <strong>Upselling:</strong> Verkauf eines höherwertigen Produkts (Standard → Premium).{' '}
+              <strong>Cross-Selling:</strong> Verkauf eines ergänzenden Produkts (Handy → Hülle).
+            </p>
+            <p className="text-xs text-slate-400">
+              <span className="text-cyan-400">Analytisches CRM</span> erkennt Kaufmuster und empfiehlt passende Produkte,{' '}
+              <span className="text-green-400">Operatives CRM</span> präsentiert das Angebot im Kaufprozess.
+            </p>
+          </div>
+
           <div className="p-4 bg-purple-900/30 rounded-lg border border-purple-700">
-            <h4 className="font-bold text-purple-300 mb-2">Loyalty-Programme</h4>
-            <p className="text-sm text-slate-300">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-bold text-purple-300">Loyalty-Programme</h4>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-purple-800/50 text-purple-300">Retention → Advocacy</span>
+            </div>
+            <p className="text-sm text-slate-300 mb-2">
               Belohnung für Treue: Punkte, Rabatte, Early-Access, exklusive Angebote.
             </p>
+            <p className="text-xs text-slate-400">
+              <span className="text-purple-400">Strategisches CRM</span> definiert das Belohnungsmodell,{' '}
+              <span className="text-cyan-400">Analytisches CRM</span> berechnet den Kundenwert (CLV) als Basis.
+            </p>
           </div>
+
           <div className="p-4 bg-cyan-900/30 rounded-lg border border-cyan-700">
-            <h4 className="font-bold text-cyan-300 mb-2">Serviceverbesserungen</h4>
-            <p className="text-sm text-slate-300">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-bold text-cyan-300">Serviceverbesserungen</h4>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-cyan-800/50 text-cyan-300">Retention</span>
+            </div>
+            <p className="text-sm text-slate-300 mb-2">
               Schnellere Reaktionszeiten, proaktive Informationen, Self-Service-Portale.
             </p>
+            <p className="text-xs text-slate-400">
+              <span className="text-cyan-400">Analytisches CRM</span> identifiziert Service-Schwächen (CSAT, FCR),{' '}
+              <span className="text-green-400">Operatives CRM</span> setzt Verbesserungen im Ticketsystem um.
+            </p>
           </div>
+
           <div className="p-4 bg-amber-900/30 rounded-lg border border-amber-700">
-            <h4 className="font-bold text-amber-300 mb-2">Reaktivierungsmaßnahmen</h4>
-            <p className="text-sm text-slate-300">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-bold text-amber-300">Reaktivierungsmaßnahmen</h4>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-amber-800/50 text-amber-300">Churn Prevention</span>
+            </div>
+            <p className="text-sm text-slate-300 mb-2">
               "Wir vermissen Sie"-Kampagnen für inaktive Kunden mit speziellen Rückkehr-Angeboten.
             </p>
+            <p className="text-xs text-slate-400">
+              <span className="text-cyan-400">Analytisches CRM</span> erkennt Churn-Risiko und inaktive Kunden,{' '}
+              <span className="text-green-400">Operatives CRM</span> löst automatisch die Reaktivierungskampagne aus.
+            </p>
+          </div>
+
+          <div className="p-3 bg-amber-900/20 rounded border border-amber-800 text-sm">
+            <strong>Klausur-Tipp:</strong> Beachte den Kreislauf: <span className="text-purple-400">Strategisches CRM</span> definiert
+            die Ziele → <span className="text-cyan-400">Analytisches CRM</span> liefert die Datengrundlage →{' '}
+            <span className="text-green-400">Operatives CRM</span> setzt um → <span className="text-amber-400">Kommunikatives CRM</span> wählt den Kanal.
           </div>
         </div>
       ),

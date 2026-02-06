@@ -64,50 +64,6 @@ flowchart TB
   style L5 fill:#3b0764,stroke:#a855f7
 `
 
-const erfolgsfaktorenDiagram = `
-flowchart TB
-  subgraph Strategie["Strategie"]
-    S1["Prozess vor System"]
-    S2["Klare Zieldefinition"]
-    S3["Realistische Planung"]
-  end
-
-  subgraph Menschen["Menschen"]
-    M1["Stakeholder-Einbindung"]
-    M2["Führungsunterstützung"]
-    M3["Schulung und Training"]
-  end
-
-  subgraph Technik["Technik"]
-    T1["CMMI Readiness"]
-    T2["Qualitätssicherung"]
-    T3["Risikomanagement"]
-  end
-
-  Erfolg["Projekterfolg"]
-
-  S1 --> Erfolg
-  S2 --> Erfolg
-  S3 --> Erfolg
-  M1 --> Erfolg
-  M2 --> Erfolg
-  M3 --> Erfolg
-  T1 --> Erfolg
-  T2 --> Erfolg
-  T3 --> Erfolg
-
-  style Erfolg fill:#14532d,stroke:#22c55e
-  style S1 fill:#1e3a5f,stroke:#3b82f6
-  style S2 fill:#1e3a5f,stroke:#3b82f6
-  style S3 fill:#1e3a5f,stroke:#3b82f6
-  style M1 fill:#3b0764,stroke:#a855f7
-  style M2 fill:#3b0764,stroke:#a855f7
-  style M3 fill:#3b0764,stroke:#a855f7
-  style T1 fill:#78350f,stroke:#f59e0b
-  style T2 fill:#78350f,stroke:#f59e0b
-  style T3 fill:#78350f,stroke:#f59e0b
-`
-
 // ─────────────────────────────────────────────────
 // Topic Export
 // ─────────────────────────────────────────────────
@@ -115,9 +71,9 @@ flowchart TB
 export const projektChangeManagementTopic: Topic = {
   id: 'projekt-change-management',
   title: 'Projekt & Change Management',
-  description: 'Warum IT-Projekte scheitern, CMMI-Reifegrade, Erfolgsfaktoren',
+  description: 'Warum IT-Projekte scheitern, Goldene Regel, CMMI-Reifegrade',
   icon: '🔄',
-  examNotes: 'CMMI-Level-Definitionen auswendig lernen! Goldene Regel: Prozess vor System!',
+  examNotes: 'Goldene Regel: Prozess vor System! CMMI-Level-Definitionen auswendig lernen!',
 
   sections: [
     // ── Section 1: Why do IT projects fail? ──
@@ -130,7 +86,7 @@ export const projektChangeManagementTopic: Topic = {
             Große IT-Projekte &mdash; ob ERP, CRM oder andere digitale Transformationen &mdash;
             gehören zu den risikoreichsten Vorhaben in Unternehmen. CRM-Projekte haben eine
             Misserfolgsquote von ca. <strong>50%</strong>, bei ERP-Projekten ist sie ähnlich hoch
-            (Beispiel: Lidl-SAP-Desaster mit über 500 Mio. EUR Verlust).
+            (Beispiel: Lidl-SAP-Desaster).
           </p>
 
           <div className="p-4 bg-amber-900/30 rounded-lg border border-amber-700">
@@ -236,10 +192,10 @@ export const projektChangeManagementTopic: Topic = {
           <div className="p-4 bg-red-900/30 rounded-lg border border-red-700">
             <h4 className="font-medium text-red-300 mb-2">Warnendes Beispiel: Lidl-SAP-Desaster</h4>
             <p className="text-sm text-slate-300">
-              Lidl investierte geschätzt über <strong>500 Mio. Euro</strong> in ein SAP-Projekt,
-              das nach 7 Jahren abgebrochen wurde. Einer der Hauptgründe: Die bestehenden
-              Geschäftsprozesse konnten im neuen System nicht abgebildet werden, da die
-              Systemauswahl vor der Prozessanalyse stattfand.
+              Das Lidl-SAP-Projekt scheiterte, weil die bestehenden Geschäftsprozesse
+              im neuen System nicht abgebildet werden konnten &mdash; die Systemauswahl
+              fand vor der Prozessanalyse statt. Ein Paradebeispiel für die Missachtung
+              der Goldenen Regel.
             </p>
           </div>
 
@@ -359,68 +315,6 @@ export const projektChangeManagementTopic: Topic = {
       ),
     },
 
-    // ── Section 5: Erfolgsfaktoren ──
-    {
-      id: 'erfolgsfaktoren',
-      title: 'Erfolgsfaktoren digitaler Transformationsprojekte',
-      content: (
-        <div className="space-y-4">
-          <p>
-            Jede der fünf Fehlerursachen hat eine Kehrseite &mdash; einen Erfolgsfaktor.
-            Diese lassen sich in drei Säulen einteilen, die alle gleichzeitig erfüllt
-            sein müssen. Fehlt eine, kippt das Projekt.
-          </p>
-
-          <div className="grid gap-3 md:grid-cols-3 mt-4">
-            <div className="p-4 bg-blue-900/20 rounded-lg border border-blue-800">
-              <h4 className="font-bold text-blue-300 mb-2">Strategie</h4>
-              <ul className="text-sm text-slate-300 space-y-2">
-                <li><strong>Prozess vor System</strong> &mdash; IST-Prozesse analysieren, dann
-                  System wählen. Verhindert Fehler #1 (Prozesskomplexität unterschätzt)</li>
-                <li><strong>Klare Zieldefinition</strong> &mdash; messbare Ziele vereinbaren,
-                  damit Erfolg überprüfbar wird</li>
-                <li><strong>Realistische Planung</strong> &mdash; Zeit, Budget und Ressourcen
-                  ehrlich schätzen. Verhindert Fehler #4 (überoptimistische Planung)</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-purple-900/20 rounded-lg border border-purple-800">
-              <h4 className="font-bold text-purple-300 mb-2">Menschen</h4>
-              <ul className="text-sm text-slate-300 space-y-2">
-                <li><strong>Stakeholder-Einbindung</strong> &mdash; Betroffene frühzeitig
-                  einbinden, um Widerstand zu vermeiden. Verhindert Fehler #5
-                  (Entscheidungsparalyse)</li>
-                <li><strong>Führungsunterstützung</strong> &mdash; Senior Executive Sponsoring
-                  sicherstellen, das Projekt braucht Rückhalt von oben</li>
-                <li><strong>Schulung und Training</strong> &mdash; Mitarbeiter <em>befähigen</em>,
-                  nicht nur informieren. OCM in der Praxis</li>
-              </ul>
-            </div>
-            <div className="p-4 bg-amber-900/20 rounded-lg border border-amber-800">
-              <h4 className="font-bold text-amber-300 mb-2">Technik & Prozesse</h4>
-              <ul className="text-sm text-slate-300 space-y-2">
-                <li><strong>CMMI Readiness</strong> &mdash; mind. Level 2 vor dem Rollout
-                  erreichen, sonst fehlt die organisatorische Basis</li>
-                <li><strong>Qualitätssicherung</strong> &mdash; Standards und Kontrollen
-                  etablieren. Verhindert Fehler #2 (mangelnde Beratungsqualität)</li>
-                <li><strong>Risikomanagement</strong> &mdash; technische Risiken transparent
-                  kommunizieren. Verhindert Fehler #3 (versteckte Risiken)</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <MermaidDiagram chart={erfolgsfaktorenDiagram} className="bg-slate-800/50 rounded-lg p-4" />
-          </div>
-
-          <div className="p-3 bg-red-900/20 rounded border border-red-800 text-sm">
-            <strong>Klausur-Hinweis:</strong> In Aufgaben wird oft nach Maßnahmen gefragt,
-            um ein gescheitertes Projekt zu retten. Antworte immer entlang der drei
-            Säulen: Strategie (Prozess vor System), Menschen (Stakeholder einbinden,
-            Führung sichern) und Technik (CMMI, Qualitätssicherung, Risikomanagement).
-          </div>
-        </div>
-      ),
-    },
   ],
 
   // ─────────────────────────────────────────────────
@@ -543,7 +437,7 @@ export const projektChangeManagementTopic: Topic = {
           type: 'free-text',
           question: 'Warum ist der Vorschlag des IT-Leiters, direkt mit der Systemauswahl zu beginnen, problematisch? Begründen Sie mit der "Goldenen Regel". (8 Punkte)',
           placeholder: 'Die Reihenfolge sollte...',
-          modelAnswer: 'Die Goldene Regel besagt: 1) Prozess -> 2) System. Erst müssen die IST-Prozesse analysiert und dokumentiert werden, dann kann ein passendes System ausgewählt werden. Sonst besteht das Risiko, dass die Unternehmensprozesse nicht im neuen System abgebildet werden können (siehe Lidl-SAP-Desaster: >500 Mio. EUR Verlust). Der IT-Leiter will die Reihenfolge umkehren - genau der Fehler, der häufig zu Projektscheitern führt.',
+          modelAnswer: 'Die Goldene Regel besagt: 1) Prozess -> 2) System. Erst müssen die IST-Prozesse analysiert und dokumentiert werden, dann kann ein passendes System ausgewählt werden. Sonst besteht das Risiko, dass die Unternehmensprozesse nicht im neuen System abgebildet werden können (siehe Lidl-SAP-Desaster). Der IT-Leiter will die Reihenfolge umkehren - genau der Fehler, der häufig zu Projektscheitern führt.',
           keyPoints: [
             'Goldene Regel: Prozess vor System',
             'IST-Prozesse zuerst analysieren',
@@ -586,7 +480,6 @@ flowchart LR
   subgraph PCM["Projekt & Change Management"]
     GR["Goldene Regel\nProzess vor System"]
     CMMI["CMMI\nReadiness"]
-    EF["Erfolgs-\nfaktoren"]
   end
 
   subgraph Anwendung["Anwendungsgebiete"]
@@ -598,12 +491,9 @@ flowchart LR
   GR -->|steuert| SAP
   CMMI -->|Voraussetzung| ERP
   CMMI -->|Voraussetzung| SAP
-  EF -->|sichert| ERP
-  EF -->|sichert| SAP
 
   style GR fill:#78350f,stroke:#f59e0b
   style CMMI fill:#3b0764,stroke:#a855f7
-  style EF fill:#14532d,stroke:#22c55e
   style ERP fill:#1e3a5f,stroke:#3b82f6
   style SAP fill:#164e63,stroke:#06b6d4
 `,

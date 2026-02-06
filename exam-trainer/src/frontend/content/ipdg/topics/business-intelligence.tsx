@@ -91,19 +91,7 @@ flowchart TB
     D3 --- F
   end
 
-  subgraph Ops["OLAP Operationen"]
-    DD["Drill-Down\nJahr -> Quartal -> Monat"]
-    RU["Roll-Up\nMonat -> Quartal -> Jahr"]
-    SL["Slice\nEine Dimension fixieren"]
-    DI["Dice\nMehrere Dimensionen einschränken"]
-  end
-
-  Cube --> Ops
-
-  style DD fill:#14532d,stroke:#22c55e,color:#86efac
-  style RU fill:#3b1f63,stroke:#8b5cf6,color:#c4b5fd
-  style SL fill:#431407,stroke:#f59e0b,color:#fde68a
-  style DI fill:#164e63,stroke:#06b6d4,color:#a5f3fc
+  style Cube fill:#3b1f63,stroke:#8b5cf6,color:#c4b5fd
 `
 
 // ─────────────────────────────────────────────────
@@ -466,39 +454,6 @@ export const businessIntelligenceTopic: Topic = {
             </div>
           </div>
 
-          <div className="mt-4">
-            <h4 className="font-medium mb-3">Die 4 OLAP Operationen:</h4>
-            <div className="grid gap-2">
-              <div className="p-3 bg-green-900/20 rounded-lg border border-green-800">
-                <span className="font-medium text-green-300">Drill-Down</span>
-                <p className="text-sm text-slate-400 mt-1">
-                  Von einer aggregierten Ebene zu detaillierteren Daten navigieren
-                  (z.B. Jahr &rarr; Quartal &rarr; Monat)
-                </p>
-              </div>
-              <div className="p-3 bg-purple-900/20 rounded-lg border border-purple-800">
-                <span className="font-medium text-purple-300">Roll-Up</span>
-                <p className="text-sm text-slate-400 mt-1">
-                  Von detaillierten Daten zu einer höheren Aggregationsebene
-                  (Monat &rarr; Quartal &rarr; Jahr)
-                </p>
-              </div>
-              <div className="p-3 bg-amber-900/20 rounded-lg border border-amber-800">
-                <span className="font-medium text-amber-300">Slice</span>
-                <p className="text-sm text-slate-400 mt-1">
-                  Eine "Scheibe" aus dem Würfel schneiden (eine Dimension fixieren,
-                  z.B. nur Region = "Europa")
-                </p>
-              </div>
-              <div className="p-3 bg-cyan-900/20 rounded-lg border border-cyan-800">
-                <span className="font-medium text-cyan-300">Dice</span>
-                <p className="text-sm text-slate-400 mt-1">
-                  Einen "Teilwürfel" ausschneiden (mehrere Dimensionen einschränken,
-                  z.B. Region = "Europa" UND Zeit = "2024")
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       ),
     },
@@ -602,7 +557,7 @@ export const businessIntelligenceTopic: Topic = {
         question: 'OLAP greift auf Daten aus dem Business Warehouse für Analyse und Data Mining zu. OLAP Datenwürfel (OLAP Cube) aggregieren Fakten aus jeder Ebene einer Dimension.',
         options: ['Wahr', 'Falsch'],
         correctAnswer: 'Wahr',
-        explanation: 'Korrekt. OLAP Cubes ermöglichen multidimensionale Analysen mit Drill-Down, Slice & Dice.',
+        explanation: 'Korrekt. OLAP Cubes ermöglichen multidimensionale Analysen.',
       },
       {
         id: 'bi-faktentabellen',
@@ -702,32 +657,6 @@ export const businessIntelligenceTopic: Topic = {
         ],
         correctAnswer: 'Auswahl → Aufbereitung → Analyse',
         explanation: 'BI-Prozess: 1. Auswahl (Datenquelle bestimmen) → 2. Aufbereitung (Datenbestand modifizieren) → 3. Analyse (Beziehungsmuster destillieren).',
-      },
-      {
-        id: 'bi-olap-drill-down',
-        type: 'multiple-choice',
-        question: 'Welche OLAP-Operation navigiert von einer aggregierten Ebene zu detaillierteren Daten (z.B. von Jahr zu Quartal zu Monat)?',
-        options: [
-          'Drill-Down',
-          'Roll-Up',
-          'Slice',
-          'Dice',
-        ],
-        correctAnswer: 'Drill-Down',
-        explanation: 'Drill-Down = von aggregiert zu detailliert (Jahr→Quartal→Monat). Roll-Up = umgekehrt. Slice = eine Dimension fixieren. Dice = Teilwürfel ausschneiden.',
-      },
-      {
-        id: 'bi-olap-slice-dice',
-        type: 'multiple-choice',
-        question: 'Beim "Slice" einer OLAP-Analyse wird ...',
-        options: [
-          '... eine Dimension fixiert und eine "Scheibe" aus dem Datenwürfel geschnitten',
-          '... von detaillierten Daten zu einer höheren Aggregationsebene navigiert',
-          '... ein kompletter Datenwürfel kopiert',
-          '... der gesamte Datenbestand gelöscht und neu aufgebaut',
-        ],
-        correctAnswer: '... eine Dimension fixiert und eine "Scheibe" aus dem Datenwürfel geschnitten',
-        explanation: 'Slice = eine Dimension fixieren (z.B. nur Region "Europa"). Dice = mehrere Dimensionen einschränken (Teilwürfel). Drill-Down/Roll-Up = Navigation zwischen Aggregationsebenen.',
       },
     ],
   },

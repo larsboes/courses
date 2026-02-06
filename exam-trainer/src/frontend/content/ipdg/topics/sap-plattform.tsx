@@ -220,55 +220,9 @@ export const sapPlattformTopic: Topic = {
             </div>
           </div>
 
-          <div className="p-4 bg-slate-800 rounded-lg">
-            <h4 className="font-medium mb-3">5 Design Principles:</h4>
-            <div className="grid grid-cols-1 gap-2 text-sm">
-              <div className="flex items-start gap-2">
-                <span className="px-2 py-0.5 bg-amber-900/30 rounded border border-amber-700 text-amber-300 shrink-0">
-                  Role-based
-                </span>
-                <span className="text-slate-400 text-xs">
-                  Jeder Nutzer sieht nur die Apps und Daten, die für seine Rolle relevant sind
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="px-2 py-0.5 bg-amber-900/30 rounded border border-amber-700 text-amber-300 shrink-0">
-                  Responsive
-                </span>
-                <span className="text-slate-400 text-xs">
-                  Passt sich automatisch an jede Bildschirmgröße an (Desktop, Tablet, Smartphone)
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="px-2 py-0.5 bg-amber-900/30 rounded border border-amber-700 text-amber-300 shrink-0">
-                  Simple
-                </span>
-                <span className="text-slate-400 text-xs">
-                  Fokus auf die Kernaufgabe &mdash; nur die nötigen Funktionen anzeigen, kein Overload
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="px-2 py-0.5 bg-amber-900/30 rounded border border-amber-700 text-amber-300 shrink-0">
-                  Coherent
-                </span>
-                <span className="text-slate-400 text-xs">
-                  Einheitliches Look-and-Feel über alle Apps hinweg &mdash; einmal gelernt, überall anwendbar
-                </span>
-              </div>
-              <div className="flex items-start gap-2">
-                <span className="px-2 py-0.5 bg-amber-900/30 rounded border border-amber-700 text-amber-300 shrink-0">
-                  Delightful
-                </span>
-                <span className="text-slate-400 text-xs">
-                  Ansprechendes Design, das Spaß macht &mdash; motiviert zur Nutzung
-                </span>
-              </div>
-            </div>
-          </div>
-
           <div className="p-3 bg-red-900/20 rounded border border-red-800 text-sm">
-            <strong>Klausur-Hinweis:</strong> 3 App-Typen und 5 Design Principles auswendig
-            kennen! &quot;Fiori kommt dran&quot; (laut Vorlesung).
+            <strong>Klausur-Hinweis:</strong> Die 3 App-Typen (Transaktions-, Analytische,
+            Factsheet-Apps) auswendig kennen!
           </div>
         </div>
       ),
@@ -618,21 +572,6 @@ export const sapPlattformTopic: Topic = {
         correctAnswer: 'Bewegungsdaten',
         explanation:
           'Bewegungsdaten = kurzlebige Transaktionsdaten (Bestellungen, Rechnungen). Stammdaten = langfristige Grunddaten (Kunden, Material). Organisationsdaten = Unternehmensstruktur.',
-      },
-      {
-        id: 'sap-fiori-design-principles',
-        type: 'multiple-choice',
-        question:
-          'Welches ist KEIN offizielles SAP Fiori Design Principle?',
-        options: [
-          'Scalable',
-          'Role-based',
-          'Responsive',
-          'Simple',
-        ],
-        correctAnswer: 'Scalable',
-        explanation:
-          'Die 5 Fiori Design Principles sind: Role-based, Responsive, Simple, Coherent, Delightful. "Scalable" gehört nicht dazu.',
       },
     ],
   },

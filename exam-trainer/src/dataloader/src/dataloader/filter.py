@@ -22,6 +22,7 @@ class SourceConfig:
 
     file: str
     slides: list[str | int] | str  # "all" or list of ranges/numbers
+    markdown: str | None = None  # optional markitdown .md filename
 
 
 @dataclass
@@ -33,6 +34,8 @@ class CourseConfig:
     sources: list[SourceConfig]
     pdf_dir: str
     output_dir: str
+    markdown_dir: str | None = None  # directory containing markitdown .md files
+    extra_markdown: list[str] | None = None  # additional .md files without slides
 
 
 def parse_slide_ranges(slides: str | list[str | int]) -> set[int]:
@@ -190,7 +193,11 @@ def load_config(config_path: Path) -> CourseConfig:
             raise ValueError(f"sources[{i}] missing required key 'file'")
         if "slides" not in src:
             raise ValueError(f"sources[{i}] missing required key 'slides'")
-        sources.append(SourceConfig(file=src["file"], slides=src["slides"]))
+        sources.append(SourceConfig(
+            file=src["file"],
+            slides=src["slides"],
+            markdown=src.get("markdown"),
+        ))
 
     return CourseConfig(
         course=raw["course"],
@@ -198,4 +205,6 @@ def load_config(config_path: Path) -> CourseConfig:
         sources=sources,
         pdf_dir=raw["pdf_dir"],
         output_dir=raw["output_dir"],
+        markdown_dir=raw.get("markdown_dir"),
+        extra_markdown=raw.get("extra_markdown"),
     )

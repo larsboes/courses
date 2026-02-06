@@ -4,14 +4,26 @@ name: "Implementierung digitaler Geschäftsprozesse"
 sources:
   - file: "Implementierung digitaler Geschäftsprozesse Kapitel 1 und 2.pdf"
     slides: [15-19, 21-24, 26, 28-30, 32, 34, 38-43]
+    markdown: "Kapitel-1-2-ERP.md"
   - file: "Implementierung digitaler Geschäftsprozesse Kapitel 3 und 4.pdf"
     slides: [8-9, 13-21, 25-26]
+    markdown: "Kapitel-3-4-EA-CRM.md"
   - file: "Implementierung digitaler Geschäftsprozesse Kapitel 5 und 6.pdf"
     slides: [2-4, 6-8, 11, 16, 18-19]
+    markdown: "Kapitel-5-6-BI-BigData.md"
   - file: "Einführung SAP.pdf"
     slides: [10, 13-14, 16-17, 22-23, 34]
+    markdown: "SAP-Einfuehrung.md"
   - file: "Einführung SAP SD.pdf"
     slides: [7-9, 13-18, 21-27]
+    markdown: "SAP-SD-Vertrieb.md"
 
-pdf_dir: "/resources/Implementierung-digitaler-Geschäftsprozesse/resources/pdf"
+# Additional markdown sources without slide extraction
+extra_markdown:
+  - "CRM-Uebungsaufgabe.md"
+  - "Netflix-BigData-CaseStudy.md"
+  - "Probeklausur-IPDG-WS25.md"
+
+markdown_dir: "resources/markdown/ipdg"
+pdf_dir: "resources/pdf/ipdg"
 output_dir: "output/ipdg"

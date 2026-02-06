@@ -1,6 +1,8 @@
 // src/content/ipdg/topics/big-data.tsx
 import type { Topic } from '@/core/types/content'
 import { MermaidDiagram } from '@/core/components/diagrams'
+import { AnalyticsEvolutionStepper } from '../diagrams/AnalyticsEvolutionStepper'
+import { BigDataVsExplorer } from '../diagrams/BigDataVsExplorer'
 
 export const bigDataTopic: Topic = {
   id: 'big-data',
@@ -102,15 +104,15 @@ export const bigDataTopic: Topic = {
             <div className="flex items-center gap-3 p-3 bg-slate-800 rounded-lg">
               <span className="text-2xl font-bold text-purple-400">V</span>
               <div>
-                <span className="font-medium text-purple-300">Variability</span>
-                <span className="text-sm text-slate-400 ml-2">Variabilität / Veränderlichkeit</span>
+                <span className="font-medium text-purple-300">Validity</span>
+                <span className="text-sm text-slate-400 ml-2">Gültigkeit der Daten</span>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-800 rounded-lg">
               <span className="text-2xl font-bold text-cyan-400">V</span>
               <div>
-                <span className="font-medium text-cyan-300">Visualization</span>
-                <span className="text-sm text-slate-400 ml-2">Visualisierung der Daten</span>
+                <span className="font-medium text-cyan-300">Volatility</span>
+                <span className="text-sm text-slate-400 ml-2">Flüchtigkeit / Veränderlichkeit</span>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-slate-800 rounded-lg">
@@ -129,26 +131,30 @@ export const bigDataTopic: Topic = {
   BD --- VEL["Velocity\\nHohe Geschwindigkeit"]
   BD --- VAR["Variety\\nViele Datentypen"]
   BD --- VERA["Veracity\\nQualität"]
-  BD --- VARI["Variability\\nVeränderlichkeit"]
-  BD --- VIS["Visualization\\nDarstellung"]
+  BD --- VALID["Validity\\nGültigkeit"]
+  BD --- VOLAT["Volatility\\nFlüchtigkeit"]
   BD --- VAL["Value\\nNutzwert"]
   style BD fill:#7c3aed,stroke:#a855f7,color:#fff
   style VOL fill:#1e40af,stroke:#3b82f6,color:#fff
   style VEL fill:#166534,stroke:#22c55e,color:#fff
   style VAR fill:#92400e,stroke:#f59e0b,color:#fff
   style VERA fill:#991b1b,stroke:#ef4444,color:#fff
-  style VARI fill:#581c87,stroke:#a855f7,color:#fff
-  style VIS fill:#155e75,stroke:#06b6d4,color:#fff
+  style VALID fill:#581c87,stroke:#a855f7,color:#fff
+  style VOLAT fill:#155e75,stroke:#06b6d4,color:#fff
   style VAL fill:#831843,stroke:#ec4899,color:#fff`}
             className="bg-slate-800/50 rounded-lg p-3"
           />
 
           <div className="p-3 bg-amber-900/20 rounded border border-amber-800 text-sm">
-            <strong>Klausur-Tipp:</strong> Alle 7 Vs auswendig kennen! "Validation" ist KEIN V.
-            Veracity (Qualität) und Variability (Veränderlichkeit) werden oft verwechselt.
+            <strong>Klausur-Tipp:</strong> Alle 7 Vs auswendig kennen!
+            Veracity (Wahrhaftigkeit/Qualität) und Validity (Gültigkeit) nicht verwechseln.
           </div>
         </div>
       ),
+      diagram: {
+        type: 'explorable',
+        component: BigDataVsExplorer,
+      },
     },
 
     // ── Section 3: Analytics Evolution ──────────────────────────
@@ -212,6 +218,10 @@ export const bigDataTopic: Topic = {
           </div>
         </div>
       ),
+      diagram: {
+        type: 'animated',
+        component: AnalyticsEvolutionStepper,
+      },
     },
 
     // ── Section 4: Analytics Lifecycle ──────────────────────────
@@ -469,12 +479,12 @@ export const bigDataTopic: Topic = {
         question: 'Welches "V" von Big Data beschreibt die Wahrhaftigkeit bzw. Qualität und Vertrauenswürdigkeit der Daten?',
         options: [
           'Veracity',
-          'Variability',
+          'Volatility',
           'Value',
           'Velocity',
         ],
         correctAnswer: 'Veracity',
-        explanation: 'Veracity = Wahrhaftigkeit/Qualität der Daten. Value = Wert/Nutzen. Velocity = Geschwindigkeit. Variability = Veränderlichkeit.',
+        explanation: 'Veracity = Wahrhaftigkeit/Qualität der Daten. Value = Wert/Nutzen. Velocity = Geschwindigkeit. Volatility = Flüchtigkeit/Veränderlichkeit.',
       },
       {
         id: 'bd-analytics-predictive',
@@ -513,7 +523,7 @@ export const bigDataTopic: Topic = {
           'Veracity',
         ],
         correctAnswer: 'Validation',
-        explanation: 'Die 7 Vs: Volume, Velocity, Variety, Veracity, Value, Variability, Visualization. "Validation" gehört nicht dazu.',
+        explanation: 'Die 7 Vs: Volume, Velocity, Variety, Veracity, Validity, Volatility, Value. "Validation" gehört nicht dazu.',
       },
       {
         id: 'bd-globale-trends',
@@ -601,15 +611,15 @@ export const bigDataTopic: Topic = {
           question: 'Nennen und erklären Sie die 7 Vs von Big Data.',
           placeholder: '1. Volume...',
           modelAnswer:
-            '1. Volume - Große Datenmengen\n2. Velocity - Hohe Geschwindigkeit der Datenerzeugung\n3. Variety - Verschiedene Datentypen (strukturiert, unstrukturiert)\n4. Veracity - Wahrhaftigkeit/Qualität der Daten\n5. Value - Wert/Nutzen der Daten\n6. Variability - Variabilität/Veränderlichkeit\n7. Visualization - Visualisierung der Daten',
+            '1. Volume - Große Datenmengen\n2. Velocity - Hohe Geschwindigkeit der Datenerzeugung\n3. Variety - Verschiedene Datentypen (strukturiert, unstrukturiert)\n4. Veracity - Wahrhaftigkeit/Qualität der Daten\n5. Validity - Gültigkeit der Daten\n6. Volatility - Flüchtigkeit/Veränderlichkeit\n7. Value - Wert/Nutzen der Daten',
           keyPoints: [
             'Volume',
             'Velocity',
             'Variety',
             'Veracity',
+            'Validity',
+            'Volatility',
             'Value',
-            'Variability',
-            'Visualization',
           ],
           explanation:
             'Die 7 Vs beschreiben die Charakteristiken von Big Data und helfen bei der Einordnung von Datenherausforderungen.',

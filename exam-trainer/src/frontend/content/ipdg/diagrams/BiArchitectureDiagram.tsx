@@ -30,7 +30,7 @@ const layers: BiLayer[] = [
   { id: 'sources', color: 'red', label: 'Datenquellen', icon: '🗄️', items: ['ERP', 'CRM', 'Excel', 'Externe Daten'], description: 'Operative Systeme liefern Rohdaten (OLTP)' },
   { id: 'etl', color: 'amber', label: 'ETL-Prozess', icon: '🔄', items: ['Extract', 'Transform', 'Load'], description: 'Daten werden extrahiert, bereinigt, harmonisiert und geladen' },
   { id: 'warehouse', color: 'blue', label: 'Data Warehouse', icon: '🏢', items: ['Faktentabellen', 'Dimensionen', 'Sternschema'], description: 'Zentrale Datenhaltung für Analysen (strukturiert)' },
-  { id: 'olap', color: 'purple', label: 'OLAP / Analyse', icon: '📊', items: ['Cubes', 'Drill-Down', 'Slice & Dice'], description: 'Multidimensionale Analyse der Daten' },
+  { id: 'olap', color: 'purple', label: 'OLAP / Analyse', icon: '📊', items: ['Cubes', 'Dimensionen', 'Aggregate'], description: 'Multidimensionale Analyse der Daten' },
   { id: 'presentation', color: 'green', label: 'Präsentation', icon: '📈', items: ['Dashboards', 'Reports', 'KPIs'], description: 'Visualisierung für Management-Entscheidungen' },
 ]
 
