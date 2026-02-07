@@ -11,7 +11,7 @@ import type { DiagramProps } from '@/core/types/content'
 
 type K8sComponentType =
   | 'Deployment' | 'ReplicaSet' | 'Pod'
-  | 'Service' | 'ConfigMap' | 'Namespace'
+  | 'Service' | 'ConfigMap'
 
 interface ExpectedComponent {
   id: string
@@ -59,7 +59,6 @@ const COMPONENT_COLORS: Record<K8sComponentType, string> = {
   Pod: '#10b981',
   Service: '#ec4899',
   ConfigMap: '#f59e0b',
-  Namespace: '#06b6d4',
 }
 
 const COMPONENT_ICONS: Record<K8sComponentType, string> = {
@@ -68,12 +67,15 @@ const COMPONENT_ICONS: Record<K8sComponentType, string> = {
   Pod: 'P',
   Service: 'S',
   ConfigMap: 'CM',
-  Namespace: 'NS',
 }
 
 const TOOLBOX_TYPES: K8sComponentType[] = [
   'Deployment', 'ReplicaSet', 'Pod', 'Service', 'ConfigMap',
 ]
+
+/** Approximate rendered dimensions of a ComponentBlock (used for center calculations). */
+const BLOCK_WIDTH = 100
+const BLOCK_HEIGHT = 40
 
 const COMPONENT_FIELDS: Record<K8sComponentType, { key: string; label: string; type: 'text' | 'number' | 'select' | 'kv' }[]> = {
   Deployment: [
@@ -100,9 +102,6 @@ const COMPONENT_FIELDS: Record<K8sComponentType, { key: string; label: string; t
   ConfigMap: [
     { key: 'name', label: 'Name', type: 'text' },
     { key: 'dataKeys', label: 'Data Keys (kommagetrennt)', type: 'text' },
-  ],
-  Namespace: [
-    { key: 'name', label: 'Name', type: 'text' },
   ],
 }
 
@@ -449,9 +448,7 @@ function KvEditor({
   const [newKey, setNewKey] = useState('')
   const [newVal, setNewVal] = useState('')
 
-  const entries = Object.entries(value).filter(
-    ([k]) => k !== '__kv' // Ignore internal marker
-  )
+  const entries = Object.entries(value)
 
   const addPair = () => {
     if (!newKey.trim()) return
@@ -644,7 +641,7 @@ function ComponentBlock({
   onDelete,
   onStartConnect,
   onCompleteConnect,
-  onDragEnd,
+  onDrag,
   canvasRef,
 }: {
   component: PlacedComponent
@@ -655,33 +652,65 @@ function ComponentBlock({
   onDelete: () => void
   onStartConnect: () => void
   onCompleteConnect: () => void
-  onDragEnd: (x: number, y: number) => void
+  onDrag: (x: number, y: number) => void
   canvasRef: React.RefObject<HTMLDivElement | null>
 }) {
+  const dragStartRef = useRef<{ offsetX: number; offsetY: number } | null>(null)
+  const didDragRef = useRef(false)
+
   const color = COMPONENT_COLORS[component.type]
   const displayName = (component.fields.name as string) || component.type
 
+  const handlePointerDown = (e: React.PointerEvent) => {
+    // Only drag on primary button (left click)
+    if (e.button !== 0) return
+    const canvasRect = canvasRef.current?.getBoundingClientRect()
+    if (!canvasRect) return
+    e.currentTarget.setPointerCapture(e.pointerId)
+    dragStartRef.current = {
+      offsetX: e.clientX - canvasRect.left - component.x,
+      offsetY: e.clientY - canvasRect.top - component.y,
+    }
+    didDragRef.current = false
+  }
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!dragStartRef.current) return
+    const canvasRect = canvasRef.current?.getBoundingClientRect()
+    if (!canvasRect) return
+    didDragRef.current = true
+    const x = Math.max(0, Math.min(e.clientX - canvasRect.left - dragStartRef.current.offsetX, canvasRect.width - BLOCK_WIDTH))
+    const y = Math.max(0, Math.min(e.clientY - canvasRect.top - dragStartRef.current.offsetY, canvasRect.height - BLOCK_HEIGHT))
+    onDrag(x, y)
+  }
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    e.currentTarget.releasePointerCapture(e.pointerId)
+    const wasDragging = didDragRef.current
+    dragStartRef.current = null
+    didDragRef.current = false
+
+    // If this was a drag (not a click), don't fire click-like actions
+    if (wasDragging) return
+
+    // Treat as click
+    if (isConnecting && !isConnectionSource) {
+      onCompleteConnect()
+    } else {
+      onSelect()
+    }
+  }
+
   return (
     <motion.div
-      drag
-      dragMomentum={false}
-      dragConstraints={canvasRef}
-      onDragEnd={(_e, info) => {
-        onDragEnd(component.x + info.offset.x, component.y + info.offset.y)
-      }}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.6 }}
-      className="absolute group cursor-grab active:cursor-grabbing"
+      className="absolute group cursor-grab active:cursor-grabbing select-none"
       style={{ left: component.x, top: component.y }}
-      onClick={(e) => {
-        e.stopPropagation()
-        if (isConnecting && !isConnectionSource) {
-          onCompleteConnect()
-        } else {
-          onSelect()
-        }
-      }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
     >
       <div
         className={`
@@ -697,7 +726,7 @@ function ComponentBlock({
       >
         {/* Delete button */}
         <button
-          onClick={(e) => {
+          onPointerDown={(e) => {
             e.stopPropagation()
             onDelete()
           }}
@@ -731,7 +760,7 @@ function ComponentBlock({
               ? 'bg-amber-400 border-amber-300'
               : 'bg-slate-600 border-slate-500 hover:bg-blue-400 hover:border-blue-300'}
           `}
-          onClick={(e) => {
+          onPointerDown={(e) => {
             e.stopPropagation()
             if (isConnecting && !isConnectionSource) {
               onCompleteConnect()
@@ -761,7 +790,7 @@ function ConnectionLines({
   const getCenter = (compId: string): { x: number; y: number } | null => {
     const comp = components.find(c => c.id === compId)
     if (!comp) return null
-    return { x: comp.x + 50, y: comp.y + 20 }
+    return { x: comp.x + BLOCK_WIDTH / 2, y: comp.y + BLOCK_HEIGHT / 2 }
   }
 
   return (
@@ -825,6 +854,99 @@ interface ValidationResult {
   messages: string[]
 }
 
+/** Fields to validate per component type (key fields only, ignoring name). */
+const VALIDATED_FIELDS: Partial<Record<K8sComponentType, string[]>> = {
+  Deployment: ['replicas'],
+  Service: ['serviceType', 'port', 'targetPort'],
+  Pod: ['image', 'containerPort'],
+}
+
+/**
+ * Match placed components to expected components by type, then greedily match
+ * by field correctness. Returns a mapping from expected-id to placed-id.
+ */
+function buildComponentMapping(
+  placed: PlacedComponent[],
+  expected: ExpectedComponent[],
+  messages: string[],
+): { mapping: Map<string, string>; score: number } {
+  // Group expected and placed by type
+  const expectedByType: Record<string, ExpectedComponent[]> = {}
+  const placedByType: Record<string, PlacedComponent[]> = {}
+
+  for (const c of expected) {
+    ;(expectedByType[c.type] ??= []).push(c)
+  }
+  for (const c of placed) {
+    ;(placedByType[c.type] ??= []).push(c)
+  }
+
+  const mapping = new Map<string, string>() // expected-id -> placed-id
+  let score = 0
+
+  for (const [type, exps] of Object.entries(expectedByType)) {
+    const available = [...(placedByType[type] ?? [])]
+    const actual = available.length
+
+    if (actual === 0) {
+      messages.push(`${type}: fehlt (${exps.length} erwartet)`)
+      continue
+    }
+    if (actual < exps.length) {
+      messages.push(`${type}: ${actual} von ${exps.length} erwartet`)
+    } else if (actual > exps.length) {
+      messages.push(`${type}: ${actual} platziert, aber nur ${exps.length} erwartet`)
+    }
+
+    const fieldsToCheck = VALIDATED_FIELDS[type as K8sComponentType] ?? []
+
+    // Greedy match: for each expected, find best available placed component
+    for (const exp of exps) {
+      let bestIdx = -1
+      let bestMatches = -1
+
+      for (let i = 0; i < available.length; i++) {
+        let matches = 0
+        for (const key of fieldsToCheck) {
+          if (key in exp.fields && String(available[i].fields[key]) === String(exp.fields[key])) {
+            matches++
+          }
+        }
+        if (matches > bestMatches) {
+          bestMatches = matches
+          bestIdx = i
+        }
+      }
+
+      if (bestIdx === -1) continue // no more available of this type
+
+      const matched = available.splice(bestIdx, 1)[0]
+      mapping.set(exp.id, matched.id)
+
+      // Validate key fields on the matched component
+      let allFieldsOk = true
+      for (const key of fieldsToCheck) {
+        if (!(key in exp.fields)) continue
+        const expectedVal = String(exp.fields[key])
+        const actualVal = String(matched.fields[key] ?? '')
+        if (actualVal !== expectedVal) {
+          allFieldsOk = false
+          const label = key === 'serviceType' ? 'Typ' : key
+          messages.push(
+            `${type} "${matched.fields.name || matched.id}": ${label} ist "${actualVal}", erwartet "${expectedVal}"`,
+          )
+        }
+      }
+
+      if (allFieldsOk) {
+        score++
+      }
+    }
+  }
+
+  return { mapping, score }
+}
+
 function validateSolution(
   placed: PlacedComponent[],
   drawn: DrawnConnection[],
@@ -832,40 +954,67 @@ function validateSolution(
 ): ValidationResult {
   const messages: string[] = []
 
-  // Check component types match expected counts
-  const expectedTypeCounts: Record<string, number> = {}
-  exercise.expectedComponents.forEach(c => {
-    expectedTypeCounts[c.type] = (expectedTypeCounts[c.type] || 0) + 1
+  // --- Component validation with field checking ---
+  const { mapping, score: componentScore } = buildComponentMapping(placed, exercise.expectedComponents, messages)
+
+  // --- Connection validation by type-matching ---
+  // Build a lookup from placed-id to type for fast access
+  const placedById = new Map(placed.map(c => [c.id, c]))
+
+  // For each drawn connection, determine the (fromType, toType) pair
+  const drawnTypePairs = drawn.map(conn => {
+    const fromComp = placedById.get(conn.fromId)
+    const toComp = placedById.get(conn.toId)
+    return {
+      conn,
+      fromType: fromComp?.type ?? null,
+      toType: toComp?.type ?? null,
+    }
   })
 
-  const placedTypeCounts: Record<string, number> = {}
-  placed.forEach(c => {
-    placedTypeCounts[c.type] = (placedTypeCounts[c.type] || 0) + 1
-  })
+  // Build reverse mapping: placed-id -> expected-id
+  const reverseMapping = new Map<string, string>()
+  for (const [expId, plId] of mapping) {
+    reverseMapping.set(plId, expId)
+  }
 
-  let componentScore = 0
-  for (const [type, expected] of Object.entries(expectedTypeCounts)) {
-    const actual = placedTypeCounts[type] || 0
-    if (actual === expected) {
-      componentScore += expected
-    } else if (actual > 0) {
-      componentScore += Math.min(actual, expected)
-      if (actual < expected) {
-        messages.push(`${type}: ${actual} von ${expected} erwartet`)
-      } else {
-        messages.push(`${type}: ${actual} platziert, aber nur ${expected} erwartet`)
-      }
-    } else {
-      messages.push(`${type}: fehlt (${expected} erwartet)`)
+  // For each expected connection, try to find a matching drawn connection
+  const usedDrawn = new Set<string>()
+  let connectionScore = 0
+
+  for (const expConn of exercise.expectedConnections) {
+    const expFromType = exercise.expectedComponents.find(c => c.id === expConn.fromId)?.type
+    const expToType = exercise.expectedComponents.find(c => c.id === expConn.toId)?.type
+
+    let matched = false
+    for (const { conn, fromType, toType } of drawnTypePairs) {
+      if (usedDrawn.has(conn.id)) continue
+      if (fromType !== expFromType || toType !== expToType) continue
+
+      // Additional check: if both endpoints are mapped to specific expected components,
+      // verify the mapping matches (handles multiple components of the same type)
+      const expFromMapped = reverseMapping.get(conn.fromId)
+      const expToMapped = reverseMapping.get(conn.toId)
+
+      if (expFromMapped && expFromMapped !== expConn.fromId) continue
+      if (expToMapped && expToMapped !== expConn.toId) continue
+
+      usedDrawn.add(conn.id)
+      connectionScore++
+      matched = true
+      break
+    }
+
+    if (!matched) {
+      const label = expConn.label ? ` (${expConn.label})` : ''
+      messages.push(`Verbindung fehlt: ${expFromType} → ${expToType}${label}`)
     }
   }
 
-  // Check connections
-  const connectionScore = Math.min(drawn.length, exercise.expectedConnections.length)
-  if (drawn.length < exercise.expectedConnections.length) {
-    messages.push(`Verbindungen: ${drawn.length} von ${exercise.expectedConnections.length} erwartet`)
-  } else if (drawn.length > exercise.expectedConnections.length) {
-    messages.push(`Zu viele Verbindungen: ${drawn.length} (${exercise.expectedConnections.length} erwartet)`)
+  // Check for extra connections that don't match any expected
+  const extraConns = drawn.length - usedDrawn.size
+  if (extraConns > 0) {
+    messages.push(`${extraConns} überflüssige Verbindung${extraConns > 1 ? 'en' : ''}`)
   }
 
   const totalExpComp = exercise.expectedComponents.length
@@ -1050,8 +1199,8 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
       footer={
         <>
           <strong className="text-slate-400">Tipp:</strong> Lies das YAML-Manifest links und baue rechts das
-          entsprechende Architektur-Diagramm. Klicke auf Toolbox-Buttons um Komponenten hinzuzufuegen,
-          verbinde sie ueber die Handles am unteren Rand.
+          entsprechende Architektur-Diagramm. Klicke auf Toolbox-Buttons um Komponenten hinzuzufügen,
+          verbinde sie über die Handles am unteren Rand.
         </>
       }
     >
@@ -1103,7 +1252,7 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
               size="sm"
               onClick={() => setShowSolution(!showSolution)}
             >
-              {showSolution ? 'Loesung ausblenden' : 'Loesung anzeigen'}
+              {showSolution ? 'Lösung ausblenden' : 'Lösung anzeigen'}
             </Button>
             <AnimatePresence>
               {showSolution && (
@@ -1147,7 +1296,7 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
         <div className="lg:col-span-3 space-y-3">
           {/* Toolbox */}
           <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700">
-            <div className="text-xs text-slate-400 mb-2">Komponenten hinzufuegen:</div>
+            <div className="text-xs text-slate-400 mb-2">Komponenten hinzufügen:</div>
             <div className="flex flex-wrap gap-2">
               {TOOLBOX_TYPES.map(type => (
                 <button
@@ -1198,11 +1347,11 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
             {/* Grid background */}
             <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 0 }}>
               <defs>
-                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <pattern id="k8s-builder-grid" width="20" height="20" patternUnits="userSpaceOnUse">
                   <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1e293b" strokeWidth="0.5" />
                 </pattern>
               </defs>
-              <rect width="100%" height="100%" fill="url(#grid)" />
+              <rect width="100%" height="100%" fill="url(#k8s-builder-grid)" />
             </svg>
 
             {/* Connection lines */}
@@ -1235,7 +1384,7 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
                   onDelete={() => deleteComponent(comp.id)}
                   onStartConnect={() => startConnect(comp.id)}
                   onCompleteConnect={() => completeConnect(comp.id)}
-                  onDragEnd={(x, y) => updatePosition(comp.id, x, y)}
+                  onDrag={(x, y) => updatePosition(comp.id, x, y)}
                   canvasRef={canvasRef}
                 />
               ))}
@@ -1267,7 +1416,7 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
           {/* Validate */}
           <div className="flex items-center gap-4">
             <Button variant="primary" size="sm" onClick={handleValidate}>
-              Ueberpruefen
+              Überprüfen
             </Button>
             <AnimatePresence>
               {validation && (
