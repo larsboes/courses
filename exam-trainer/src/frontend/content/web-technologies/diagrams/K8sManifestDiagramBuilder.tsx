@@ -105,6 +105,15 @@ const COMPONENT_FIELDS: Record<K8sComponentType, { key: string; label: string; t
   ],
 }
 
+/** Keywords to highlight in YAML when hovering over a component type on the canvas. */
+const YAML_HIGHLIGHT_KEYWORDS: Record<K8sComponentType, string[]> = {
+  Deployment: ['kind: Deployment', 'replicas:', 'selector:', 'matchLabels:'],
+  Service: ['kind: Service', 'type:', 'selector:', 'port:', 'targetPort:'],
+  Pod: ['template:', 'containers:', 'image:', 'containerPort:'],
+  ReplicaSet: ['replicas:', 'selector:'],
+  ConfigMap: ['kind: ConfigMap', 'data:'],
+}
+
 // ─────────────────────────────────────────────────
 // Exercise Data
 // ─────────────────────────────────────────────────
@@ -348,14 +357,34 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 // YAML Syntax Highlighter
 // ─────────────────────────────────────────────────
 
-function YamlPanel({ yaml }: { yaml: string }) {
+function YamlPanel({ yaml, highlightType }: { yaml: string; highlightType: K8sComponentType | null }) {
   const lines = yaml.split('\n')
+
+  // Determine which line indices should be highlighted
+  const highlightedLines = useMemo(() => {
+    if (!highlightType) return new Set<number>()
+    const keywords = YAML_HIGHLIGHT_KEYWORDS[highlightType] ?? []
+    const set = new Set<number>()
+    lines.forEach((line, idx) => {
+      const trimmed = line.trim()
+      for (const kw of keywords) {
+        if (trimmed.includes(kw)) {
+          set.add(idx)
+          break
+        }
+      }
+    })
+    return set
+  }, [highlightType, lines])
+
+  const highlightColor = highlightType ? COMPONENT_COLORS[highlightType] : null
 
   return (
     <div className="rounded-lg bg-slate-900 border border-slate-700 overflow-auto max-h-[600px]">
       <div className="p-4 font-mono text-sm">
         {lines.map((line, index) => {
           const trimmed = line.trim()
+          const isHighlighted = highlightedLines.has(index)
 
           // Separator line
           if (trimmed === '---') {
@@ -408,7 +437,16 @@ function YamlPanel({ yaml }: { yaml: string }) {
           const indent = line.search(/\S|$/)
 
           return (
-            <div key={index} className="flex py-0.5 px-2 -mx-2 hover:bg-slate-800/50 rounded">
+            <div
+              key={index}
+              className={`flex py-0.5 px-2 -mx-2 rounded transition-colors duration-150 ${
+                isHighlighted ? 'border-l-2' : 'hover:bg-slate-800/50'
+              }`}
+              style={isHighlighted ? {
+                backgroundColor: (highlightColor ?? '#3b82f6') + '20',
+                borderLeftColor: highlightColor ?? '#3b82f6',
+              } : undefined}
+            >
               <span className="text-slate-500 select-none w-6 text-right mr-3 flex-shrink-0">
                 {index + 1}
               </span>
@@ -637,23 +675,31 @@ function ComponentBlock({
   isSelected,
   isConnecting,
   isConnectionSource,
+  validationStatus,
   onSelect,
   onDelete,
   onStartConnect,
   onCompleteConnect,
   onDrag,
+  onHoverEnter,
+  onHoverLeave,
   canvasRef,
+  isSolutionFaded,
 }: {
   component: PlacedComponent
   isSelected: boolean
   isConnecting: boolean
   isConnectionSource: boolean
+  validationStatus?: 'correct' | 'extra' | null
   onSelect: () => void
   onDelete: () => void
   onStartConnect: () => void
   onCompleteConnect: () => void
   onDrag: (x: number, y: number) => void
+  onHoverEnter?: () => void
+  onHoverLeave?: () => void
   canvasRef: React.RefObject<HTMLDivElement | null>
+  isSolutionFaded?: boolean
 }) {
   const dragStartRef = useRef<{ offsetX: number; offsetY: number } | null>(null)
   const didDragRef = useRef(false)
@@ -701,16 +747,22 @@ function ComponentBlock({
     }
   }
 
+  const validationRingClass =
+    validationStatus === 'correct' ? 'ring-2 ring-green-400/70' :
+    validationStatus === 'extra' ? 'ring-2 ring-red-400/70' : ''
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
+      animate={{ opacity: isSolutionFaded ? 0.3 : 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.6 }}
       className="absolute group cursor-grab active:cursor-grabbing select-none"
-      style={{ left: component.x, top: component.y }}
+      style={{ left: component.x, top: component.y, zIndex: 1 }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onMouseEnter={onHoverEnter}
+      onMouseLeave={onHoverLeave}
     >
       <div
         className={`
@@ -718,6 +770,7 @@ function ComponentBlock({
           ${isSelected ? 'ring-2 ring-white/30 shadow-lg' : ''}
           ${isConnecting && !isConnectionSource ? 'ring-2 ring-dashed ring-green-400/50' : ''}
           ${isConnectionSource ? 'ring-2 ring-amber-400/70' : ''}
+          ${!isSelected && !isConnecting && !isConnectionSource ? validationRingClass : ''}
         `}
         style={{
           backgroundColor: color + '20',
@@ -852,6 +905,8 @@ interface ValidationResult {
   totalExpectedComponents: number
   totalExpectedConnections: number
   messages: string[]
+  matchedComponentIds: Set<string>
+  missingTypes: Set<K8sComponentType>
 }
 
 /** Fields to validate per component type (key fields only, ignoring name). */
@@ -1025,6 +1080,18 @@ function validateSolution(
     messages.push('Alle Komponenten und Verbindungen sind korrekt!')
   }
 
+  // Collect matched placed-component IDs
+  const matchedComponentIds = new Set<string>(mapping.values())
+
+  // Determine which expected types are completely missing from placed components
+  const placedTypeSet = new Set(placed.map(c => c.type))
+  const missingTypes = new Set<K8sComponentType>()
+  for (const exp of exercise.expectedComponents) {
+    if (!placedTypeSet.has(exp.type)) {
+      missingTypes.add(exp.type)
+    }
+  }
+
   return {
     isCorrect,
     componentScore,
@@ -1032,7 +1099,192 @@ function validateSolution(
     totalExpectedComponents: totalExpComp,
     totalExpectedConnections: totalExpConn,
     messages,
+    matchedComponentIds,
+    missingTypes,
   }
+}
+
+// ─────────────────────────────────────────────────
+// Solution Layout & Overlay
+// ─────────────────────────────────────────────────
+
+interface SolutionLayoutItem {
+  id: string
+  type: K8sComponentType
+  fields: Record<string, string | number>
+  x: number
+  y: number
+}
+
+function layoutSolutionComponents(exercise: K8sBuilderExercise, canvasWidth: number): SolutionLayoutItem[] {
+  const { expectedComponents, expectedConnections } = exercise
+
+  // Build adjacency: from -> to[]
+  const children = new Map<string, string[]>()
+  const hasParent = new Set<string>()
+
+  for (const conn of expectedConnections) {
+    const list = children.get(conn.fromId) ?? []
+    list.push(conn.toId)
+    children.set(conn.fromId, list)
+    hasParent.add(conn.toId)
+  }
+
+  // Find roots: components that appear as fromId but never as toId
+  const roots = expectedComponents
+    .filter(c => !hasParent.has(c.id))
+    .map(c => c.id)
+
+  // BFS to assign levels
+  const levels = new Map<string, number>()
+  const queue = [...roots]
+  for (const r of roots) levels.set(r, 0)
+
+  while (queue.length > 0) {
+    const current = queue.shift()!
+    const level = levels.get(current) ?? 0
+    for (const child of children.get(current) ?? []) {
+      if (!levels.has(child)) {
+        levels.set(child, level + 1)
+        queue.push(child)
+      }
+    }
+  }
+
+  // Assign level to any components not reached by BFS
+  for (const c of expectedComponents) {
+    if (!levels.has(c.id)) levels.set(c.id, 0)
+  }
+
+  // Group by level
+  const byLevel = new Map<number, ExpectedComponent[]>()
+  for (const c of expectedComponents) {
+    const lv = levels.get(c.id) ?? 0
+    const list = byLevel.get(lv) ?? []
+    list.push(c)
+    byLevel.set(lv, list)
+  }
+
+  const result: SolutionLayoutItem[] = []
+  const usableWidth = Math.max(canvasWidth - 40, 200)
+
+  for (const [level, comps] of byLevel) {
+    const y = 20 + level * 80
+    const spacing = usableWidth / (comps.length + 1)
+    comps.forEach((c, i) => {
+      result.push({
+        id: c.id,
+        type: c.type,
+        fields: c.fields,
+        x: spacing * (i + 1) - BLOCK_WIDTH / 2 + 20,
+        y,
+      })
+    })
+  }
+
+  return result
+}
+
+function SolutionComponentBlock({
+  item,
+  index,
+}: {
+  item: SolutionLayoutItem
+  index: number
+}) {
+  const color = COMPONENT_COLORS[item.type]
+  const displayName = (item.fields.name as string) || item.type
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 0.7, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.5 }}
+      transition={{ delay: index * 0.15, duration: 0.3 }}
+      className="absolute pointer-events-none"
+      style={{ left: item.x, top: item.y, zIndex: 2 }}
+    >
+      <div
+        className="px-3 py-2 rounded-lg border-2 border-dashed min-w-[100px]"
+        style={{
+          backgroundColor: color + '15',
+          borderColor: color + '60',
+        }}
+      >
+        <div className="flex items-center gap-2">
+          <span
+            className="w-6 h-6 rounded flex items-center justify-center text-[10px] font-bold text-white/70 flex-shrink-0"
+            style={{ backgroundColor: color + '80' }}
+          >
+            {COMPONENT_ICONS[item.type]}
+          </span>
+          <div className="min-w-0">
+            <div className="text-xs font-medium text-slate-300/70 truncate">{displayName}</div>
+            <div className="text-[10px] text-slate-500">{item.type}</div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function SolutionConnectionLines({
+  connections,
+  layoutItems,
+}: {
+  connections: ExpectedConnection[]
+  layoutItems: SolutionLayoutItem[]
+}) {
+  const getCenter = (id: string): { x: number; y: number } | null => {
+    const item = layoutItems.find(i => i.id === id)
+    if (!item) return null
+    return { x: item.x + BLOCK_WIDTH / 2, y: item.y + BLOCK_HEIGHT / 2 }
+  }
+
+  return (
+    <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 2 }}>
+      {connections.map((conn, idx) => {
+        const from = getCenter(conn.fromId)
+        const to = getCenter(conn.toId)
+        if (!from || !to) return null
+
+        const startX = from.x
+        const startY = from.y + 20
+        const endX = to.x
+        const endY = to.y - 10
+
+        return (
+          <motion.g
+            key={`${conn.fromId}-${conn.toId}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            transition={{ delay: idx * 0.1 + 0.3, duration: 0.3 }}
+          >
+            <path
+              d={`M ${startX} ${startY} C ${startX} ${startY + 30}, ${endX} ${endY - 30}, ${endX} ${endY}`}
+              fill="none"
+              stroke="#10b981"
+              strokeWidth={2}
+              strokeDasharray="4,4"
+            />
+            <circle cx={endX} cy={endY} r={3} fill="#10b981" opacity={0.6} />
+            {conn.label && (
+              <text
+                x={(startX + endX) / 2}
+                y={(startY + endY) / 2 - 6}
+                textAnchor="middle"
+                fontSize={9}
+                fill="#10b981"
+                opacity={0.6}
+              >
+                {conn.label}
+              </text>
+            )}
+          </motion.g>
+        )
+      })}
+    </svg>
+  )
 }
 
 // ─────────────────────────────────────────────────
@@ -1049,6 +1301,7 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
   const [showSolution, setShowSolution] = useState(false)
   const [validation, setValidation] = useState<ValidationResult | null>(null)
   const [propertiesOpen, setPropertiesOpen] = useState(true)
+  const [hoveredComponentType, setHoveredComponentType] = useState<K8sComponentType | null>(null)
 
   const canvasRef = useRef<HTMLDivElement>(null)
   const placedCountRef = useRef(0)
@@ -1065,6 +1318,7 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
     setShowSolution(false)
     setValidation(null)
     setPropertiesOpen(true)
+    setHoveredComponentType(null)
     placedCountRef.current = 0
   }, [])
 
@@ -1170,6 +1424,27 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
     [placedComponents, selectedId],
   )
 
+  // Per-component validation status
+  const componentValidationStatus = useMemo(() => {
+    if (!validation) return new Map<string, 'correct' | 'extra'>()
+    const map = new Map<string, 'correct' | 'extra'>()
+    for (const comp of placedComponents) {
+      if (validation.matchedComponentIds.has(comp.id)) {
+        map.set(comp.id, 'correct')
+      } else {
+        map.set(comp.id, 'extra')
+      }
+    }
+    return map
+  }, [validation, placedComponents])
+
+  // Solution layout items (computed when solution is shown)
+  const solutionLayout = useMemo(() => {
+    if (!showSolution) return []
+    const canvasWidth = canvasRef.current?.clientWidth ?? 600
+    return layoutSolutionComponents(exercise, canvasWidth)
+  }, [showSolution, exercise])
+
   return (
     <DiagramShell
       title="K8s Manifest → Diagramm Builder"
@@ -1216,7 +1491,7 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
             </span>
           </div>
 
-          <YamlPanel yaml={exercise.manifest} />
+          <YamlPanel yaml={exercise.manifest} highlightType={hoveredComponentType} />
 
           {/* Hints */}
           <div className="space-y-2">
@@ -1298,22 +1573,27 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
           <div className="p-3 rounded-lg bg-slate-800/50 border border-slate-700">
             <div className="text-xs text-slate-400 mb-2">Komponenten hinzufügen:</div>
             <div className="flex flex-wrap gap-2">
-              {TOOLBOX_TYPES.map(type => (
-                <button
-                  key={type}
-                  onClick={() => addComponent(type)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-700 hover:bg-slate-600 text-slate-200"
-                  style={{ borderLeft: `3px solid ${COMPONENT_COLORS[type]}` }}
-                >
-                  <span
-                    className="w-5 h-5 rounded flex items-center justify-center text-[9px] font-bold text-white"
-                    style={{ backgroundColor: COMPONENT_COLORS[type] }}
+              {TOOLBOX_TYPES.map(type => {
+                const isMissing = validation && !validation.isCorrect && validation.missingTypes.has(type)
+                return (
+                  <button
+                    key={type}
+                    onClick={() => addComponent(type)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-slate-700 hover:bg-slate-600 text-slate-200 ${
+                      isMissing ? 'animate-pulse ring-2 ring-amber-400/60' : ''
+                    }`}
+                    style={{ borderLeft: `3px solid ${COMPONENT_COLORS[type]}` }}
                   >
-                    {COMPONENT_ICONS[type]}
-                  </span>
-                  {type}
-                </button>
-              ))}
+                    <span
+                      className="w-5 h-5 rounded flex items-center justify-center text-[9px] font-bold text-white"
+                      style={{ backgroundColor: COMPONENT_COLORS[type] }}
+                    >
+                      {COMPONENT_ICONS[type]}
+                    </span>
+                    {type}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
@@ -1377,6 +1657,7 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
                   isSelected={selectedId === comp.id}
                   isConnecting={connectingFromId !== null}
                   isConnectionSource={connectingFromId === comp.id}
+                  validationStatus={componentValidationStatus.get(comp.id) ?? null}
                   onSelect={() => {
                     setSelectedId(comp.id)
                     setPropertiesOpen(true)
@@ -1385,9 +1666,27 @@ export function K8sManifestDiagramBuilder({ className }: DiagramProps) {
                   onStartConnect={() => startConnect(comp.id)}
                   onCompleteConnect={() => completeConnect(comp.id)}
                   onDrag={(x, y) => updatePosition(comp.id, x, y)}
+                  onHoverEnter={() => setHoveredComponentType(comp.type)}
+                  onHoverLeave={() => setHoveredComponentType(null)}
                   canvasRef={canvasRef}
+                  isSolutionFaded={showSolution}
                 />
               ))}
+            </AnimatePresence>
+
+            {/* Solution overlay */}
+            <AnimatePresence>
+              {showSolution && (
+                <>
+                  <SolutionConnectionLines
+                    connections={exercise.expectedConnections}
+                    layoutItems={solutionLayout}
+                  />
+                  {solutionLayout.map((item, index) => (
+                    <SolutionComponentBlock key={item.id} item={item} index={index} />
+                  ))}
+                </>
+              )}
             </AnimatePresence>
           </div>
 
