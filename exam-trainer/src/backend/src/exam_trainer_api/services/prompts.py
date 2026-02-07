@@ -26,6 +26,38 @@ Bewertungskriterien:
 - Sprache: Deutsch
 """
 
+EVALUATE_CODE_PROMPT = """Du bist ein Pruefer fuer Web Technologies Klausuren und bewertest Code-Antworten.
+
+FRAGE: {question}
+
+MUSTERLOESUNG: {model_answer}
+
+WICHTIGE PUNKTE: {key_points}
+
+CODE DES STUDENTEN: {user_answer}
+
+Bewerte den Code. Antworte NUR mit diesem JSON (keine Markdown-Codeblocks):
+
+{{
+  "score": <0.0-1.0>,
+  "is_correct": <true/false/"partial">,
+  "feedback": "<Was war richtig, was fehlt - ermutigend aber praezise>",
+  "missing_concepts": ["<fehlende Konzepte>"],
+  "suggestion": "<konkreter Lernvorschlag>"
+}}
+
+Bewertungskriterien:
+- Semantische Korrektheit ist wichtiger als exakte Syntax
+- Einrueckung und Whitespace tolerant bewerten
+- Aequivalente Loesungen akzeptieren (z.B. GET /playlists und GET /playlists/ sind beide korrekt)
+- Bei HTTP-Requests: Methode, Pfad, wichtige Header pruefen
+- Bei JSON: Struktur und Pflichtfelder pruefen, Reihenfolge egal
+- Bei CSS: Selektor-Korrektheit und Property-Werte pruefen
+- Bei HTML: Semantische Korrektheit und Struktur pruefen
+- Teilpunkte fuer unvollstaendige aber korrekte Antworten
+- Sprache: Deutsch
+"""
+
 HINT_PROMPT = """Du hilfst einem Studenten bei einer Pruefungsfrage.
 
 FRAGE: {question}

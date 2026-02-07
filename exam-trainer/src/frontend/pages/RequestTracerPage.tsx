@@ -1,18 +1,30 @@
 // src/pages/RequestTracerPage.tsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGlossary, useStepNavigator } from '@/core/hooks'
 import { DiagramShell, StepNavigator } from '@/core/components/diagrams'
-import { ClusterDiagram, RequestPacket } from '@/core/components/scenarios'
+import { ClusterDiagram, RequestPacket, FullStackDiagram } from '@/core/components/scenarios'
 import { TermTooltip } from '@/core/components/glossary'
+
+const categories = ['Alle', 'Full Stack', 'Kubernetes'] as const
 
 export function RequestTracerPage() {
   const { courseId } = useParams<{ courseId: string }>()
   const { scenarios, getScenario, getTerm } = useGlossary({ courseId: courseId ?? '' })
+  const [activeCategory, setActiveCategory] = useState<string>('Alle')
   const [selectedScenarioId, setSelectedScenarioId] = useState(scenarios[0]?.id ?? 'external-to-pod')
 
+  const filteredScenarios = useMemo(() => {
+    if (activeCategory === 'Alle') return scenarios
+    return scenarios.filter(s => {
+      if (activeCategory === 'Full Stack') return s.diagramType === 'full-stack'
+      return !s.diagramType || s.diagramType === 'k8s'
+    })
+  }, [scenarios, activeCategory])
+
   const scenario = getScenario(selectedScenarioId)
+  const isFullStack = scenario?.diagramType === 'full-stack'
   const totalSteps = scenario?.steps.length ?? 1
 
   const stepper = useStepNavigator({
@@ -25,11 +37,20 @@ export function RequestTracerPage() {
     stepper.reset()
   }, [selectedScenarioId])
 
+  // When category changes, select first scenario in filtered list
+  useEffect(() => {
+    if (filteredScenarios.length > 0 && !filteredScenarios.find(s => s.id === selectedScenarioId)) {
+      setSelectedScenarioId(filteredScenarios[0].id)
+    }
+  }, [filteredScenarios, selectedScenarioId])
+
   const currentStep = scenario?.steps[stepper.currentStep]
   const highlightedComponents = currentStep?.highlight ?? []
 
   // Get packet variant based on scenario
   const packetVariant = selectedScenarioId === 'dns-resolution' ? 'dns' : 'request'
+
+  const diagramTitle = isFullStack ? 'Full Stack Request Flow' : 'K8s Request Flow'
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -49,10 +70,27 @@ export function RequestTracerPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-8">
+        {/* Category tabs */}
+        <div className="flex gap-2 mb-6">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeCategory === cat
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
         <DiagramShell
-          title="K8s Request Flow"
+          title={diagramTitle}
           subtitle={scenario?.title}
-          samples={scenarios.map(s => ({ id: s.id, label: s.title }))}
+          samples={filteredScenarios.map(s => ({ id: s.id, label: s.title }))}
           currentSample={selectedScenarioId}
           onSampleChange={setSelectedScenarioId}
           footer={
@@ -68,31 +106,10 @@ export function RequestTracerPage() {
             <p className="text-slate-300">{scenario?.description}</p>
           </div>
 
-          {/* Cluster diagram with packet */}
+          {/* Diagram area */}
           <div className="relative">
-            <svg
-              viewBox="0 0 500 380"
-              className="w-full max-w-2xl mx-auto"
-              style={{ background: '#0f172a', borderRadius: '8px' }}
-            >
-              {/* Cluster boundary */}
-              <rect
-                x={20}
-                y={60}
-                width={460}
-                height={310}
-                rx={12}
-                fill="none"
-                stroke="#334155"
-                strokeWidth={2}
-                strokeDasharray="12,6"
-              />
-              <text x={240} y={52} fill="#64748b" fontSize="12" textAnchor="middle">
-                Kubernetes Cluster
-              </text>
-
-              {/* Cluster components */}
-              <ClusterDiagram
+            {isFullStack ? (
+              <FullStackDiagram
                 highlighted={highlightedComponents}
                 activeComponent={currentStep?.component}
                 onComponentClick={(id) => {
@@ -102,23 +119,57 @@ export function RequestTracerPage() {
                   }
                 }}
               />
-
-              {/* Animated packet */}
-              {currentStep && (
-                <RequestPacket
-                  componentId={currentStep.component}
-                  isAnimating={stepper.isAnimating}
-                  variant={packetVariant}
+            ) : (
+              <svg
+                viewBox="0 0 500 380"
+                className="w-full max-w-2xl mx-auto"
+                style={{ background: '#0f172a', borderRadius: '8px' }}
+              >
+                {/* Cluster boundary */}
+                <rect
+                  x={20}
+                  y={60}
+                  width={460}
+                  height={310}
+                  rx={12}
+                  fill="none"
+                  stroke="#334155"
+                  strokeWidth={2}
+                  strokeDasharray="12,6"
                 />
-              )}
-
-              {/* Legend */}
-              <g transform="translate(20, 375)">
-                <text fill="#64748b" fontSize="9">
-                  Blau = Aktueller Schritt | Grün = Paket-Position
+                <text x={240} y={52} fill="#64748b" fontSize="12" textAnchor="middle">
+                  Kubernetes Cluster
                 </text>
-              </g>
-            </svg>
+
+                {/* Cluster components */}
+                <ClusterDiagram
+                  highlighted={highlightedComponents}
+                  activeComponent={currentStep?.component}
+                  onComponentClick={(id) => {
+                    const term = getTerm(id)
+                    if (term) {
+                      console.log('Clicked:', term.term)
+                    }
+                  }}
+                />
+
+                {/* Animated packet */}
+                {currentStep && (
+                  <RequestPacket
+                    componentId={currentStep.component}
+                    isAnimating={stepper.isAnimating}
+                    variant={packetVariant}
+                  />
+                )}
+
+                {/* Legend */}
+                <g transform="translate(20, 375)">
+                  <text fill="#64748b" fontSize="9">
+                    Blau = Aktueller Schritt | Grün = Paket-Position
+                  </text>
+                </g>
+              </svg>
+            )}
           </div>
 
           {/* Step explanation panel */}
@@ -173,7 +224,7 @@ export function RequestTracerPage() {
 
         {/* Scenario quick links */}
         <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
-          {scenarios.map(s => (
+          {filteredScenarios.map(s => (
             <button
               key={s.id}
               onClick={() => setSelectedScenarioId(s.id)}

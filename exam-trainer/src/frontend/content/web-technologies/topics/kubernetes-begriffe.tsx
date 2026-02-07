@@ -312,4 +312,77 @@ flowchart LR
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'k8s-concepts-task',
+      title: 'Kubernetes Konzepte',
+      points: 20,
+      context: (
+        <p>
+          Die Playlist-App wird in einem Kubernetes-Cluster betrieben. Die folgenden
+          Fragen testen Ihr Verständnis der grundlegenden Kubernetes-Konzepte.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'k8s-concepts-a',
+          type: 'free-text' as const,
+          question: 'Erklären Sie die Beziehung zwischen Deployment, ReplicaSet, Pod und Container. Wie hängen diese vier Konzepte zusammen?',
+          placeholder: 'Ein Deployment verwaltet...',
+          modelAnswer: 'Die vier Konzepte bilden eine Hierarchie:\n\n1. Deployment: Höchste Abstraktion. Definiert den gewünschten Zustand (welches Image, wie viele Replicas). Verwaltet ReplicaSets und ermöglicht Rolling Updates und Rollbacks.\n\n2. ReplicaSet: Wird vom Deployment erstellt und verwaltet. Stellt sicher, dass die gewünschte Anzahl von Pods läuft. Bei Updates erstellt das Deployment ein neues ReplicaSet.\n\n3. Pod: Wird vom ReplicaSet erstellt. Kleinste deploybare Einheit in K8s. Enthält einen oder mehrere Container, die sich Netzwerk (IP) und Storage teilen.\n\n4. Container: Läuft innerhalb eines Pods. Ist die eigentliche Anwendung, basierend auf einem Docker Image.\n\nBeispiel: Deployment (replicas: 3) → erstellt ReplicaSet → ReplicaSet erstellt 3 Pods → jeder Pod enthält 1 Container.',
+          keyPoints: [
+            'Hierarchie: Deployment → ReplicaSet → Pod → Container',
+            'Deployment für Updates und Rollbacks',
+            'ReplicaSet sichert gewünschte Pod-Anzahl',
+            'Pod als kleinste deploybare Einheit',
+            'Container teilen sich Netzwerk im Pod',
+          ],
+          explanation: 'Diese Hierarchie ist ein zentrales Konzept in Kubernetes.',
+        },
+        {
+          id: 'k8s-concepts-b',
+          type: 'free-text' as const,
+          question: 'Was sind Labels und Selectors in Kubernetes? Warum sind sie wichtig? Geben Sie ein konkretes Beispiel.',
+          placeholder: 'Labels sind...',
+          modelAnswer: 'Labels sind Key-Value-Paare, die an Kubernetes-Ressourcen (Pods, Services, etc.) angehängt werden. Sie dienen zur Organisation und Selektion.\n\nSelectors werden verwendet, um Ressourcen mit bestimmten Labels zu finden. Services nutzen Selectors, um die zugehörigen Pods zu identifizieren.\n\nBeispiel:\n- Deployment definiert Pod-Template mit Label: app: playlist-api\n- Service hat Selector: app: playlist-api\n- Der Service findet dadurch alle Pods mit diesem Label und routet Traffic zu ihnen.\n\nWichtigkeit: Labels sind der einzige Mechanismus, mit dem Services ihre Pods finden. Ohne korrekte Labels/Selectors funktioniert kein Routing.',
+          keyPoints: [
+            'Labels: Key-Value-Paare an Ressourcen',
+            'Selectors: Finden Ressourcen mit bestimmten Labels',
+            'Verbindung zwischen Service und Pods',
+            'Konkretes Beispiel gegeben',
+          ],
+          explanation: 'Labels und Selectors sind der Verbindungsmechanismus in Kubernetes.',
+        },
+        {
+          id: 'k8s-concepts-c',
+          type: 'free-text' as const,
+          question: 'Erklären Sie die drei Service-Typen ClusterIP, NodePort und LoadBalancer. Wann verwendet man welchen?',
+          placeholder: 'ClusterIP: ...\nNodePort: ...\nLoadBalancer: ...',
+          modelAnswer: 'ClusterIP (Standard): Interne IP im Cluster. Nur von innerhalb des Clusters erreichbar. Verwendung: Backend-Services, Datenbanken (z.B. CouchDB in der Playlist-App), die nicht direkt von außen erreichbar sein sollen.\n\nNodePort: Öffnet einen Port (30000-32767) auf jedem Node. Erreichbar über NodeIP:NodePort. Baut auf ClusterIP auf. Verwendung: Entwicklung/Testing, wenn kein Cloud-LoadBalancer verfügbar ist (z.B. Playlist-App Webserver).\n\nLoadBalancer: Provisioniert einen externen Load Balancer (nur in Cloud-Umgebungen). Bekommt eine externe IP automatisch. Baut auf NodePort + ClusterIP auf. Verwendung: Production-Deployments in der Cloud für extern erreichbare Services.',
+          keyPoints: [
+            'ClusterIP: intern, Standard-Typ',
+            'NodePort: extern über Node-Port',
+            'LoadBalancer: Cloud-externer LB',
+            'Aufbau: LB → NodePort → ClusterIP',
+            'Konkretes Verwendungsbeispiel',
+          ],
+          explanation: 'Die Wahl des Service-Typs bestimmt die Erreichbarkeit einer Anwendung.',
+        },
+        {
+          id: 'k8s-concepts-d',
+          type: 'multiple-choice' as const,
+          question: 'Was passiert in Kubernetes, wenn ein Pod bei einem Deployment mit replicas: 3 abstürzt?',
+          options: [
+            'Der Pod wird nicht ersetzt und es laufen nur noch 2 Pods',
+            'Das ReplicaSet erkennt, dass nur 2 Pods laufen, und startet automatisch einen neuen Pod',
+            'Das gesamte Deployment wird neu gestartet',
+            'Der Administrator muss manuell einen neuen Pod starten',
+          ],
+          correctAnswer: 'Das ReplicaSet erkennt, dass nur 2 Pods laufen, und startet automatisch einen neuen Pod',
+          explanation: 'Self-Healing: Das ReplicaSet überwacht die Pod-Anzahl und stellt sicher, dass immer die gewünschte Anzahl (replicas: 3) läuft. Bei einem Ausfall wird automatisch ein Ersatz-Pod gestartet.',
+        },
+      ],
+    },
+  ],
 }

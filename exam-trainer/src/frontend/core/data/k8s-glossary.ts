@@ -7,6 +7,7 @@ export const k8sGlossary: K8sGlossary = {
     { id: 'networking', label: 'Networking' },
     { id: 'storage', label: 'Storage' },
     { id: 'workloads', label: 'Workloads' },
+    { id: 'web', label: 'Web Technologies' },
   ],
   terms: [
     // Core
@@ -222,6 +223,71 @@ export const k8sGlossary: K8sGlossary = {
       category: 'core',
       related: ['deployment', 'service', 'pod'],
       examRelevance: 'high',
+    },
+
+    // Web Technologies
+    {
+      id: 'browser',
+      term: 'Browser',
+      definition: 'Client-Anwendung, die HTTP-Requests sendet und HTML/CSS/JS rendert.',
+      details: 'Der Browser durchläuft die Rendering Pipeline: HTML→DOM, CSS→CSSOM, Render Tree, Layout, Paint.',
+      category: 'web',
+      related: ['http-request', 'dns-resolver'],
+      examRelevance: 'high',
+    },
+    {
+      id: 'dns-resolver',
+      term: 'DNS Resolver',
+      definition: 'Server, der Domainnamen in IP-Adressen auflöst.',
+      details: 'Hierarchische Auflösung: Root → TLD → Authoritative NS. Ergebnisse werden gecacht (TTL).',
+      category: 'web',
+      related: ['browser', 'coredns'],
+      examRelevance: 'high',
+    },
+    {
+      id: 'tls-handshake',
+      term: 'TLS Handshake',
+      definition: 'Protokoll zum Aufbau einer verschlüsselten Verbindung.',
+      details: 'ClientHello → ServerHello → Zertifikat → Key Exchange → Finished. TLS 1.3: 1-RTT.',
+      category: 'web',
+      related: ['browser', 'http-request'],
+      examRelevance: 'high',
+    },
+    {
+      id: 'http-request',
+      term: 'HTTP Request',
+      definition: 'Anfrage vom Client an den Server mit Methode, URL und Headers.',
+      details: 'Aufbau: Request-Line (GET /path HTTP/1.1), Headers, optionaler Body.',
+      category: 'web',
+      related: ['browser', 'rest-api'],
+      examRelevance: 'high',
+    },
+    {
+      id: 'rest-api',
+      term: 'REST API',
+      definition: 'Architekturstil für Web-APIs basierend auf HTTP-Methoden und Ressourcen.',
+      details: 'CRUD-Mapping: POST=Create, GET=Read, PUT=Update, DELETE=Delete. Zustandslos.',
+      category: 'web',
+      related: ['http-request', 'flask-app'],
+      examRelevance: 'high',
+    },
+    {
+      id: 'flask-app',
+      term: 'Flask App',
+      definition: 'Python-Webframework, das die REST API der Playlist-App implementiert.',
+      details: 'Definiert Routes mit Decorators (@app.route), verarbeitet JSON-Requests.',
+      category: 'web',
+      related: ['rest-api', 'database'],
+      examRelevance: 'medium',
+    },
+    {
+      id: 'database',
+      term: 'Datenbank (CouchDB)',
+      definition: 'Persistenter Datenspeicher für die Playlist-App.',
+      details: 'CouchDB ist eine NoSQL-Datenbank, die JSON-Dokumente speichert. Erreichbar über HTTP-API.',
+      category: 'web',
+      related: ['flask-app', 'persistent-volume'],
+      examRelevance: 'medium',
     },
   ],
 
@@ -441,6 +507,157 @@ export const k8sGlossary: K8sGlossary = {
           component: 'pod',
           description: 'Pod kann jetzt die ClusterIP direkt ansprechen',
           highlight: ['pod', 'cluster-ip'],
+        },
+      ],
+    },
+
+    // Full-stack scenarios
+    {
+      id: 'browser-to-api',
+      title: 'Browser → Playlist API',
+      description: 'Vollständiger Request-Pfad: Vom Tippen der URL bis zur gerenderten Antwort.',
+      diagramType: 'full-stack',
+      steps: [
+        {
+          component: 'browser',
+          description: 'User tippt playlist-app.example.com in die Adressleiste',
+          highlight: ['browser'],
+        },
+        {
+          component: 'dns-resolver',
+          description: 'Browser fragt DNS-Resolver: Welche IP hat playlist-app.example.com?',
+          highlight: ['dns-resolver', 'browser'],
+        },
+        {
+          component: 'tls-handshake',
+          description: 'TLS-Handshake: ClientHello → ServerHello → Zertifikat → Session Key',
+          highlight: ['tls-handshake', 'browser'],
+        },
+        {
+          component: 'http-request',
+          description: 'Browser sendet GET /playlists HTTP/1.1 über die verschlüsselte Verbindung',
+          highlight: ['http-request'],
+        },
+        {
+          component: 'nodeport',
+          description: 'Request erreicht Kubernetes-Cluster über NodePort 32000',
+          highlight: ['nodeport', 'node'],
+        },
+        {
+          component: 'service',
+          description: 'Service routet Request zum Webserver-Pod (Label-Selector: app=webserver)',
+          highlight: ['service', 'kube-proxy'],
+        },
+        {
+          component: 'pod',
+          description: 'Flask-Container im Pod verarbeitet den Request',
+          highlight: ['pod', 'flask-app'],
+        },
+        {
+          component: 'database',
+          description: 'Flask-App fragt CouchDB über ClusterIP-Service ab',
+          highlight: ['database', 'cluster-ip'],
+        },
+        {
+          component: 'http-request',
+          description: 'Server sendet HTTP Response: 200 OK mit JSON-Body zurück',
+          highlight: ['http-request', 'pod'],
+        },
+        {
+          component: 'browser',
+          description: 'Browser rendert die Antwort: HTML→DOM, CSS→CSSOM, Render Tree, Layout, Paint',
+          highlight: ['browser'],
+        },
+      ],
+    },
+    {
+      id: 'create-playlist',
+      title: 'Playlist erstellen',
+      description: 'Was passiert, wenn der User auf "Create Playlist" klickt?',
+      diagramType: 'full-stack',
+      steps: [
+        {
+          component: 'browser',
+          description: 'User klickt "Create Playlist" → click Event wird ausgelöst',
+          highlight: ['browser'],
+        },
+        {
+          component: 'browser',
+          description: 'JavaScript Event Handler baut fetch()-Request: POST /playlists mit JSON-Body',
+          highlight: ['browser', 'http-request'],
+        },
+        {
+          component: 'http-request',
+          description: 'POST /playlists HTTP/1.1, Content-Type: application/json, Body: {"name": "My Playlist", "tracks": []}',
+          highlight: ['http-request'],
+        },
+        {
+          component: 'service',
+          description: 'K8s Service routet den POST-Request zum Flask-Pod',
+          highlight: ['service', 'nodeport', 'pod'],
+        },
+        {
+          component: 'flask-app',
+          description: 'Flask-Route @app.route("/playlists", methods=["POST"]) verarbeitet den Request',
+          highlight: ['flask-app', 'rest-api'],
+        },
+        {
+          component: 'database',
+          description: 'Flask speichert die Playlist in CouchDB (PUT /playlists/playlist:name)',
+          highlight: ['database'],
+        },
+        {
+          component: 'http-request',
+          description: 'Server antwortet: 201 Created mit JSON-Bestätigung',
+          highlight: ['http-request', 'flask-app'],
+        },
+        {
+          component: 'browser',
+          description: 'JavaScript empfängt Response, ruft fetchPlaylists() auf → DOM wird aktualisiert',
+          highlight: ['browser'],
+        },
+      ],
+    },
+    {
+      id: 'pod-crash-recovery',
+      title: 'Pod Crash Recovery',
+      description: 'Was passiert, wenn der Webserver-Pod abstürzt?',
+      diagramType: 'full-stack',
+      steps: [
+        {
+          component: 'pod',
+          description: 'Der Webserver-Container stürzt ab (z.B. unbehandelte Exception)',
+          highlight: ['pod'],
+        },
+        {
+          component: 'node',
+          description: 'kubelet auf dem Node erkennt: Container-Prozess beendet',
+          highlight: ['node'],
+        },
+        {
+          component: 'replicaset',
+          description: 'ReplicaSet sieht: Ist-Zustand (1 Pod) ≠ Soll-Zustand (replicas: 3)',
+          highlight: ['replicaset', 'deployment'],
+        },
+        {
+          component: 'node',
+          description: 'Scheduler wählt einen Node und erstellt neuen Pod',
+          highlight: ['node', 'pod'],
+        },
+        {
+          component: 'pod',
+          description: 'kubelet zieht Image und startet neuen Container',
+          highlight: ['pod', 'container'],
+        },
+        {
+          component: 'service',
+          description: 'Service aktualisiert Endpoints: neuer Pod wird in Routing aufgenommen',
+          highlight: ['service', 'labels'],
+        },
+        {
+          component: 'browser',
+          description: 'User bemerkt nichts (bei replicas > 1 gab es keinen Ausfall)',
+          highlight: ['browser'],
         },
       ],
     },

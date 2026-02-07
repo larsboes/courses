@@ -288,4 +288,88 @@ export const cssTopic: Topic = {
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'css-styling-task',
+      title: 'CSS & Styling',
+      points: 20,
+      context: (
+        <p>
+          Die Playlist-App verwendet verschiedene CSS-Selektoren und Styling-Regeln.
+          Die folgenden Fragen beziehen sich auf CSS-Konzepte, die für das Styling
+          der App relevant sind.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'css-task-a',
+          type: 'free-text' as const,
+          question: 'Erklären Sie die CSS-Kaskade: Was passiert, wenn mehrere CSS-Regeln auf dasselbe Element zutreffen? Nennen Sie die drei Faktoren, die bestimmen, welche Regel gewinnt.',
+          placeholder: 'Die Kaskade bestimmt...',
+          modelAnswer: 'Die CSS-Kaskade bestimmt, welche Regel bei Konflikten angewendet wird. Die drei Faktoren sind: 1) Importance (!important > normal), 2) Spezifität (inline > ID > Klasse > Element), 3) Quellreihenfolge (bei gleicher Spezifität gewinnt die zuletzt definierte Regel). Spezifität wird als Tupel berechnet: (Inline, ID, Klasse/Pseudo-Klasse/Attribut, Element/Pseudo-Element).',
+          keyPoints: [
+            'Drei Faktoren: Importance, Spezifität, Quellreihenfolge',
+            'Spezifitäts-Hierarchie: inline > ID > Klasse > Element',
+            '!important überschreibt alle anderen Regeln',
+            'Bei gleicher Spezifität gewinnt die letzte Regel',
+          ],
+          explanation: 'Die Kaskade ist das Kernkonzept von CSS und bestimmt, wie Konflikte zwischen Regeln aufgelöst werden.',
+        },
+        {
+          id: 'css-task-b',
+          type: 'code-write' as const,
+          language: 'css' as const,
+          question: 'Schreiben Sie CSS-Regeln für die Playlist-App: Der Playlist-Titel (.playlist h2) soll blau und fett sein. Jeder Track-Link (.playlist li a) soll grün sein und beim Hover unterstrichen werden.',
+          placeholder: '.playlist h2 {\n  \n}\n\n.playlist li a {\n  \n}',
+          modelAnswer: `.playlist h2 {
+  color: blue;
+  font-weight: bold;
+}
+
+.playlist li a {
+  color: green;
+  text-decoration: none;
+}
+
+.playlist li a:hover {
+  text-decoration: underline;
+}`,
+          keyPoints: [
+            'Verschachtelte Selektoren (.playlist h2)',
+            'color und font-weight Properties',
+            ':hover Pseudo-Klasse für Interaktion',
+            'text-decoration für Unterstreichung',
+          ],
+          explanation: 'Verschachtelte CSS-Selektoren ermöglichen gezieltes Styling innerhalb von Containern.',
+        },
+        {
+          id: 'css-task-c',
+          type: 'free-text' as const,
+          question: 'Berechnen Sie die Spezifität der folgenden drei Selektoren und ordnen Sie sie nach Priorität: 1) #main .playlist li  2) .container .playlist li a  3) div#main li.track',
+          placeholder: 'Selektor 1: ...\nSelektor 2: ...\nSelektor 3: ...',
+          modelAnswer: '1) #main .playlist li = (0,1,1,1) - 1 ID, 1 Klasse, 1 Element\n2) .container .playlist li a = (0,0,2,2) - 0 IDs, 2 Klassen, 2 Elemente\n3) div#main li.track = (0,1,1,2) - 1 ID, 1 Klasse, 2 Elemente\n\nReihenfolge (höchste zuerst): 3) (0,1,1,2) > 1) (0,1,1,1) > 2) (0,0,2,2). Selektor 3 gewinnt, weil er bei gleicher ID- und Klassen-Anzahl mehr Elemente hat als Selektor 1.',
+          keyPoints: [
+            'Spezifitäts-Tupel korrekt berechnet',
+            'ID > Klasse > Element Hierarchie angewendet',
+            'Korrekte Reihenfolge der Selektoren',
+          ],
+          explanation: 'Die Spezifitätsberechnung ist eine zentrale Prüfungskompetenz bei CSS.',
+        },
+        {
+          id: 'css-task-d',
+          type: 'multiple-choice' as const,
+          question: 'Welcher Selektor hat die höchste Spezifität?',
+          options: [
+            'div.container p',
+            '#header nav a',
+            '.nav .menu .item',
+            'body div p span',
+          ],
+          correctAnswer: '#header nav a',
+          explanation: 'Spezifitäten: div.container p = (0,0,1,2), #header nav a = (0,1,0,2), .nav .menu .item = (0,0,3,0), body div p span = (0,0,0,4). #header nav a gewinnt wegen der ID.',
+        },
+      ],
+    },
+  ],
 }

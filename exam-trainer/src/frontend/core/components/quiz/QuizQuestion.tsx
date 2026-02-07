@@ -243,6 +243,7 @@ export function QuizQuestion({
     return (
       <CodeWriteQuestion
         question={question as CodeWriteQuestionType}
+        topicId={topicId || 'unknown'}
         onSubmit={(answer) => onSubmit(answer)}
         showingResult={showingResult}
       />

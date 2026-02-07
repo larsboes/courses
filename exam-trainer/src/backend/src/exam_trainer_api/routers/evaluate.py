@@ -4,7 +4,7 @@ import json
 from fastapi import APIRouter, HTTPException
 
 from exam_trainer_api.models import EvaluateRequest, EvaluateResponse
-from exam_trainer_api.services import generate, EVALUATE_PROMPT
+from exam_trainer_api.services import generate, EVALUATE_PROMPT, EVALUATE_CODE_PROMPT
 
 router = APIRouter()
 
@@ -12,7 +12,8 @@ router = APIRouter()
 @router.post("/evaluate", response_model=EvaluateResponse)
 def evaluate_answer(request: EvaluateRequest) -> EvaluateResponse:
     """Evaluate a user's answer using Gemini AI."""
-    prompt = EVALUATE_PROMPT.format(
+    prompt_template = EVALUATE_CODE_PROMPT if request.question_type == "code-write" else EVALUATE_PROMPT
+    prompt = prompt_template.format(
         question=request.question,
         model_answer=request.model_answer,
         key_points=", ".join(request.key_points),

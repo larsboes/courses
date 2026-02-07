@@ -256,4 +256,81 @@ export const htmlTopic: Topic = {
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'html-structure-task',
+      title: 'HTML & Dokumentstruktur',
+      points: 15,
+      context: (
+        <p>
+          Die Playlist-App verwendet semantisches HTML5 für ihre Seitenstruktur.
+          Die folgenden Fragen testen Ihr Verständnis von HTML-Grundlagen.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'html-task-a',
+          type: 'free-text' as const,
+          question: 'Erklären Sie den Unterschied zwischen <section>, <div> und <article>. Wann sollte man welches Element in der Playlist-App verwenden?',
+          placeholder: '<section> ist...\n<div> ist...\n<article> ist...',
+          modelAnswer: '<section> ist ein thematischer Abschnitt mit eigenem Kontext (z.B. "Playlist-Verwaltung" oder "Track-Liste"). <div> ist ein generischer Container ohne semantische Bedeutung, nur für Styling/Layout. <article> ist ein eigenständiger, wiederverwendbarer Inhalt (z.B. ein einzelner Blog-Post oder Nachrichtenartikel). In der Playlist-App: <section> für die Playlist-Verwaltung und Track-Eingabe, <div> als Layout-Container, <article> könnte für eine einzelne Playlist-Karte verwendet werden.',
+          keyPoints: [
+            '<section> für thematische Abschnitte',
+            '<div> als generischer Container ohne Semantik',
+            '<article> für eigenständigen, wiederverwendbaren Inhalt',
+            'Konkretes Beispiel aus der Playlist-App',
+          ],
+          explanation: 'Semantisches HTML verbessert Accessibility und SEO.',
+        },
+        {
+          id: 'html-task-b',
+          type: 'code-write' as const,
+          language: 'html' as const,
+          question: 'Schreiben Sie die HTML-Struktur für eine Playlist-Seite mit: einem Header mit Titel "Meine Playlists", einem Hauptbereich mit einem Formular (Eingabefeld für Playlist-Name + Submit-Button), und einer leeren unsortierten Liste für die Playlists.',
+          placeholder: '<!DOCTYPE html>\n<html>\n  ...\n</html>',
+          modelAnswer: `<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Meine Playlists</title>
+</head>
+<body>
+  <header>
+    <h1>Meine Playlists</h1>
+  </header>
+  <main>
+    <form id="playlist-form">
+      <input type="text" id="playlist-name" placeholder="Playlist Name" required>
+      <button type="submit">Erstellen</button>
+    </form>
+    <ul id="playlist-list"></ul>
+  </main>
+</body>
+</html>`,
+          keyPoints: [
+            '<!DOCTYPE html> Deklaration',
+            'Semantische Elemente (header, main)',
+            'Form mit input und button',
+            'required Attribut für Validierung',
+            'id-Attribute für JavaScript-Zugriff',
+          ],
+          explanation: 'Eine korrekte HTML-Grundstruktur ist die Basis jeder Webanwendung.',
+        },
+        {
+          id: 'html-task-c',
+          type: 'free-text' as const,
+          question: 'Gegeben ist folgender HTML-Code: <div id="app"><header><h1>Title</h1></header><main><ul><li>Item 1</li><li>Item 2</li></ul></main></div>. Beschreiben Sie den DOM-Baum, der daraus entsteht (Eltern-Kind-Beziehungen).',
+          placeholder: 'Der DOM-Baum hat als Wurzel...',
+          modelAnswer: 'Der DOM-Baum:\n- div#app (Wurzel)\n  - header\n    - h1\n      - Text: "Title"\n  - main\n    - ul\n      - li\n        - Text: "Item 1"\n      - li\n        - Text: "Item 2"\n\nDas div#app hat zwei Kinder: header und main. header enthält h1, main enthält ul. ul hat zwei li-Kinder. Jedes li enthält einen Textknoten.',
+          keyPoints: [
+            'Korrekte Baumstruktur mit Eltern-Kind-Beziehungen',
+            'Textknoten als Blätter erkannt',
+            'Hierarchie vollständig beschrieben',
+          ],
+          explanation: 'Das Verständnis des DOM-Baums ist wichtig für JavaScript-DOM-Manipulation und CSS-Selektoren.',
+        },
+      ],
+    },
+  ],
 }

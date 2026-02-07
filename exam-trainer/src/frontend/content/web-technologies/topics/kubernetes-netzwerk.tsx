@@ -283,4 +283,80 @@ flowchart TB
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'k8s-networking-task',
+      title: 'Kubernetes Networking',
+      points: 20,
+      context: (
+        <p>
+          Die Playlist-App ist in Kubernetes deployed. Der Webserver ist über einen
+          NodePort-Service erreichbar, die CouchDB über einen ClusterIP-Service.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'k8s-net-a',
+          type: 'free-text' as const,
+          question: 'Beschreiben Sie den Weg eines HTTP-Requests von einem externen Browser bis zum Playlist-App Pod. Der Webserver ist über NodePort 32000 erreichbar.',
+          placeholder: '1. Der Browser sendet...',
+          modelAnswer: '1. Der Browser sendet den Request an die Node-IP und Port 32000 (z.B. http://192.168.1.10:32000).\n2. Der Request erreicht den Node über dessen externe IP-Adresse.\n3. kube-proxy auf dem Node fängt den Traffic auf Port 32000 ab.\n4. kube-proxy leitet den Request an die ClusterIP des webserver-Service weiter.\n5. Der Service wählt über seinen Label-Selector (app: webserver) einen der passenden Pods aus.\n6. Der Request wird an den ausgewählten Pod weitergeleitet.\n7. Der Container im Pod (Flask-App) verarbeitet den Request und sendet die Response zurück.',
+          keyPoints: [
+            'Node-IP + NodePort als Einstiegspunkt',
+            'kube-proxy als Vermittler',
+            'ClusterIP des Service',
+            'Label-Selector für Pod-Auswahl',
+            'Response-Pfad zurück',
+          ],
+          explanation: 'Das Verständnis des Request-Pfads ist zentral für K8s-Networking.',
+        },
+        {
+          id: 'k8s-net-b',
+          type: 'free-text' as const,
+          question: 'Wie kommuniziert der Webserver-Pod mit dem CouchDB-Pod? Beschreiben Sie den Weg der Anfrage.',
+          placeholder: '1. Der Webserver-Pod...',
+          modelAnswer: '1. Der Webserver-Pod will die URL "couchdb:5984" erreichen.\n2. Der Pod fragt CoreDNS: "Was ist die IP von couchdb?" (automatisch erweitert zu couchdb.default.svc.cluster.local).\n3. CoreDNS antwortet mit der ClusterIP des couchdb-Service (z.B. 10.96.0.15).\n4. Der Pod sendet den Request an die ClusterIP.\n5. kube-proxy routet den Traffic zu einem der CouchDB-Pods (über den Label-Selector app: couchdb).\n6. Der CouchDB-Container empfängt den Request und antwortet.\n\nWichtig: Der Webserver verwendet den Service-Namen, nie eine direkte Pod-IP (da Pods kurzlebig sind).',
+          keyPoints: [
+            'Service-DNS-Name statt IP',
+            'CoreDNS für Namensauflösung',
+            'ClusterIP als stabiler Endpunkt',
+            'kube-proxy für Pod-Routing',
+            'Warum Service-Name statt Pod-IP',
+          ],
+          explanation: 'Service Discovery via DNS ist der Standard für Pod-zu-Pod-Kommunikation.',
+        },
+        {
+          id: 'k8s-net-c',
+          type: 'free-text' as const,
+          question: 'Was ist CoreDNS und wie funktioniert Service Discovery in Kubernetes?',
+          placeholder: 'CoreDNS ist...',
+          modelAnswer: 'CoreDNS ist der integrierte DNS-Server in Kubernetes. Er ermöglicht Service Discovery, indem er automatisch DNS-Einträge für jeden Service erstellt.\n\nFunktionsweise:\n1. Wenn ein Service erstellt wird, registriert CoreDNS einen DNS-Eintrag.\n2. Der vollständige DNS-Name folgt dem Schema: service-name.namespace.svc.cluster.local\n3. Pods können Services über den Kurznamen ansprechen (z.B. "couchdb" im gleichen Namespace).\n4. CoreDNS löst den Namen zur ClusterIP des Service auf.\n5. Die Konfiguration erfolgt automatisch - Pods bekommen CoreDNS als DNS-Server durch kubelet.\n\nVorteil: Keine Hardcoded IPs nötig, Services sind über stabile Namen erreichbar.',
+          keyPoints: [
+            'CoreDNS als integrierter DNS-Server',
+            'Automatische DNS-Einträge für Services',
+            'DNS-Schema: service.namespace.svc.cluster.local',
+            'Kurzname im gleichen Namespace möglich',
+            'Automatische Konfiguration durch kubelet',
+          ],
+          explanation: 'Service Discovery ist ein Kernfeature von Kubernetes.',
+        },
+        {
+          id: 'k8s-net-d',
+          type: 'free-text' as const,
+          question: 'Erklären Sie den Unterschied zwischen Node-IP, ClusterIP und Pod-IP. Wer vergibt jeweils die IP und von wo ist sie erreichbar?',
+          placeholder: 'Node-IP: ...\nClusterIP: ...\nPod-IP: ...',
+          modelAnswer: 'Node-IP: Die echte Netzwerk-IP des physischen/virtuellen Rechners. Wird vom Netzwerk/Cloud-Provider vergeben. Von überall erreichbar (extern + intern).\n\nClusterIP: Virtuelle IP eines Kubernetes-Service. Wird von Kubernetes automatisch vergeben (z.B. 10.96.0.x). Nur innerhalb des Clusters erreichbar. Stabil - ändert sich nicht, auch wenn Pods wechseln.\n\nPod-IP: IP-Adresse eines einzelnen Pods. Wird vom CNI-Plugin vergeben (z.B. 10.244.x.x). Nur innerhalb des Clusters erreichbar. Ephemer - ändert sich bei Pod-Neustart.\n\nMerke: NodeIP > ClusterIP > PodIP (von extern nach intern). Services abstrahieren die wechselnden Pod-IPs hinter einer stabilen ClusterIP.',
+          keyPoints: [
+            'Node-IP: extern erreichbar, vom Netzwerk vergeben',
+            'ClusterIP: intern, von K8s vergeben, stabil',
+            'Pod-IP: intern, vom CNI-Plugin vergeben, ephemer',
+            'Hierarchie der Erreichbarkeit',
+            'Service als Abstraktion über Pod-IPs',
+          ],
+          explanation: 'Das Verständnis der drei IP-Typen ist fundamental für K8s-Networking.',
+        },
+      ],
+    },
+  ],
 }

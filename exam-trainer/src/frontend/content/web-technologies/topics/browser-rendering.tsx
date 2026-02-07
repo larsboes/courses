@@ -288,4 +288,78 @@ flowchart TB
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'rendering-pipeline-task',
+      title: 'Browser Rendering Pipeline',
+      points: 20,
+      context: (
+        <p>
+          Wenn ein Benutzer die Playlist-App im Browser aufruft, durchläuft die Seite
+          die gesamte Rendering Pipeline. Die folgenden Fragen testen Ihr Verständnis
+          dieses Prozesses.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'rendering-task-a',
+          type: 'free-text' as const,
+          question: 'Beschreiben Sie die 5 Schritte der Browser Rendering Pipeline vom Empfang des HTML bis zur Anzeige der Pixel auf dem Bildschirm.',
+          placeholder: '1. HTML Parsing...\n2. ...',
+          modelAnswer: '1. HTML Parsing → DOM: Der Browser parst das HTML-Dokument und erstellt den Document Object Model (DOM) Baum.\n2. CSS Parsing → CSSOM: Parallel wird CSS geparst und der CSS Object Model (CSSOM) Baum erstellt.\n3. Render Tree: DOM und CSSOM werden kombiniert zum Render Tree. Nur sichtbare Elemente sind enthalten (kein display:none, kein <head>).\n4. Layout (Reflow): Die genaue Position und Größe jedes Elements wird berechnet (Box Model, Viewport-abhängig).\n5. Paint: Die Pixel werden auf den Bildschirm gezeichnet. Dies ist der Moment des First Meaningful Paint (FMP).',
+          keyPoints: [
+            'HTML Parsing → DOM',
+            'CSS Parsing → CSSOM (parallel)',
+            'Render Tree = DOM + CSSOM (nur sichtbare Elemente)',
+            'Layout/Reflow: Position und Größe berechnen',
+            'Paint: Pixel zeichnen',
+          ],
+          explanation: 'Die Rendering Pipeline ist der Kernprozess, wie Browser Webseiten darstellen.',
+        },
+        {
+          id: 'rendering-task-b',
+          type: 'free-text' as const,
+          question: 'Was ist der Unterschied zwischen einem Reflow (Layout) und einem Repaint? Geben Sie jeweils ein Beispiel für eine CSS-Änderung, die einen Reflow bzw. nur einen Repaint auslöst.',
+          placeholder: 'Reflow bedeutet...\nRepaint bedeutet...',
+          modelAnswer: 'Reflow (Layout): Die Position und Größe von Elementen wird neu berechnet. Dies passiert bei Änderungen, die das Layout betreffen: width, height, margin, padding, position, display, font-size. Beispiel: element.style.width = "200px" löst Reflow aus.\n\nRepaint: Nur die visuellen Eigenschaften werden neu gezeichnet, ohne das Layout zu ändern. Beispiel: element.style.color = "red" oder element.style.backgroundColor = "blue" löst nur Repaint aus.\n\nReflow ist teurer als Repaint, da er immer auch einen Repaint nach sich zieht.',
+          keyPoints: [
+            'Reflow: Neuberechnung von Position/Größe',
+            'Repaint: Nur visuelle Änderungen',
+            'Korrektes Beispiel für Reflow (z.B. width, height)',
+            'Korrektes Beispiel für Repaint (z.B. color, background)',
+            'Reflow ist teurer und löst Repaint aus',
+          ],
+          explanation: 'Das Verständnis von Reflow vs Repaint ist wichtig für Performance-Optimierung.',
+        },
+        {
+          id: 'rendering-task-c',
+          type: 'free-text' as const,
+          question: 'Erklären Sie den Unterschied zwischen <script>, <script defer> und <script async>. Wie beeinflusst jede Variante die Rendering Pipeline?',
+          placeholder: '<script>: ...\n<script defer>: ...\n<script async>: ...',
+          modelAnswer: '<script>: Blockiert das HTML-Parsing. Der Browser stoppt, lädt das Script herunter und führt es aus, bevor er weitermacht. Parser-blocking.\n\n<script defer>: Das Script wird parallel heruntergeladen, aber erst nach dem vollständigen HTML-Parsing ausgeführt. Die Ausführungsreihenfolge bleibt erhalten. Blockiert das Parsing nicht.\n\n<script async>: Das Script wird parallel heruntergeladen und sofort nach dem Download ausgeführt (unterbricht das Parsing). Die Ausführungsreihenfolge ist nicht garantiert. Gut für unabhängige Scripts wie Analytics.',
+          keyPoints: [
+            '<script> blockiert Parsing (parser-blocking)',
+            'defer: parallel laden, nach Parsing ausführen',
+            'async: parallel laden, sofort ausführen',
+            'defer behält Reihenfolge, async nicht',
+          ],
+          explanation: 'Die richtige Script-Ladestrategie ist entscheidend für die Ladeperformance.',
+        },
+        {
+          id: 'rendering-task-d',
+          type: 'multiple-choice' as const,
+          question: 'Welche CSS-Änderung löst NUR einen Repaint aus (keinen Reflow)?',
+          options: [
+            'width: 200px → width: 300px',
+            'color: red → color: blue',
+            'display: block → display: none',
+            'padding: 10px → padding: 20px',
+          ],
+          correctAnswer: 'color: red → color: blue',
+          explanation: 'Eine Farbänderung beeinflusst nur die visuelle Darstellung, nicht das Layout. width, display und padding ändern die Geometrie und lösen daher einen Reflow aus.',
+        },
+      ],
+    },
+  ],
 }

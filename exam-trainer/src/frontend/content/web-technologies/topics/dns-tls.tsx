@@ -2,6 +2,7 @@
 import type { Topic } from '@/core/types/content'
 import { DnsResolutionDiagram } from '../diagrams/DnsResolutionDiagram'
 import { TlsHandshakeDiagram } from '../diagrams/TlsHandshakeDiagram'
+import { DnsResolutionStepper } from '../diagrams/DnsResolutionStepper'
 
 export const dnsTlsTopic: Topic = {
   id: 'dns-tls',
@@ -98,6 +99,27 @@ export const dnsTlsTopic: Topic = {
       diagram: {
         type: 'animated',
         component: DnsResolutionDiagram,
+      },
+    },
+    {
+      id: 'dns-stepper',
+      title: 'DNS Resolution Stepper (Interaktiv)',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Verfolge Schritt fuer Schritt, wie eine DNS-Aufloesung funktioniert.
+            Vom Browser-Cache ueber den rekursiven Resolver bis zum autoritativen
+            Nameserver - jeder Schritt wird visuell dargestellt.
+          </p>
+          <p className="text-sm text-slate-400">
+            Aktiviere den Challenge-Modus, um zu testen, ob du weisst, welcher
+            Record-Typ bei jedem Schritt zurueckgegeben wird.
+          </p>
+        </div>
+      ),
+      diagram: {
+        type: 'manipulatable',
+        component: DnsResolutionStepper,
       },
     },
     {
@@ -276,4 +298,77 @@ sequenceDiagram
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'dns-tls-task',
+      title: 'DNS & TLS',
+      points: 20,
+      context: (
+        <p>
+          Wenn ein Benutzer <code className="mx-1 px-2 py-1 bg-slate-700 rounded">https://playlist-app.example.com</code> im
+          Browser aufruft, werden DNS und TLS benötigt, bevor die erste HTTP-Anfrage
+          gesendet werden kann.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'dns-tls-a',
+          type: 'free-text' as const,
+          question: 'Beschreiben Sie Schritt für Schritt, wie die DNS-Auflösung für "playlist-app.example.com" funktioniert. Beginnen Sie beim Browser und enden Sie bei der IP-Adresse.',
+          placeholder: '1. Der Browser prüft...',
+          modelAnswer: '1. Browser-Cache: Der Browser prüft, ob die Domain bereits aufgelöst wurde.\n2. OS-Cache: Falls nicht, fragt der Browser das Betriebssystem (DNS-Cache des OS).\n3. Rekursiver Resolver: Der DNS-Resolver des ISP/Netzwerks wird kontaktiert.\n4. Root-Server: Der Resolver fragt einen der 13 Root-Server. Antwort: "Frag den .com TLD-Server".\n5. TLD-Server: Der .com TLD-Server wird gefragt. Antwort: "Der autoritative Nameserver für example.com ist ns1.example.com".\n6. Autoritativer Nameserver: ns1.example.com wird gefragt. Antwort: "playlist-app.example.com hat die IP 93.184.216.34" (A-Record).\n7. Die IP wird an den Browser zurückgegeben und gecacht (TTL).',
+          keyPoints: [
+            'Browser-Cache und OS-Cache als erste Schritte',
+            'Rekursiver Resolver als Vermittler',
+            'Hierarchie: Root → TLD → Autoritativer NS',
+            'A-Record als Ergebnis',
+            'Caching mit TTL erwähnt',
+          ],
+          explanation: 'Die DNS-Auflösung ist der erste Schritt bei jedem Webseitenaufruf.',
+        },
+        {
+          id: 'dns-tls-b',
+          type: 'free-text' as const,
+          question: 'Beschreiben Sie den TLS-Handshake (vereinfacht, TLS 1.3). Welche Schritte sind nötig, bevor verschlüsselte HTTP-Daten ausgetauscht werden können?',
+          placeholder: '1. ClientHello...',
+          modelAnswer: '1. ClientHello: Der Client sendet unterstützte Cipher Suites und einen Key Share an den Server.\n2. ServerHello: Der Server wählt eine Cipher Suite und sendet seinen Key Share zurück.\n3. Zertifikat: Der Server sendet sein TLS-Zertifikat zur Authentifizierung.\n4. Zertifikatsprüfung: Der Client prüft das Zertifikat gegen die Zertifikatskette (Root CA → Intermediate CA → Server-Zertifikat).\n5. Key Exchange: Aus den Key Shares wird ein gemeinsamer Session Key abgeleitet (Diffie-Hellman).\n6. Finished: Beide Seiten bestätigen den Handshake. Ab jetzt wird mit dem Session Key verschlüsselt.\n\nTLS 1.3 benötigt nur 1 Round-Trip (1-RTT), TLS 1.2 benötigte 2 Round-Trips.',
+          keyPoints: [
+            'ClientHello und ServerHello Nachrichten',
+            'Zertifikatsaustausch und -prüfung',
+            'Key Exchange für gemeinsamen Session Key',
+            'TLS 1.3 mit 1-RTT erwähnt',
+          ],
+          explanation: 'Der TLS-Handshake stellt Vertraulichkeit, Authentizität und Integrität sicher.',
+        },
+        {
+          id: 'dns-tls-c',
+          type: 'free-text' as const,
+          question: 'Welche Rolle spielt das Zertifikat beim TLS-Handshake? Was ist eine Certificate Authority (CA) und warum vertraut der Browser dem Zertifikat?',
+          placeholder: 'Das Zertifikat dient zur...',
+          modelAnswer: 'Das Zertifikat dient zur Authentifizierung des Servers. Es enthält: den öffentlichen Schlüssel des Servers, den Domainnamen, den Aussteller (CA), und eine digitale Signatur.\n\nEine Certificate Authority (CA) ist eine vertrauenswürdige Organisation, die Zertifikate ausstellt und signiert. Es gibt eine Vertrauenskette (Chain of Trust): Root CA → Intermediate CA → Server-Zertifikat.\n\nDer Browser vertraut dem Zertifikat, weil: 1) Root CAs sind im Browser/OS vorinstalliert, 2) Die Signatur des Zertifikats kann über die Kette bis zu einer Root CA verifiziert werden, 3) Der Domainname im Zertifikat muss mit der aufgerufenen Domain übereinstimmen.',
+          keyPoints: [
+            'Zertifikat enthält öffentlichen Schlüssel und Domainnamen',
+            'CA als vertrauenswürdige Instanz',
+            'Chain of Trust: Root CA → Intermediate → Server',
+            'Root CAs im Browser vorinstalliert',
+          ],
+          explanation: 'Die Zertifikatskette ist die Grundlage für Vertrauen im Internet.',
+        },
+        {
+          id: 'dns-tls-d',
+          type: 'multiple-choice' as const,
+          question: 'Welcher DNS-Record-Typ wird verwendet, um eine Domain direkt einer IPv4-Adresse zuzuordnen?',
+          options: [
+            'A Record',
+            'CNAME Record',
+            'MX Record',
+            'TXT Record',
+          ],
+          correctAnswer: 'A Record',
+          explanation: 'Der A-Record (Address Record) bildet eine Domain direkt auf eine IPv4-Adresse ab. CNAME ist ein Alias, MX für E-Mail-Server, TXT für Text-Einträge.',
+        },
+      ],
+    },
+  ],
 }

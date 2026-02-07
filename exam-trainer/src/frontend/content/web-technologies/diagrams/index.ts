@@ -37,6 +37,11 @@ export { ServiceDiscoverySimulator } from './ServiceDiscoverySimulator'
 export { RenderingPipelineStepper } from './RenderingPipelineStepper'
 export { CodeSnippetExplainer } from './CodeSnippetExplainer'
 
+// Exam Exercises (Phase 4)
+export { DockerLayerExplorer } from './DockerLayerExplorer'
+export { RestEndpointDesigner } from './RestEndpointDesigner'
+export { DnsResolutionStepper } from './DnsResolutionStepper'
+
 // Playlist Evolution Components
 export { PlaylistEvolutionTimeline } from './PlaylistEvolutionTimeline'
 export { StorageEvolutionComparison } from './StorageEvolutionComparison'

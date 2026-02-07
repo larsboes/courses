@@ -1806,4 +1806,155 @@ flowchart TB
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'playlist-app-task',
+      title: 'Playlist App Gesamtverständnis',
+      points: 30,
+      context: (
+        <div>
+          <p>
+            Die Playlist-App wurde in mehreren Übungen entwickelt: von einer statischen
+            HTML-Seite über JavaScript mit localStorage, zu einer REST API mit Flask,
+            und schließlich zum Kubernetes-Deployment.
+          </p>
+        </div>
+      ),
+      parts: [
+        {
+          id: 'playlist-task-a',
+          type: 'free-text' as const,
+          question: 'Beschreiben Sie die Evolution von localStorage zu REST API: Warum wurde der Wechsel vorgenommen? Nennen Sie mindestens zwei Vorteile und einen Nachteil der REST API gegenüber localStorage.',
+          placeholder: 'Der Wechsel von localStorage zu REST API...',
+          modelAnswer: 'Der Wechsel war nötig, weil localStorage Daten nur lokal im Browser speichert - andere Benutzer oder Geräte haben keinen Zugriff.\n\nVorteile der REST API:\n1. Zentrale Datenhaltung: Alle Benutzer/Geräte sehen dieselben Daten.\n2. Skalierbarkeit: Das Backend kann unabhängig skaliert werden.\n3. Trennung von Concerns: Frontend und Backend sind unabhängig entwickelbar.\n4. Datensicherheit: Daten liegen auf dem Server, nicht im Browser.\n\nNachteile:\n1. Netzwerk-Abhängigkeit: Die App funktioniert nicht offline.\n2. Latenz: Netzwerk-Requests sind langsamer als lokaler Storage-Zugriff.\n3. Komplexität: Async-Programmierung, Error-Handling, Server-Betrieb nötig.',
+          keyPoints: [
+            'localStorage ist nur lokal verfügbar',
+            'REST ermöglicht zentrale Datenhaltung',
+            'Mindestens 2 Vorteile genannt',
+            'Mindestens 1 Nachteil genannt (z.B. Offline, Latenz)',
+          ],
+          explanation: 'Der Übergang von localStorage zu REST ist ein typischer Schritt in der Webentwicklung.',
+        },
+        {
+          id: 'playlist-task-b',
+          type: 'code-write' as const,
+          language: 'javascript' as const,
+          question: 'Schreiben Sie einen fetch()-Aufruf, der alle Playlists vom Server (http://localhost:8001) als JSON abruft und in der Konsole ausgibt.',
+          placeholder: 'async function loadPlaylists() {\n  \n}',
+          modelAnswer: `async function loadPlaylists() {
+  const response = await fetch("http://localhost:8001/playlists");
+  if (!response.ok) {
+    throw new Error("Failed to fetch playlists");
+  }
+  const playlists = await response.json();
+  console.log(playlists);
+}`,
+          keyPoints: [
+            'async/await Syntax',
+            'fetch() mit korrekter URL',
+            'response.ok Prüfung',
+            'response.json() für JSON-Parsing',
+          ],
+          explanation: 'fetch() ist die moderne API für HTTP-Requests im Browser.',
+        },
+        {
+          id: 'playlist-task-c',
+          type: 'code-write' as const,
+          language: 'http' as const,
+          question: 'Schreiben Sie den vollständigen HTTP Request UND die erwartete Response für das Erstellen einer neuen Playlist "Summer Hits" mit einem Track.',
+          placeholder: 'POST /playlists HTTP/1.1\n...\n\n---\n\nHTTP/1.1 201\n...',
+          modelAnswer: `POST /playlists HTTP/1.1
+Host: localhost:8001
+Content-Type: application/json
+
+{
+  "name": "Summer Hits",
+  "tracks": [
+    {
+      "title": "Sunny Day",
+      "link": "https://spotify.com/track/123",
+      "duration": "3:45"
+    }
+  ]
+}
+
+---
+
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "message": "Playlist 'Summer Hits' added/updated."
+}`,
+          keyPoints: [
+            'POST Methode korrekt',
+            'Content-Type: application/json Header',
+            'JSON Body mit name und tracks',
+            '201 Created Status Code',
+            'Response mit Bestätigung',
+          ],
+          explanation: 'Das Schreiben vollständiger HTTP-Requests ist eine typische Prüfungsaufgabe.',
+        },
+        {
+          id: 'playlist-task-d',
+          type: 'free-text' as const,
+          question: 'Beschreiben Sie den Weg vom Quellcode bis zum laufenden Pod in Kubernetes. Wie wird aus dem Flask-Code ein Container in einem Pod?',
+          placeholder: '1. Dockerfile schreiben...',
+          modelAnswer: '1. Dockerfile schreiben: Definiert, wie das Docker-Image gebaut wird (FROM python, COPY code, RUN pip install, CMD flask run).\n2. Docker Build: docker build -t playlist-api:1.0 . erstellt das Image aus dem Dockerfile.\n3. Registry Push: docker push registry/playlist-api:1.0 lädt das Image in eine Container-Registry hoch.\n4. K8s Manifest: Ein Deployment-Manifest referenziert das Image (image: registry/playlist-api:1.0).\n5. kubectl apply: Das Manifest wird auf den Cluster angewendet.\n6. Scheduler: Kubernetes wählt einen Node für den Pod aus.\n7. Image Pull: kubelet auf dem Node zieht das Image aus der Registry.\n8. Container Start: Der Container wird im Pod gestartet und die Flask-App läuft.',
+          keyPoints: [
+            'Dockerfile → Docker Image (build)',
+            'Image → Registry (push)',
+            'Manifest referenziert Image',
+            'kubectl apply → Scheduler → Node',
+            'Image Pull → Container Start',
+          ],
+          explanation: 'Der Weg vom Code zum laufenden Pod verbindet Docker- und Kubernetes-Konzepte.',
+        },
+        {
+          id: 'playlist-task-e',
+          type: 'free-text' as const,
+          question: 'Gegeben ist die docker-compose.yml der Playlist-App mit flask-webserver und couchdb Services. Erklären Sie, was jeder Service macht und wie sie kommunizieren.',
+          placeholder: 'flask-webserver: ...\ncouchdb: ...\nKommunikation: ...',
+          modelAnswer: 'flask-webserver:\n- Baut das Image aus dem lokalen Dockerfile (build: .)\n- Mappt Port 8001 nach außen (ports: "8001:8001")\n- Wartet auf CouchDB (depends_on mit service_healthy)\n- Bekommt CouchDB-Zugangsdaten über Environment-Variablen\n\ncouchdb:\n- Verwendet das offizielle CouchDB-Image\n- Mappt Port 5984 für Admin-Zugriff\n- Speichert Daten persistent in einem Volume (./dbdata)\n- Hat einen Healthcheck, der prüft ob CouchDB antwortet\n\nKommunikation:\n- Flask erreicht CouchDB über den Service-Namen: couchdb:5984\n- Docker Compose erstellt automatisch ein Netzwerk, in dem sich Services über Namen finden\n- Die COUCHDB_URL Environment-Variable enthält den Verbindungs-String',
+          keyPoints: [
+            'flask-webserver: build, ports, depends_on',
+            'couchdb: image, volumes, healthcheck',
+            'Kommunikation über Service-Namen',
+            'Docker Compose Netzwerk',
+            'Environment Variables für Konfiguration',
+          ],
+          explanation: 'Docker Compose ist das Bindeglied zwischen Einzelcontainern und Kubernetes.',
+        },
+        {
+          id: 'playlist-task-f',
+          type: 'code-write' as const,
+          language: 'json' as const,
+          question: 'Schreiben Sie ein Kubernetes Service-Manifest (YAML-Format), das den Playlist-Backend-Service als NodePort auf Port 32000 exponiert. Der Backend-Pod hat das Label app: playlist-api und lauscht auf Port 8001.',
+          placeholder: 'apiVersion: v1\nkind: Service\n...',
+          modelAnswer: `apiVersion: v1
+kind: Service
+metadata:
+  name: playlist-api-service
+spec:
+  selector:
+    app: playlist-api
+  ports:
+  - protocol: TCP
+    port: 8001
+    targetPort: 8001
+    nodePort: 32000
+  type: NodePort`,
+          keyPoints: [
+            'apiVersion: v1 und kind: Service',
+            'selector: app: playlist-api (matcht Pod-Labels)',
+            'port und targetPort korrekt',
+            'nodePort: 32000 angegeben',
+            'type: NodePort',
+          ],
+          explanation: 'K8s Service-Manifeste verbinden das Netzwerk mit den Pods über Labels.',
+        },
+      ],
+    },
+  ],
 }

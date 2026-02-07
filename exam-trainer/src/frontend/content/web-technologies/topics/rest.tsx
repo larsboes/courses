@@ -1,6 +1,7 @@
 // src/content/web-technologies/topics/rest.tsx
 import type { Topic } from '@/core/types/content'
 import { RestEndpointsDiagram } from '../diagrams/RestEndpointsDiagram'
+import { RestEndpointDesigner } from '../diagrams/RestEndpointDesigner'
 
 export const restTopic: Topic = {
   id: 'rest',
@@ -172,6 +173,26 @@ export const restTopic: Topic = {
       },
     },
     {
+      id: 'endpoint-designer',
+      title: 'Endpoint Designer (Interaktiv)',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Teste dein Verstaendnis von REST-Endpoint-Design: Ordne Operationen den
+            richtigen HTTP-Methoden, Pfaden und Status Codes zu. Drei Schwierigkeitsgrade
+            von Basis-CRUD bis Query-Parameter.
+          </p>
+          <p className="text-sm text-slate-400">
+            Klicke links auf eine Operation und dann rechts auf den passenden Endpoint.
+          </p>
+        </div>
+      ),
+      diagram: {
+        type: 'manipulatable',
+        component: RestEndpointDesigner,
+      },
+    },
+    {
       id: 'best-practices',
       title: 'Best Practices',
       content: (
@@ -307,4 +328,119 @@ flowchart LR
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'rest-api-design-task',
+      title: 'REST API Design',
+      points: 20,
+      context: (
+        <p>
+          Für die Playlist-App soll eine RESTful API entworfen werden. Die API verwaltet
+          Playlists und deren Songs. Basis-URL: <code className="mx-1 px-2 py-1 bg-slate-700 rounded">http://api.example.com/v1</code>
+        </p>
+      ),
+      parts: [
+        {
+          id: 'rest-task-a',
+          type: 'free-text' as const,
+          question: 'Was macht eine API "RESTful"? Nennen Sie mindestens 4 der 6 REST-Constraints und erklären Sie kurz, was jeder bedeutet.',
+          placeholder: '1. Client-Server...\n2. ...',
+          modelAnswer: 'Eine RESTful API erfüllt folgende Constraints:\n1. Client-Server: Strikte Trennung von Client und Server, unabhängige Entwicklung möglich.\n2. Stateless: Jeder Request enthält alle nötigen Informationen. Der Server speichert keinen Session-State.\n3. Cacheable: Responses müssen als cacheable oder non-cacheable markiert sein.\n4. Uniform Interface: Einheitliche Schnittstelle - Ressourcen über URIs identifiziert, Manipulation über Repräsentationen (JSON/XML).\n5. Layered System: Client weiß nicht, ob er direkt mit dem Server oder einem Proxy kommuniziert.\n6. Code on Demand (optional): Server kann ausführbaren Code senden (z.B. JavaScript).',
+          keyPoints: [
+            'Mindestens 4 Constraints genannt',
+            'Client-Server Trennung',
+            'Stateless (zustandslos)',
+            'Uniform Interface / einheitliche Schnittstelle',
+            'Kurze Erklärung zu jedem Constraint',
+          ],
+          explanation: 'REST ist ein Architekturstil mit klaren Prinzipien, nicht nur "HTTP mit JSON".',
+        },
+        {
+          id: 'rest-task-b',
+          type: 'code-write' as const,
+          language: 'http' as const,
+          question: 'Entwerfen Sie die REST-Endpoints für eine Playlist-CRUD-API. Listen Sie für jede Operation die HTTP-Methode, den Pfad und den erwarteten Status Code auf.',
+          placeholder: '# Create Playlist\nPOST /v1/playlists → 201\n\n# Read all...',
+          modelAnswer: `# Create Playlist
+POST /v1/playlists → 201 Created
+
+# Read all Playlists
+GET /v1/playlists → 200 OK
+
+# Read single Playlist
+GET /v1/playlists/:id → 200 OK
+
+# Update Playlist
+PUT /v1/playlists/:id → 200 OK
+
+# Delete Playlist
+DELETE /v1/playlists/:id → 204 No Content
+
+# Add Song to Playlist
+POST /v1/playlists/:id/songs → 201 Created
+
+# Get Songs of Playlist
+GET /v1/playlists/:id/songs → 200 OK
+
+# Delete Song from Playlist
+DELETE /v1/playlists/:id/songs/:songId → 204 No Content`,
+          keyPoints: [
+            'CRUD korrekt auf HTTP-Methoden gemappt',
+            'Ressourcen als Substantive im Plural',
+            'Verschachtelte Ressource für Songs',
+            'Korrekte Status Codes (201, 200, 204)',
+          ],
+          explanation: 'REST-Endpoints folgen Konventionen: Substantive für Ressourcen, HTTP-Methoden für Aktionen.',
+        },
+        {
+          id: 'rest-task-c',
+          type: 'free-text' as const,
+          question: 'Erklären Sie das Konzept der Idempotenz. Welche HTTP-Methoden sind idempotent und welche nicht? Warum ist das wichtig?',
+          placeholder: 'Idempotenz bedeutet...',
+          modelAnswer: 'Idempotenz bedeutet, dass mehrfaches Ausführen derselben Operation das gleiche Ergebnis liefert wie einmaliges Ausführen.\n\nIdempotente Methoden: GET (liest nur), PUT (ersetzt komplett - gleiches Ergebnis), DELETE (nach dem ersten Löschen ist die Ressource weg - erneutes DELETE ändert nichts).\n\nNicht idempotent: POST (jeder Request kann neue Ressource erstellen), PATCH (kann je nach Implementierung unterschiedliche Ergebnisse haben).\n\nWichtigkeit: Bei Netzwerkfehlern kann ein Request wiederholt werden. Bei idempotenten Methoden ist das sicher, bei POST könnte eine doppelte Ressource entstehen.',
+          keyPoints: [
+            'Definition von Idempotenz korrekt',
+            'GET, PUT, DELETE als idempotent identifiziert',
+            'POST als nicht-idempotent identifiziert',
+            'Praktische Relevanz (Netzwerkfehler, Retry)',
+          ],
+          explanation: 'Idempotenz ist ein wichtiges Konzept für zuverlässige verteilte Systeme.',
+        },
+        {
+          id: 'rest-task-d',
+          type: 'code-write' as const,
+          language: 'json' as const,
+          question: 'Schreiben Sie die JSON-Response für GET /v1/playlists/1. Die Playlist heißt "Workout Mix", hat 2 Songs und wurde am 15.01.2024 erstellt.',
+          placeholder: '{\n  "id": 1,\n  ...\n}',
+          modelAnswer: `{
+  "id": 1,
+  "name": "Workout Mix",
+  "songs": [
+    {
+      "id": 1,
+      "title": "Eye of the Tiger",
+      "artist": "Survivor",
+      "duration": "4:05"
+    },
+    {
+      "id": 2,
+      "title": "Lose Yourself",
+      "artist": "Eminem",
+      "duration": "5:26"
+    }
+  ],
+  "createdAt": "2024-01-15T00:00:00Z"
+}`,
+          keyPoints: [
+            'Korrektes JSON-Format (Kommas, Anführungszeichen)',
+            'Playlist-Felder: id, name, songs',
+            'Songs als Array mit Objekten',
+            'Datum im ISO-Format',
+          ],
+          explanation: 'JSON ist das Standard-Datenformat für REST APIs. Die Struktur sollte konsistent und selbstbeschreibend sein.',
+        },
+      ],
+    },
+  ],
 }

@@ -1,6 +1,7 @@
 // src/content/web-technologies/topics/docker-basics.tsx
 import type { Topic } from '@/core/types/content'
 import { MermaidDiagram } from '@/core/components/diagrams'
+import { DockerLayerExplorer } from '../diagrams/DockerLayerExplorer'
 
 // Mermaid diagrams for Docker concepts
 const dockerWorkflowDiagram = `
@@ -315,6 +316,231 @@ export const dockerBasicsTopic: Topic = {
       ),
     },
     {
+      id: 'docker-compose',
+      title: 'Docker Compose',
+      content: (
+        <div className="space-y-4">
+          <p>
+            <strong>Docker Compose</strong> orchestriert mehrere Container als ein System.
+            Statt jeden Container einzeln zu starten, definiert eine{' '}
+            <code className="bg-slate-700 px-1 rounded">docker-compose.yml</code> alle
+            Services, Netzwerke und Volumes zentral.
+          </p>
+
+          <div className="bg-slate-900 rounded-lg p-4 border border-slate-700 overflow-x-auto">
+            <div className="text-slate-500 text-sm mb-2"># docker-compose.yml für die Playlist-App</div>
+            <pre className="font-mono text-sm text-slate-300">
+{`version: '3.8'
+services:
+  flask-webserver:
+    build: .
+    ports:
+      - "8001:8001"
+    depends_on:
+      couchdb:
+        condition: service_healthy
+    environment:
+      - COUCHDB_URL=http://couchdb:5984
+    env_file:
+      - .env
+
+  couchdb:
+    image: couchdb:latest
+    ports:
+      - "5984:5984"
+    volumes:
+      - ./dbdata:/opt/couchdb/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5984"]
+      interval: 10s
+      timeout: 5s
+      retries: 5`}
+            </pre>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="p-4 bg-blue-900/20 rounded-lg border border-blue-800">
+              <div className="font-medium text-blue-400 mb-2">Zentrale Konzepte</div>
+              <ul className="list-disc list-inside space-y-1 text-slate-300 text-sm">
+                <li><code className="bg-slate-700 px-1 rounded text-xs">services</code> — Jeder Container ist ein Service</li>
+                <li><code className="bg-slate-700 px-1 rounded text-xs">build</code> — Baut Image aus lokalem Dockerfile</li>
+                <li><code className="bg-slate-700 px-1 rounded text-xs">image</code> — Nutzt fertiges Image aus Registry</li>
+                <li><code className="bg-slate-700 px-1 rounded text-xs">ports</code> — Host-Port:Container-Port Mapping</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-green-900/20 rounded-lg border border-green-800">
+              <div className="font-medium text-green-400 mb-2">Service-Kommunikation</div>
+              <ul className="list-disc list-inside space-y-1 text-slate-300 text-sm">
+                <li>Services finden sich über <strong>Namen</strong> (DNS)</li>
+                <li><code className="bg-slate-700 px-1 rounded text-xs">couchdb:5984</code> statt IP-Adresse</li>
+                <li>Automatisches Netzwerk für alle Services</li>
+                <li><code className="bg-slate-700 px-1 rounded text-xs">depends_on</code> steuert Startreihenfolge</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="p-4 bg-amber-900/20 rounded-lg border border-amber-800">
+              <div className="font-medium text-amber-400 mb-2">Volumes</div>
+              <p className="text-slate-300 text-sm">
+                <code className="bg-slate-700 px-1 rounded text-xs">volumes: - ./dbdata:/opt/couchdb/data</code> mappt
+                ein Host-Verzeichnis in den Container. Daten überleben Container-Neustarts.
+              </p>
+            </div>
+            <div className="p-4 bg-purple-900/20 rounded-lg border border-purple-800">
+              <div className="font-medium text-purple-400 mb-2">Healthchecks</div>
+              <p className="text-slate-300 text-sm">
+                Prüft, ob ein Service wirklich bereit ist.
+                Mit <code className="bg-slate-700 px-1 rounded text-xs">condition: service_healthy</code>
+                {' '}wartet der abhängige Service, bis der Healthcheck erfolgreich ist.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+            <div className="text-sm font-medium text-slate-300 mb-2">Wichtige Befehle:</div>
+            <div className="space-y-1 font-mono text-sm">
+              <div><span className="text-cyan-400">docker compose up -d</span> <span className="text-slate-500">— Alle Services starten</span></div>
+              <div><span className="text-cyan-400">docker compose down</span> <span className="text-slate-500">— Alle Services stoppen</span></div>
+              <div><span className="text-cyan-400">docker compose logs -f</span> <span className="text-slate-500">— Logs aller Services</span></div>
+              <div><span className="text-cyan-400">docker compose ps</span> <span className="text-slate-500">— Status aller Services</span></div>
+            </div>
+          </div>
+
+          <div className="bg-green-900/20 rounded-lg p-4 border border-green-800">
+            <div className="text-green-400 font-medium mb-2">Verbindung zu Kubernetes:</div>
+            <p className="text-slate-300 text-sm">
+              Docker Compose ist ideal für <strong>lokale Entwicklung</strong>.
+              Für Produktion wird die gleiche Architektur in <strong>Kubernetes-Manifeste</strong> übersetzt:
+              Services → K8s Services, Container → Pods, Volumes → PersistentVolumeClaims.
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'multi-stage-builds',
+      title: 'Multi-Stage Builds',
+      content: (
+        <div className="space-y-4">
+          <p>
+            <strong>Multi-Stage Builds</strong> ermöglichen es, Build-Tools und Source Code
+            vom finalen Image zu trennen. Das Ergebnis: <strong>kleinere, sicherere Production-Images</strong>.
+          </p>
+
+          <div className="bg-slate-900 rounded-lg p-4 border border-slate-700 overflow-x-auto">
+            <div className="text-slate-500 text-sm mb-2"># Multi-Stage Dockerfile</div>
+            <pre className="font-mono text-sm">
+              <div>
+                <span className="text-slate-500"># Stage 1: Build</span>
+              </div>
+              <div>
+                <span className="text-purple-400">FROM </span>
+                <span className="text-green-400">node:20 AS build</span>
+              </div>
+              <div>
+                <span className="text-purple-400">WORKDIR </span>
+                <span className="text-amber-400">/app</span>
+              </div>
+              <div>
+                <span className="text-purple-400">COPY </span>
+                <span className="text-amber-400">package*.json ./</span>
+              </div>
+              <div>
+                <span className="text-purple-400">RUN </span>
+                <span className="text-cyan-400">npm ci</span>
+              </div>
+              <div>
+                <span className="text-purple-400">COPY </span>
+                <span className="text-amber-400">. .</span>
+              </div>
+              <div>
+                <span className="text-purple-400">RUN </span>
+                <span className="text-cyan-400">npm run build</span>
+              </div>
+              <div className="mt-3">
+                <span className="text-slate-500"># Stage 2: Production</span>
+              </div>
+              <div>
+                <span className="text-purple-400">FROM </span>
+                <span className="text-green-400">nginx:alpine</span>
+              </div>
+              <div>
+                <span className="text-purple-400">COPY </span>
+                <span className="text-amber-400">--from=build /app/dist /usr/share/nginx/html</span>
+              </div>
+              <div>
+                <span className="text-purple-400">EXPOSE </span>
+                <span className="text-green-400">80</span>
+              </div>
+            </pre>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="p-4 bg-red-900/20 rounded-lg border border-red-800">
+              <div className="font-medium text-red-400 mb-2">Ohne Multi-Stage</div>
+              <ul className="list-disc list-inside space-y-1 text-slate-300 text-sm">
+                <li>node:20 als Base → <strong>~1 GB</strong></li>
+                <li>Build-Tools im finalen Image</li>
+                <li>Source Code enthalten</li>
+                <li>node_modules enthalten</li>
+                <li>Größere Angriffsfläche</li>
+              </ul>
+            </div>
+            <div className="p-4 bg-green-900/20 rounded-lg border border-green-800">
+              <div className="font-medium text-green-400 mb-2">Mit Multi-Stage</div>
+              <ul className="list-disc list-inside space-y-1 text-slate-300 text-sm">
+                <li>nginx:alpine als Base → <strong>~30 MB</strong></li>
+                <li>Nur Build-Output im Image</li>
+                <li>Kein Source Code</li>
+                <li>Keine Build-Dependencies</li>
+                <li>Minimale Angriffsfläche</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+            <div className="text-blue-400 font-medium mb-2">Wie es funktioniert:</div>
+            <ol className="list-decimal list-inside space-y-1 text-slate-300 text-sm">
+              <li><strong>Stage 1 (build)</strong>: Volle Node-Umgebung, installiert Dependencies, kompiliert den Code</li>
+              <li><strong>Stage 2 (production)</strong>: Leichtes nginx-Image, kopiert nur die fertig gebauten Dateien aus Stage 1</li>
+              <li><code className="bg-slate-700 px-1 rounded text-xs">COPY --from=build</code> überträgt Dateien zwischen Stages</li>
+            </ol>
+          </div>
+
+          <div className="bg-amber-900/20 rounded-lg p-4 border border-amber-800">
+            <div className="text-amber-400 font-medium mb-2">Klausurrelevant:</div>
+            <p className="text-slate-300 text-sm">
+              Multi-Stage Builds sind relevant für das Verständnis von Production-Deployments.
+              Die Playlist-App könnte so deployed werden: Build-Stage kompiliert Frontend-Code,
+              Production-Stage serviert nur die statischen Dateien über nginx.
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'layer-explorer',
+      title: 'Layer Explorer (Interaktiv)',
+      content: (
+        <div className="space-y-4">
+          <p>
+            Erkunde interaktiv, wie Docker-Layer aufgebaut werden und wie das
+            <strong> Layer Caching</strong> funktioniert. Klicke auf einen Layer, um zu
+            sehen, welche nachfolgenden Layer beim Rebuild betroffen sind.
+          </p>
+          <p className="text-sm text-slate-400">
+            Aktiviere den Challenge-Modus, um dein Verstaendnis zu testen: Welche Layer
+            werden neu gebaut, wenn sich eine bestimmte Datei aendert?
+          </p>
+        </div>
+      ),
+      diagram: {
+        type: 'manipulatable',
+        component: DockerLayerExplorer,
+      },
+    },
+    {
       id: 'docker-to-k8s',
       title: 'Von Docker zu Kubernetes',
       content: (
@@ -440,4 +666,105 @@ flowchart LR
       },
     ],
   },
+
+  examTasks: [
+    {
+      id: 'docker-container-task',
+      title: 'Docker & Container',
+      points: 20,
+      context: (
+        <p>
+          Die Playlist-App wird als Docker-Container bereitgestellt. Ein Flask-Webserver
+          und eine CouchDB-Datenbank laufen als separate Container und werden mit Docker
+          Compose orchestriert.
+        </p>
+      ),
+      parts: [
+        {
+          id: 'docker-task-a',
+          type: 'free-text' as const,
+          question:
+            'Erklären Sie die Unterschiede zwischen einem Docker-Container und einer virtuellen Maschine (VM). Nennen Sie mindestens 3 Unterschiede.',
+          placeholder: 'Container unterscheiden sich von VMs in folgenden Punkten...',
+          modelAnswer:
+            '1. Kernel-Sharing: Container teilen den Kernel des Host-Betriebssystems. VMs haben ein eigenes, vollständiges Betriebssystem mit eigenem Kernel.\n\n2. Startzeit: Container starten in Sekunden, da kein OS gebootet werden muss. VMs brauchen Minuten zum Starten.\n\n3. Größe: Container-Images sind typischerweise Megabytes groß (z.B. alpine ~5MB). VM-Images sind Gigabytes groß.\n\n4. Isolation: VMs bieten stärkere Isolation durch Hardware-Virtualisierung (Hypervisor). Container isolieren über Namespaces und cgroups auf OS-Ebene.\n\n5. Ressourcen: Container haben weniger Overhead, da kein Gast-OS nötig ist. VMs brauchen eigenen RAM und CPU für jedes Gast-OS.',
+          keyPoints: [
+            'Kernel-Sharing vs eigenes OS',
+            'Startzeit: Sekunden vs Minuten',
+            'Größe: MB vs GB',
+            'Isolation: Namespaces/cgroups vs Hypervisor',
+          ],
+          explanation:
+            'Das Verständnis der Unterschiede zwischen Containern und VMs ist eine häufige Prüfungsfrage.',
+        },
+        {
+          id: 'docker-task-b',
+          type: 'code-write' as const,
+          language: 'http' as const,
+          question:
+            'Schreiben Sie ein Dockerfile für die Flask-App der Playlist-App. Die App basiert auf Python 3.11, benötigt die Dependencies aus requirements.txt, kopiert den Code nach /app und startet mit "python webserver.py" auf Port 8001.',
+          placeholder:
+            'FROM python:3.11\n# Ihre Anweisungen hier...',
+          modelAnswer: `FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8001
+
+CMD ["python", "webserver.py"]`,
+          keyPoints: [
+            'FROM mit Python-Image',
+            'WORKDIR für Arbeitsverzeichnis',
+            'COPY requirements.txt zuerst (Layer-Caching)',
+            'RUN pip install für Dependencies',
+            'COPY . . für restlichen Code',
+            'EXPOSE für Port-Dokumentation',
+            'CMD für Startbefehl',
+          ],
+          explanation:
+            'Die Reihenfolge im Dockerfile ist wichtig: Dependencies vor Code kopieren ermöglicht besseres Layer-Caching.',
+        },
+        {
+          id: 'docker-task-c',
+          type: 'free-text' as const,
+          question:
+            'Erklären Sie das Layer-Caching in Docker: Warum sollte man COPY package.json (bzw. requirements.txt) VOR COPY . . im Dockerfile ausführen? Was passiert, wenn man nur den Quellcode ändert?',
+          placeholder: 'Layer-Caching funktioniert so...',
+          modelAnswer:
+            'Docker baut Images in Schichten (Layers). Jede Dockerfile-Anweisung erstellt einen Layer. Docker cached jeden Layer und verwendet den Cache wieder, solange sich nichts geändert hat.\n\nWenn sich ein Layer ändert, werden alle nachfolgenden Layer ebenfalls neu gebaut (Cache-Invalidierung).\n\nBei COPY requirements.txt + RUN pip install VOR COPY . .:\n- Wenn nur Quellcode geändert wird: requirements.txt hat sich nicht geändert → pip install wird aus dem Cache genommen (schnell!)\n- Nur COPY . . und nachfolgende Layer werden neu gebaut.\n\nBei COPY . . VOR pip install:\n- Jede Code-Änderung invalidiert den COPY-Layer → pip install muss jedes Mal neu laufen (langsam!).\n\nDieses Pattern spart bei großen Projekten erheblich Build-Zeit.',
+          keyPoints: [
+            'Jede Anweisung erstellt einen Layer',
+            'Geänderter Layer invalidiert alle nachfolgenden',
+            'Dependencies zuerst = pip install wird gecacht',
+            'Nur Code-Änderung = nur COPY . . wird neu gebaut',
+          ],
+          explanation:
+            'Layer-Caching ist ein fundamentales Docker-Konzept für effiziente Builds.',
+        },
+        {
+          id: 'docker-task-d',
+          type: 'free-text' as const,
+          question:
+            'Beschreiben Sie den Weg, wie ein Docker-Image zu einem laufenden Pod in Kubernetes wird. Welche Schritte sind nötig?',
+          placeholder: '1. Dockerfile schreiben...',
+          modelAnswer:
+            '1. Dockerfile schreiben: Definiert die Build-Anweisungen (FROM, COPY, RUN, CMD).\n\n2. Image bauen: docker build -t playlist-api:1.0 . erstellt das Image lokal.\n\n3. Image taggen: docker tag playlist-api:1.0 registry.example.com/playlist-api:1.0\n\n4. Image pushen: docker push registry.example.com/playlist-api:1.0 lädt das Image in eine Container-Registry hoch.\n\n5. K8s Manifest erstellen: Ein Deployment-Manifest referenziert das Image: image: registry.example.com/playlist-api:1.0\n\n6. Manifest anwenden: kubectl apply -f deployment.yaml sendet den gewünschten Zustand an den API-Server.\n\n7. Scheduling: Der Kubernetes Scheduler wählt einen passenden Node.\n\n8. Image Pull: kubelet auf dem ausgewählten Node zieht das Image aus der Registry.\n\n9. Container starten: Der Container wird im Pod gestartet, die Flask-App läuft.',
+          keyPoints: [
+            'Dockerfile → docker build → Image',
+            'Image → Registry (push)',
+            'K8s Manifest referenziert Image',
+            'kubectl apply → Scheduler → Node',
+            'kubelet → Image Pull → Container Start',
+          ],
+          explanation:
+            'Der Weg vom Dockerfile zum Pod verbindet Docker und Kubernetes Konzepte.',
+        },
+      ],
+    },
+  ],
 }

@@ -8,6 +8,7 @@ export interface EvaluateRequest {
   model_answer: string
   key_points: string[]
   topic_id: string
+  question_type?: string
 }
 
 export interface EvaluateResponse {

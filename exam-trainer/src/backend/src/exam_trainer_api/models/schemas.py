@@ -9,6 +9,7 @@ class EvaluateRequest(BaseModel):
     model_answer: str
     key_points: list[str]
     topic_id: str
+    question_type: str | None = None
 
 
 class EvaluateResponse(BaseModel):

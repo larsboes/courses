@@ -2,11 +2,13 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Button, Card } from '@/core/components/ui'
+import { evaluateAnswer, saveProgress, type EvaluateResponse } from '@/core/services/api'
 import { HintButton } from './HintButton'
 import type { CodeWriteQuestion as CodeWriteQuestionType } from '@/core/types/content'
 
 interface CodeWriteQuestionProps {
   question: CodeWriteQuestionType
+  topicId: string
   onSubmit: (answer: string) => void
   showingResult: boolean
 }
@@ -27,18 +29,137 @@ const languageColors: Record<string, string> = {
   http: 'text-blue-400',
 }
 
+// Circular progress component
+function ScoreRing({ score }: { score: number }) {
+  const percentage = Math.round(score * 100)
+  const circumference = 2 * Math.PI * 45 // radius = 45
+  const strokeDashoffset = circumference - (score * circumference)
+
+  const color = score >= 0.8 ? '#4ade80' : score >= 0.5 ? '#fbbf24' : '#f87171'
+  const bgColor = score >= 0.8 ? 'rgba(74, 222, 128, 0.1)' : score >= 0.5 ? 'rgba(251, 191, 36, 0.1)' : 'rgba(248, 113, 113, 0.1)'
+
+  const emoji = score >= 0.8 ? '🎉' : score >= 0.6 ? '👍' : score >= 0.4 ? '💪' : '📚'
+  const message = score >= 0.8 ? 'Ausgezeichnet!' : score >= 0.6 ? 'Gut gemacht!' : score >= 0.4 ? 'Guter Ansatz!' : 'Weiter üben!'
+
+  return (
+    <div className="flex flex-col items-center py-4" style={{ backgroundColor: bgColor, borderRadius: '12px' }}>
+      <div className="relative w-28 h-28">
+        <svg className="w-28 h-28 transform -rotate-90">
+          {/* Background circle */}
+          <circle
+            cx="56"
+            cy="56"
+            r="45"
+            stroke="currentColor"
+            strokeWidth="8"
+            fill="none"
+            className="text-slate-700"
+          />
+          {/* Progress circle */}
+          <motion.circle
+            cx="56"
+            cy="56"
+            r="45"
+            stroke={color}
+            strokeWidth="8"
+            fill="none"
+            strokeLinecap="round"
+            initial={{ strokeDashoffset: circumference }}
+            animate={{ strokeDashoffset }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            style={{ strokeDasharray: circumference }}
+          />
+        </svg>
+        {/* Score text */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-3xl font-bold" style={{ color }}>{percentage}%</span>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center gap-2">
+        <span className="text-2xl">{emoji}</span>
+        <span className="text-lg font-medium text-slate-200">{message}</span>
+      </div>
+    </div>
+  )
+}
+
+// Stagger animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+}
+
 export function CodeWriteQuestion({
   question,
+  topicId,
   onSubmit,
   showingResult,
 }: CodeWriteQuestionProps) {
   const [code, setCode] = useState('')
-  const [selfAssessment, setSelfAssessment] = useState<'correct' | 'partial' | 'incorrect' | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [evaluation, setEvaluation] = useState<EvaluateResponse | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [checkedConcepts, setCheckedConcepts] = useState<Set<number>>(new Set())
+  const [hintsUsed, setHintsUsed] = useState(0)
 
-  const handleSubmit = () => {
-    if (!showingResult && code.trim()) {
+  const handleSubmit = async () => {
+    if (!code.trim()) return
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const result = await evaluateAnswer({
+        question: question.question,
+        user_answer: code,
+        model_answer: question.modelAnswer,
+        key_points: question.keyPoints,
+        topic_id: topicId,
+        question_type: 'code-write',
+      })
+      setEvaluation(result)
+
+      // Fire-and-forget: persist progress to backend for AI recommendations
+      saveProgress({
+        topic_id: topicId,
+        question_id: question.id,
+        question_type: 'code-write',
+        score: result.score,
+        user_answer: code,
+        hints_used: hintsUsed,
+      }).catch((err) => {
+        if (import.meta.env.DEV) {
+          console.warn('[saveProgress] Failed:', err.message)
+        }
+      })
+
       onSubmit(code)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Evaluation failed')
+      onSubmit(code)
+    } finally {
+      setIsLoading(false)
     }
+  }
+
+  const toggleConcept = (index: number) => {
+    const newChecked = new Set(checkedConcepts)
+    if (newChecked.has(index)) {
+      newChecked.delete(index)
+    } else {
+      newChecked.add(index)
+    }
+    setCheckedConcepts(newChecked)
   }
 
   return (
@@ -58,7 +179,7 @@ export function CodeWriteQuestion({
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder={question.placeholder || `// ${languageLabels[question.language]} hier eingeben...`}
-          disabled={showingResult}
+          disabled={showingResult || isLoading}
           spellCheck={false}
           aria-label={question.question}
           className={`
@@ -79,19 +200,139 @@ export function CodeWriteQuestion({
           <HintButton
             question={question.question}
             modelAnswer={question.modelAnswer}
+            disabled={isLoading}
+            onHintUsed={setHintsUsed}
           />
           <Button
             onClick={handleSubmit}
-            disabled={!code.trim()}
+            disabled={!code.trim() || isLoading}
             className="w-full"
           >
-            Code pruefen
+            {isLoading ? 'Wird ausgewertet...' : 'Code pruefen'}
           </Button>
         </div>
       )}
 
-      {/* Model Answer & Self-Assessment - same pattern as FreeTextQuestion */}
-      {showingResult && (
+      {/* Error card */}
+      {error && (
+        <Card className="p-4 bg-red-900/20 border-red-700">
+          <div className="text-sm text-red-300">{error}</div>
+        </Card>
+      )}
+
+      {/* AI Evaluation Results */}
+      {showingResult && evaluation && (
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="space-y-4"
+        >
+          {/* Score Ring */}
+          <motion.div variants={itemVariants}>
+            <Card className="p-2 bg-slate-800/30 border-slate-700">
+              <ScoreRing score={evaluation.score} />
+            </Card>
+          </motion.div>
+
+          {/* Feedback */}
+          <motion.div variants={itemVariants}>
+            <Card className="p-4 bg-slate-800/50 border-slate-600">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xl">💬</span>
+                <span className="font-semibold text-blue-400">Feedback</span>
+              </div>
+              <p className="text-slate-300 leading-relaxed">{evaluation.feedback}</p>
+            </Card>
+          </motion.div>
+
+          {/* Missing Concepts */}
+          {evaluation.missing_concepts.length > 0 && (
+            <motion.div variants={itemVariants}>
+              <Card className="p-4 bg-amber-900/20 border-amber-700/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xl">⚠️</span>
+                  <span className="font-semibold text-amber-400">Fehlende Konzepte</span>
+                  <span className="text-xs text-slate-500 ml-auto">Klicke zum Abhaken</span>
+                </div>
+                <ul className="space-y-2">
+                  {evaluation.missing_concepts.map((concept, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-3 cursor-pointer group"
+                      onClick={() => toggleConcept(i)}
+                    >
+                      <div className={`
+                        w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5
+                        transition-colors duration-200
+                        ${checkedConcepts.has(i)
+                          ? 'bg-green-500 border-green-500'
+                          : 'border-slate-500 group-hover:border-amber-400'}
+                      `}>
+                        {checkedConcepts.has(i) && (
+                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className={`text-sm transition-all duration-200 ${
+                        checkedConcepts.has(i)
+                          ? 'text-slate-500 line-through'
+                          : 'text-slate-300'
+                      }`}>
+                        {concept}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </motion.div>
+          )}
+
+          {/* Suggestion */}
+          <motion.div variants={itemVariants}>
+            <Card className="p-4 bg-emerald-900/20 border-emerald-700/50">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xl">💡</span>
+                <span className="font-semibold text-emerald-400">Tipp</span>
+              </div>
+              <p className="text-sm text-slate-300 leading-relaxed">{evaluation.suggestion}</p>
+            </Card>
+          </motion.div>
+
+          {/* Model Answer (collapsible) */}
+          <motion.div variants={itemVariants}>
+            <details className="group">
+              <summary className="cursor-pointer flex items-center gap-2 text-sm text-slate-400 hover:text-slate-300 transition-colors">
+                <span className="text-lg">📖</span>
+                <span>Musterantwort anzeigen</span>
+                <svg
+                  className="w-4 h-4 transition-transform group-open:rotate-180 ml-auto"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <Card className="mt-3 p-4 bg-slate-950 border-slate-600">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-medium text-blue-400">Musterantwort:</span>
+                  <span className={`text-xs ${languageColors[question.language]}`}>
+                    {languageLabels[question.language]}
+                  </span>
+                </div>
+                <pre className="text-sm text-slate-300 whitespace-pre-wrap font-mono leading-relaxed overflow-x-auto">
+                  {question.modelAnswer}
+                </pre>
+              </Card>
+            </details>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Fallback when no AI evaluation */}
+      {showingResult && !evaluation && !error && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,9 +349,11 @@ export function CodeWriteQuestion({
               {question.modelAnswer}
             </pre>
           </Card>
-
           <Card className="p-4 bg-slate-800/50 border-slate-600">
-            <div className="font-medium mb-3">Wichtige Punkte:</div>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xl">✅</span>
+              <span className="font-semibold">Wichtige Punkte</span>
+            </div>
             <ul className="space-y-2">
               {question.keyPoints.map((point, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
@@ -120,51 +363,6 @@ export function CodeWriteQuestion({
               ))}
             </ul>
           </Card>
-
-          {!selfAssessment && (
-            <div className="space-y-2">
-              <div className="text-sm text-slate-400">Wie hast du abgeschnitten?</div>
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => setSelfAssessment('correct')}
-                  className="flex-1 bg-green-900/30 border-green-700 hover:bg-green-900/50"
-                >
-                  Richtig
-                </Button>
-                <Button
-                  onClick={() => setSelfAssessment('partial')}
-                  className="flex-1 bg-amber-900/30 border-amber-700 hover:bg-amber-900/50"
-                >
-                  Teilweise
-                </Button>
-                <Button
-                  onClick={() => setSelfAssessment('incorrect')}
-                  className="flex-1 bg-red-900/30 border-red-700 hover:bg-red-900/50"
-                >
-                  Falsch
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {selfAssessment && (
-            <Card
-              className={`p-4 ${
-                selfAssessment === 'correct'
-                  ? 'bg-green-900/20 border-green-700'
-                  : selfAssessment === 'partial'
-                  ? 'bg-amber-900/20 border-amber-700'
-                  : 'bg-red-900/20 border-red-700'
-              }`}
-            >
-              <div className="font-medium">
-                {selfAssessment === 'correct' && 'Gut gemacht!'}
-                {selfAssessment === 'partial' && 'Weiter üben!'}
-                {selfAssessment === 'incorrect' && 'Wiederhole das Thema.'}
-              </div>
-              <div className="text-sm text-slate-300 mt-1">{question.explanation}</div>
-            </Card>
-          )}
         </motion.div>
       )}
     </div>

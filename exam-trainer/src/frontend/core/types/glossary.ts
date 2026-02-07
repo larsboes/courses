@@ -30,6 +30,7 @@ export interface RequestScenario {
   id: string
   title: string
   description: string
+  diagramType?: 'k8s' | 'full-stack'
   steps: ScenarioStep[]
 }
 
