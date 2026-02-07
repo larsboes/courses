@@ -1,6 +1,7 @@
 // src/content/web-technologies/topics/kubernetes-manifests.tsx
 import type { Topic } from '@/core/types/content'
 import { K8sManifestExplorer } from '../diagrams/K8sManifestExplorer'
+import { K8sManifestDiagramBuilder } from '../diagrams/K8sManifestDiagramBuilder'
 
 export const kubernetesManifestsTopic: Topic = {
   id: 'kubernetes-manifests',
@@ -193,6 +194,32 @@ spec:
           </div>
         </div>
       ),
+    },
+    {
+      id: 'diagram-builder',
+      title: 'Manifest → Diagramm Übung',
+      content: (
+        <div className="space-y-4">
+          <p>
+            In der Klausur musst du aus einem YAML-Manifest die entstehende
+            Kubernetes-Architektur <strong>skizzieren</strong>. Übe hier,
+            indem du die Komponenten auf die Leinwand ziehst und verbindest.
+          </p>
+          <div className="bg-blue-900/20 rounded-lg p-4 border border-blue-800">
+            <div className="text-blue-300 font-medium mb-2">Klausur-Tipp:</div>
+            <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
+              <li>Deployment erstellt immer ein <strong>ReplicaSet</strong> (implizit!)</li>
+              <li>Die Anzahl der Pods ergibt sich aus <code className="bg-slate-700 px-1 rounded">replicas</code></li>
+              <li>Services finden Pods über <strong>Label-Selektoren</strong></li>
+              <li>Achte auf <code className="bg-slate-700 px-1 rounded">port</code> vs <code className="bg-slate-700 px-1 rounded">targetPort</code></li>
+            </ul>
+          </div>
+        </div>
+      ),
+      diagram: {
+        type: 'explorable',
+        component: K8sManifestDiagramBuilder,
+      },
     },
   ],
 
