@@ -149,6 +149,13 @@ export function FreeTextQuestion({
     <div className="space-y-6">
       <div className="text-lg font-medium">{question.question}</div>
 
+      {/* Visual content (e.g., JSON code blocks for error finding) */}
+      {question.visual && (
+        <div className="visual-content">
+          {question.visual}
+        </div>
+      )}
+
       <textarea
         aria-label={question.question}
         value={answer}
@@ -208,7 +215,7 @@ export function FreeTextQuestion({
                 <span className="text-xl">💬</span>
                 <span className="font-semibold text-blue-400">Feedback</span>
               </div>
-              <p className="text-slate-300 leading-relaxed">{evaluation.feedback}</p>
+              <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">{evaluation.feedback}</p>
             </Card>
           </motion.div>
 
@@ -241,11 +248,10 @@ export function FreeTextQuestion({
                           </svg>
                         )}
                       </div>
-                      <span className={`text-sm transition-all duration-200 ${
-                        checkedConcepts.has(i)
-                          ? 'text-slate-500 line-through'
-                          : 'text-slate-300'
-                      }`}>
+                      <span className={`text-sm transition-all duration-200 ${checkedConcepts.has(i)
+                        ? 'text-slate-500 line-through'
+                        : 'text-slate-300'
+                        }`}>
                         {concept}
                       </span>
                     </li>
@@ -262,7 +268,7 @@ export function FreeTextQuestion({
                 <span className="text-xl">💡</span>
                 <span className="font-semibold text-emerald-400">Tipp</span>
               </div>
-              <p className="text-sm text-slate-300 leading-relaxed">{evaluation.suggestion}</p>
+              <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">{evaluation.suggestion}</p>
             </Card>
           </motion.div>
 

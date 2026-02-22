@@ -34,6 +34,16 @@ def get_hint(request: HintRequest) -> HintResponse:
         result["hints_remaining"] = 3 - request.hint_level
         return HintResponse(**result)
     except json.JSONDecodeError as e:
-        raise HTTPException(status_code=500, detail=f"Failed to parse AI response: {e}")
+        # Graceful fallback instead of HTTP 500
+        return HintResponse(
+            hint="Hinweis konnte nicht generiert werden. Versuche die Musterlösung schrittweise durchzugehen.",
+            hint_level=request.hint_level,
+            hints_remaining=3 - request.hint_level
+        )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Hint generation failed: {e}")
+        # Graceful fallback for any other errors
+        return HintResponse(
+            hint="Hinweis-Service temporär nicht verfügbar. Überlege dir, welche Konzepte in der Frage angesprochen werden.",
+            hint_level=request.hint_level,
+            hints_remaining=3 - request.hint_level
+        )

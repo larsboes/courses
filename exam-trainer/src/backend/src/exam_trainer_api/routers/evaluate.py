@@ -32,6 +32,20 @@ def evaluate_answer(request: EvaluateRequest) -> EvaluateResponse:
         result = json.loads(response_text)
         return EvaluateResponse(**result)
     except json.JSONDecodeError as e:
-        raise HTTPException(status_code=500, detail=f"Failed to parse AI response: {e}")
+        # Graceful fallback instead of HTTP 500
+        return EvaluateResponse(
+            score=0.0,
+            is_correct=False,
+            feedback="Die AI-Bewertung konnte nicht durchgeführt werden. Bitte vergleiche deine Antwort mit der Musterlösung.",
+            missing_concepts=[],
+            suggestion="Versuche es erneut oder nutze die Musterlösung zur Selbstbewertung."
+        )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI evaluation failed: {e}")
+        # Graceful fallback for any other errors
+        return EvaluateResponse(
+            score=0.0,
+            is_correct=False,
+            feedback=f"AI-Bewertung temporär nicht verfügbar. Bitte vergleiche deine Antwort manuell mit der Musterlösung.",
+            missing_concepts=[],
+            suggestion="Falls das Problem weiterhin besteht, überprüfe deine Internetverbindung."
+        )

@@ -34,6 +34,113 @@ export const kubernetesBegriffeTopic: Topic = {
       ),
     },
     {
+      id: 'orchestration-functions',
+      title: 'Orchestrierungs-Funktionen',
+      content: (
+        <div className="space-y-4">
+          <p>
+            <strong>Container-Orchestrierung</strong> umfasst 9 zentrale Funktionen,
+            die Kubernetes für den Betrieb verteilter Anwendungen bereitstellt:
+          </p>
+          <div className="grid gap-2">
+            <div className="p-3 bg-slate-800 rounded-lg border-l-4 border-blue-500">
+              <div className="flex items-start gap-3">
+                <span className="text-xl">🎯</span>
+                <div>
+                  <strong className="text-blue-300">1. Scheduling</strong>
+                  <span className="text-slate-400"> – Entscheidung, welcher Dienst auf welchem Knoten laufen soll.</span>
+                  <div className="text-sm text-slate-500 italic mt-1">🎻 Der Dirigent entscheidet, welcher Musiker an welchem Platz sitzt.</div>
+                </div>
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800 rounded-lg border-l-4 border-green-500">
+              <div className="flex items-start gap-3">
+                <span className="text-xl">📈</span>
+                <div>
+                  <strong className="text-green-300">2. Skalierung</strong>
+                  <span className="text-slate-400"> – Anpassung der Dienste an die Arbeitslast.</span>
+                  <div className="text-sm text-slate-500 italic mt-1">🎻 Bei lauteren Passagen werden mehr Musiker eingesetzt.</div>
+                </div>
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800 rounded-lg border-l-4 border-purple-500">
+              <div className="flex items-start gap-3">
+                <span className="text-xl">⚖️</span>
+                <div>
+                  <strong className="text-purple-300">3. Load Balancing</strong>
+                  <span className="text-slate-400"> – Gleichmäßige Aufteilung der ankommenden Anfragen.</span>
+                  <div className="text-sm text-slate-500 italic mt-1">🎻 Die Melodie wird auf mehrere Instrumente verteilt.</div>
+                </div>
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800 rounded-lg border-l-4 border-red-500">
+              <div className="flex items-start gap-3">
+                <span className="text-xl">🔄</span>
+                <div>
+                  <strong className="text-red-300">4. Verfügbarkeit</strong>
+                  <span className="text-slate-400"> – Dienste im Problemfall neu starten, „Self-Healing".</span>
+                  <div className="text-sm text-slate-500 italic mt-1">🎻 Ein Ersatzmusiker springt sofort ein, wenn einer ausfällt.</div>
+                </div>
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800 rounded-lg border-l-4 border-amber-500">
+              <div className="flex items-start gap-3">
+                <span className="text-xl">🔍</span>
+                <div>
+                  <strong className="text-amber-300">5. Service Discovery</strong>
+                  <span className="text-slate-400"> – Netzwerk abstrahieren für einfachere interne Adressierung.</span>
+                  <div className="text-sm text-slate-500 italic mt-1">🎻 Musiker finden sich gegenseitig über Notenblätter.</div>
+                </div>
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800 rounded-lg border-l-4 border-cyan-500">
+              <div className="flex items-start gap-3">
+                <span className="text-xl">🎚️</span>
+                <div>
+                  <strong className="text-cyan-300">6. Zustandsmanagement</strong>
+                  <span className="text-slate-400"> – Einzelne Dienste im geforderten Betriebsmodus halten.</span>
+                  <div className="text-sm text-slate-500 italic mt-1">🎻 Jeder Musiker hält sein Instrument gestimmt.</div>
+                </div>
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800 rounded-lg border-l-4 border-teal-500">
+              <div className="flex items-start gap-3">
+                <span className="text-xl">🚀</span>
+                <div>
+                  <strong className="text-teal-300">7. Deployment Management</strong>
+                  <span className="text-slate-400"> – Rollouts und ggf. Rollbacks neuer Versionen, Downtimes minimieren.</span>
+                  <div className="text-sm text-slate-500 italic mt-1">🎻 Neue Stücke werden schrittweise einstudiert, alte bleiben spielbereit.</div>
+                </div>
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800 rounded-lg border-l-4 border-pink-500">
+              <div className="flex items-start gap-3">
+                <span className="text-xl">📝</span>
+                <div>
+                  <strong className="text-pink-300">8. Konfigurationsmanagement</strong>
+                  <span className="text-slate-400"> – Secrets, Umgebungsvariablen, Konfig-Dateien über die verteilten Dienste.</span>
+                  <div className="text-sm text-slate-500 italic mt-1">🎻 Notenblätter und Spielanweisungen werden an alle verteilt.</div>
+                </div>
+              </div>
+            </div>
+            <div className="p-3 bg-slate-800 rounded-lg border-l-4 border-indigo-500">
+              <div className="flex items-start gap-3">
+                <span className="text-xl">👁️</span>
+                <div>
+                  <strong className="text-indigo-300">9. Überwachung</strong>
+                  <span className="text-slate-400"> – Performance der Komponenten und des Gesamtsystems, Logging.</span>
+                  <div className="text-sm text-slate-500 italic mt-1">🎻 Der Dirigent hört genau hin und korrigiert bei Bedarf.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 p-3 bg-amber-900/20 border border-amber-700 rounded-lg text-sm text-amber-200">
+            <strong>Klausur-Hinweis:</strong> Diese 9 Funktionen werden häufig als Zuordnungs- oder Erklärungsaufgabe geprüft!
+          </div>
+        </div>
+      ),
+    },
+    {
       id: 'core-concepts',
       title: 'Kernkonzepte',
       content: (

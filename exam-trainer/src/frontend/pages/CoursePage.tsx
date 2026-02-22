@@ -52,9 +52,14 @@ export function CoursePage() {
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
+            <Link to={`/course/${courseId}/klausur-simulation`}>
+              <Button className="bg-red-900/30 border border-red-700 hover:bg-red-900/50">
+                Klausur-Simulation
+              </Button>
+            </Link>
             <Link to={`/course/${courseId}/exam`}>
               <Button className="bg-purple-900/30 border border-purple-700 hover:bg-purple-900/50">
-                Prüfungssimulation starten
+                Aufgaben üben
               </Button>
             </Link>
 

@@ -141,6 +141,16 @@ export interface ExamTask {
   parts: QuizQuestion[]
 }
 
+// Exam simulation (predefined exam set with timer)
+export interface ExamSimulation {
+  id: string
+  title: string
+  description: string
+  durationMinutes: number
+  totalPoints: number
+  tasks: ExamTask[]
+}
+
 // ─────────────────────────────────────────────────
 // Progress Types
 // ─────────────────────────────────────────────────

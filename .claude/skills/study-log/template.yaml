@@ -1,0 +1,19 @@
+# Session-Block Template - ans Ende von sessions.yaml anhaengen
+# Alle Felder ausfuellen, nichts weglassen
+
+  - date: "YYYY-MM-DD"
+    course: <ipdg | web-technologies>
+    type: <quiz | review | deep-dive | klausur-simulation | chat-quiz>
+    duration_min: ~<geschaetzt>
+    topics_covered:
+      - <topic 1>
+      - <topic 2>
+    scores:
+      <topic>: { avg: <0.0-1.0>, notes: "<kurze Einschaetzung>" }
+    weak_areas:
+      - <konkrete Schwachstelle>
+    strong_areas:
+      - <Was gut lief>
+    next_steps:
+      - <Was als naechstes geuebt werden sollte>
+    status: completed

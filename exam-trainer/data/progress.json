@@ -1,6 +1,121 @@
 {
-  "last_updated": null,
-  "quiz_attempts": [],
-  "topic_scores": {},
+  "last_updated": "2026-02-08T20:08:01.865230",
+  "quiz_attempts": [
+    {
+      "timestamp": "2026-02-08T19:28:03.869115",
+      "topic_id": "unknown",
+      "question_id": "va-rest-a",
+      "question_type": "free-text",
+      "score": 0.5,
+      "user_answer": "mit GET stelle ich nur eine Anfrage um Daten abzufragen und mit POST erstelle ich neue elemente",
+      "hints_used": 0
+    },
+    {
+      "timestamp": "2026-02-08T19:30:40.137709",
+      "topic_id": "unknown",
+      "question_id": "va-rest-b",
+      "question_type": "free-text",
+      "score": 0.3,
+      "user_answer": "path: wir suchen nach speziellen unterordnern und files sozusagen und bei query parametern generell \"global\"",
+      "hints_used": 1
+    },
+    {
+      "timestamp": "2026-02-08T19:34:36.003984",
+      "topic_id": "unknown",
+      "question_id": "va-rest-c",
+      "question_type": "code-write",
+      "score": 0.3,
+      "user_answer": "POST /playlists HTTP/1.1\nHost: https://spotify.com\nAccept: application/json\nUser-Agent: Mozilla\nContent-Type: application/json\n\n{\n   \"track\": 123\n}",
+      "hints_used": 0
+    },
+    {
+      "timestamp": "2026-02-08T19:39:20.507890",
+      "topic_id": "unknown",
+      "question_id": "va-json-a",
+      "question_type": "code-write",
+      "score": 1.0,
+      "user_answer": "{\n \"title\": \"Test\",\n \"link\": \"...com\",\n \"duration\": 3.45,\n \"access_credentials\": {\n   \"uID\": \"idk\",\n   \"token\": \"Bearer\"\n }\n}",
+      "hints_used": 0
+    },
+    {
+      "timestamp": "2026-02-08T19:39:59.810563",
+      "topic_id": "unknown",
+      "question_id": "va-json-b",
+      "question_type": "free-text",
+      "score": 0.0,
+      "user_answer": "t",
+      "hints_used": 0
+    },
+    {
+      "timestamp": "2026-02-08T19:41:48.610297",
+      "topic_id": "unknown",
+      "question_id": "va-json-c",
+      "question_type": "free-text",
+      "score": 0.6,
+      "user_answer": "YAML ist oft beschreibender, deklarativer und wird f\u00fcr configurationen wie kubernetes deployments benutzt, weniger syntax, mehr Menschenlesbar, noch \"knapper\". JSON ist oft f\u00fcr data streaming und APIs und so. ",
+      "hints_used": 0
+    },
+    {
+      "timestamp": "2026-02-08T19:47:26.258803",
+      "topic_id": "unknown",
+      "question_id": "va-hcj-b",
+      "question_type": "code-write",
+      "score": 0.45,
+      "user_answer": "#main-header { \n color: black;\n}\n.main-nav a {\n color: white;\n}\n.track-item {\n idk\n}\n",
+      "hints_used": 0
+    },
+    {
+      "timestamp": "2026-02-08T19:49:44.415841",
+      "topic_id": "unknown",
+      "question_id": "va-hcj-c",
+      "question_type": "free-text",
+      "score": 0.0,
+      "user_answer": ".",
+      "hints_used": 0
+    },
+    {
+      "timestamp": "2026-02-08T19:51:50.177895",
+      "topic_id": "unknown",
+      "question_id": "va-hcj-d",
+      "question_type": "free-text",
+      "score": 0.1,
+      "user_answer": "main\n ",
+      "hints_used": 0
+    },
+    {
+      "timestamp": "2026-02-08T20:00:05.463340",
+      "topic_id": "unknown",
+      "question_id": "va-k8s-a",
+      "question_type": "free-text",
+      "score": 0.0,
+      "user_answer": ".",
+      "hints_used": 0
+    },
+    {
+      "timestamp": "2026-02-08T20:03:40.314886",
+      "topic_id": "unknown",
+      "question_id": "va-k8s-b",
+      "question_type": "free-text",
+      "score": 0.0,
+      "user_answer": ".",
+      "hints_used": 0
+    },
+    {
+      "timestamp": "2026-02-08T20:08:01.865177",
+      "topic_id": "unknown",
+      "question_id": "va-k8s-c",
+      "question_type": "free-text",
+      "score": 0.0,
+      "user_answer": "t",
+      "hints_used": 0
+    }
+  ],
+  "topic_scores": {
+    "unknown": {
+      "attempts": 12,
+      "total_score": 3.2500000000000004,
+      "avg_score": 0.27083333333333337
+    }
+  },
   "weak_areas": []
 }

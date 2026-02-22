@@ -4,6 +4,8 @@
 
 - **brainstorming**: Always use before implementing new features or making design decisions
 - **subagent-driven-development**: Use for executing multi-step implementation plans
+- **/study-log**: PFLICHT am Ende jeder Lernsession - dokumentiert Fortschritt in `exam-trainer/logs/sessions.yaml` (nur user-invoked)
+- **/ipdg-help [topic]**: IPDG-Content finden, Zusammenfassungen, Quiz-Fragen (auch model-invoked bei IPDG-Fragen)
 
 ## Development Rules
 
@@ -49,3 +51,24 @@ import { highlightColors } from '@/core/styles'
 ```
 
 **Migration priority:** When touching existing diagrams, migrate them to use these primitives to reduce duplication.
+
+## Exam Status
+
+| Klausur | Status | Datum |
+|---------|--------|-------|
+| Web-Technologies | geschrieben | 2026-02-08 |
+| IPDG | vorbereitung | Klausur: 2026-02-10 |
+
+## Study Session Logs
+
+- **Log-Datei**: `exam-trainer/logs/sessions.yaml`
+- **PFLICHT**: Am Ende jeder Lernsession `/study-log` ausfuehren
+- Trackt: Topics, Scores, Schwachstellen, naechste Schritte
+- Lese die Logs am Anfang jeder neuen Session um an Schwachstellen anzuknuepfen
+
+## IPDG Content Map
+
+Quellen in `exam-trainer/src/dataloader/configs/ipdg.yaml` definiert.
+Markdown-Quellen in `exam-trainer/src/dataloader/resources/markdown/ipdg/`.
+Topic-Dateien in `exam-trainer/src/frontend/content/ipdg/topics/`.
+Probeklausur: `exam-trainer/src/dataloader/resources/markdown/ipdg/Probeklausur-IPDG-WS25.md`
