@@ -1,6 +1,6 @@
 # Courses
 
-Study materials and an interactive exam trainer for my CS courses at [HAW Hamburg](https://www.haw-hamburg.de/).
+Study materials and an interactive exam trainer for my CS courses.
 
 ## Exam Trainer
 
