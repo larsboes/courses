@@ -52,10 +52,10 @@ services:
       - ~/.config/gcloud:/root/.config/gcloud:ro
     environment:
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
-      - VERTEX_PROJECT_ID=de0360-sbx-lars
-      - VERTEX_LOCATION=global
-      - GEMINI_MODEL=gemini-3-flash-preview
-      - GOOGLE_CLOUD_PROJECT=de0360-sbx-lars
+      - VERTEX_PROJECT_ID=${VERTEX_PROJECT_ID:-de0360-sbx-lars}
+      - VERTEX_LOCATION=${VERTEX_LOCATION:-global}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3-flash-preview}
+      - GOOGLE_CLOUD_PROJECT=${VERTEX_PROJECT_ID:-de0360-sbx-lars}
       - HTTP_PROXY=${HTTP_PROXY}
       - HTTPS_PROXY=${HTTPS_PROXY}
       - NO_PROXY=${NO_PROXY}

@@ -1,0 +1,8 @@
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Kubeconfig files (contain tokens)
+kubeconfig-*.yaml

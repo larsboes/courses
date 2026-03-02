@@ -161,7 +161,7 @@ deploy-backend:
 |----------|-------|
 | **Name** | `gitlab+deploy-token-27` |
 | **Username** | `gitlab+deploy-token-27` |
-| **Token** | `REDACTED_GITLAB_DEPLOY_TOKEN` |
+| **Token** | `<REDACTED - see .env GITLAB_DEPLOY_TOKEN>` |
 | **Scope** | `read_registry` |
 | **Purpose** | Allow Kubernetes to pull images from GitLab registry |
 
@@ -363,8 +363,8 @@ Project → CI/CD → Pipelines → Select job
 kubectl get pods -n workshop17 --kubeconfig $KUBECONFIG
 
 # Test registry authentication locally
-echo "REDACTED_GITLAB_DEPLOY_TOKEN" | docker login git.bnerd.com:5050 \
-  -u gitlab+deploy-token-27 --password-stdin
+echo "$GITLAB_DEPLOY_TOKEN" | docker login git.bnerd.com:5050 \
+  -u "$GITLAB_DEPLOY_USER" --password-stdin
 
 # Verify image pull secret
 kubectl get secret registry-credentials-workshop17 -n workshop17 -o json | \
