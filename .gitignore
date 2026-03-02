@@ -6,3 +6,6 @@
 
 # Kubeconfig files (contain tokens)
 kubeconfig-*.yaml
+
+# PDFs (copyrighted course materials)
+*.pdf
